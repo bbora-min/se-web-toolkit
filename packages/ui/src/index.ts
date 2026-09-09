@@ -33,3 +33,4 @@ export { Toaster, toast } from './components/toast'
 export { AppShell, NavItem, NavSection, PageHeader, PageBody, ThemeToggle, type AppShellProps } from './patterns/app-shell'
 
 export { StatusStrip, type StatusStripProps, type StripHealth } from './signatures/status-strip'
+export { SearchHero, type SearchHeroProps } from './signatures/search-hero'

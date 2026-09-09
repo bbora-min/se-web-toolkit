@@ -1,5 +1,5 @@
 export { brand, type StatusKey, type JobState } from './brand'
-export { createTheme, type Theme } from './createTheme'
+export { createTheme, MIN_STATUS_HUE_DISTANCE, type Theme } from './createTheme'
 export { themeToCss } from './css'
 export {
   identitySchema,

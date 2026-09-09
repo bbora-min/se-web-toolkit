@@ -8,6 +8,14 @@
       "signature": "status-strip",
       "neutralBias": "cool",
       "path": "examples/reference-app"
+    },
+    {
+      "id": "dataset-explorer",
+      "name": "Dataset Explorer",
+      "hue": 310,
+      "signature": "search-hero",
+      "neutralBias": "warm",
+      "path": "examples/dataset-explorer"
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { brand } from './brand'
 import { accentScale, chartPalette, contrast, neutralParams, neutralScale, type Mode } from './color'
-import { DISPLAY_FONTS, parseIdentity, type Identity, type IdentityInput } from './identity'
+import { oklch } from 'culori'
+import { DISPLAY_FONTS, hueDistance, parseIdentity, type Identity, type IdentityInput } from './identity'
 
 export interface Theme {
   identity: Identity
@@ -24,6 +25,23 @@ const CONTRAST_RULES: Array<[fg: string, bg: string, min: number, why: string]> 
   ['on-accent', 'accent', 4.5, '버튼 라벨'],
   ['line-strong', 'canvas', 1.3, '강조 테두리'],
 ]
+
+/** 액센트가 의미 색(성공/경고/위험/정보)과 헷갈리지 않으려면 이만큼은 떨어져야 한다 */
+export const MIN_STATUS_HUE_DISTANCE = 18
+
+function checkStatusHue(hue: number) {
+  const clashes: string[] = []
+  for (const [name, v] of Object.entries(brand.status)) {
+    const h = oklch(v.fg[0])?.h ?? 0
+    const d = hueDistance(hue, h)
+    if (d < MIN_STATUS_HUE_DISTANCE) clashes.push(`${name}(${Math.round(h)}°, 거리 ${Math.round(d)}°)`)
+  }
+  if (clashes.length)
+    throw new Error(
+      `accent.hue ${hue}°가 의미 색과 너무 가깝습니다: ${clashes.join(', ')}. ` +
+        `액센트 칩이 경고/오류처럼 읽힙니다 — ${MIN_STATUS_HUE_DISTANCE}° 이상 떨어진 hue를 고르세요.`,
+    )
+}
 
 function colorsFor(mode: Mode, id: Identity): Record<string, string> {
   const n = neutralParams(id.neutralBias, id.accent.hue)
@@ -55,6 +73,7 @@ function checkContrast(mode: Mode, c: Record<string, string>) {
 
 export function createTheme(input: IdentityInput): Theme {
   const identity = parseIdentity(input)
+  checkStatusHue(identity.accent.hue)
   const light = colorsFor('light', identity)
   const dark = colorsFor('dark', identity)
   checkContrast('light', light)

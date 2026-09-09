@@ -1,0 +1,13 @@
+{
+  "$schema": "../../packages/tokens/identity.schema.json",
+  "id": "dataset-explorer",
+  "name": "Dataset Explorer",
+  "mark": { "type": "icon", "icon": "layout-grid" },
+  "accent": { "hue": 310 },
+  "neutralBias": "warm",
+  "signature": "search-hero",
+  "density": "comfortable",
+  "displayFont": "pretendard",
+  "chart": "categorical",
+  "tone": "friendly"
+}

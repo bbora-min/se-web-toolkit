@@ -49,18 +49,20 @@ export interface ButtonProps
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild, loading, disabled, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button'
+    const cls = cn(buttonVariants({ variant, size }), className)
+    // Slot은 자식이 정확히 하나여야 한다 — asChild면 스피너 없이 자식만 넘긴다
+    if (asChild) {
+      return (
+        <Slot ref={ref} className={cls} {...props}>
+          {children}
+        </Slot>
+      )
+    }
     return (
-      <Comp
-        ref={ref}
-        className={cn(buttonVariants({ variant, size }), className)}
-        disabled={disabled || loading}
-        aria-busy={loading || undefined}
-        {...props}
-      >
+      <button ref={ref} className={cls} disabled={disabled || loading} aria-busy={loading || undefined} {...props}>
         {loading ? <Loader2 className="animate-spin" aria-hidden /> : null}
         {children}
-      </Comp>
+      </button>
     )
   },
 )

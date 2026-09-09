@@ -10,12 +10,25 @@ const base = {
 } as const
 
 describe('createTheme', () => {
-  it('모든 hue(0–360)에서 대비 규칙을 통과한다', () => {
+  it('의미 색과 겹치지 않는 모든 hue에서 대비 규칙을 통과한다', () => {
+    let ok = 0
     for (let hue = 0; hue < 360; hue += 5) {
       for (const neutralBias of ['cool', 'warm', 'neutral', 'accent'] as const) {
-        expect(() => createTheme({ ...base, accent: { hue }, neutralBias })).not.toThrow()
+        try {
+          createTheme({ ...base, accent: { hue }, neutralBias })
+          ok++
+        } catch (e) {
+          expect((e as Error).message).toMatch(/의미 색과 너무 가깝습니다/)
+        }
       }
     }
+    expect(ok).toBeGreaterThan(100)
+  })
+
+  it('의미 색 hue 근처의 액센트는 거부한다', () => {
+    expect(() => createTheme({ ...base, accent: { hue: 30 } })).toThrow(/danger/)
+    expect(() => createTheme({ ...base, accent: { hue: 72 } })).toThrow(/warning/)
+    expect(() => createTheme({ ...base, accent: { hue: 310 } })).not.toThrow()
   })
 
   it('버튼 라벨은 라이트/다크 모두 4.5:1 이상', () => {
@@ -26,7 +39,7 @@ describe('createTheme', () => {
 
   it('의미 색은 hue와 무관하게 동일하다', () => {
     const a = createTheme({ ...base, accent: { hue: 10 } })
-    const b = createTheme({ ...base, accent: { hue: 250 } })
+    const b = createTheme({ ...base, accent: { hue: 310 } })
     expect(a.light['status-danger']).toBe(b.light['status-danger'])
     expect(a.dark['status-success']).toBe(b.dark['status-success'])
   })

@@ -1,0 +1,13 @@
+{
+  "$comment": "SE 서비스 아이덴티티 레지스트리. 신규 서비스는 기존 항목과 hue 30° 이상 떨어져야 하고, 같은 시그니처는 피한다. pnpm check-identity 로 검사.",
+  "services": [
+    {
+      "id": "job-monitor",
+      "name": "Job Monitor",
+      "hue": 195,
+      "signature": "status-strip",
+      "neutralBias": "cool",
+      "path": "examples/reference-app"
+    }
+  ]
+}

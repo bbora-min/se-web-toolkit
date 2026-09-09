@@ -1,0 +1,74 @@
+/*
+ * @se/tokens → Tailwind v4 매핑.
+ * 앱 CSS에서:  @import "tailwindcss";  @import "@se/tokens/tailwind.css";
+ * 코드에서는 이 이름들만 쓴다 (bg-canvas, text-ink, border-line, bg-accent ...).
+ * hex 리터럴과 Tailwind 기본 팔레트(bg-blue-500 등)는 린트로 금지된다.
+ */
+@theme inline {
+  --color-*: initial;
+  --color-canvas: var(--se-canvas);
+  --color-surface: var(--se-surface);
+  --color-surface-2: var(--se-surface-2);
+  --color-ink: var(--se-ink);
+  --color-muted: var(--se-muted);
+  --color-line: var(--se-line);
+  --color-line-strong: var(--se-line-strong);
+  --color-accent: var(--se-accent);
+  --color-accent-hover: var(--se-accent-hover);
+  --color-accent-active: var(--se-accent-active);
+  --color-accent-soft: var(--se-accent-soft);
+  --color-accent-fg: var(--se-accent-fg);
+  --color-on-accent: var(--se-on-accent);
+  --color-success: var(--se-status-success);
+  --color-success-soft: var(--se-status-success-soft);
+  --color-warning: var(--se-status-warning);
+  --color-warning-soft: var(--se-status-warning-soft);
+  --color-danger: var(--se-status-danger);
+  --color-danger-soft: var(--se-status-danger-soft);
+  --color-info: var(--se-status-info);
+  --color-info-soft: var(--se-status-info-soft);
+  --color-neutral: var(--se-status-neutral);
+  --color-neutral-soft: var(--se-status-neutral-soft);
+  --color-chart-1: var(--se-chart-1);
+  --color-chart-2: var(--se-chart-2);
+  --color-chart-3: var(--se-chart-3);
+  --color-chart-4: var(--se-chart-4);
+  --color-chart-5: var(--se-chart-5);
+  --color-chart-6: var(--se-chart-6);
+  --color-chart-7: var(--se-chart-7);
+  --color-chart-8: var(--se-chart-8);
+  --color-white: #fff;
+  --color-black: #000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-sans: var(--se-font-sans);
+  --font-mono: var(--se-font-mono);
+  --font-display: var(--se-font-display);
+
+  --text-*: initial;
+  --text-xs: var(--se-text-xs);
+  --text-sm: var(--se-text-sm);
+  --text-base: var(--se-text-base);
+  --text-md: var(--se-text-md);
+  --text-lg: var(--se-text-lg);
+  --text-xl: var(--se-text-xl);
+  --text-2xl: var(--se-text-2xl);
+
+  --radius-*: initial;
+  --radius-sm: var(--se-radius-sm);
+  --radius-md: var(--se-radius-md);
+  --radius-lg: var(--se-radius-lg);
+  --radius-full: var(--se-radius-full);
+
+  --shadow-*: initial;
+  --shadow-xs: var(--se-shadow-xs);
+  --shadow-raised: var(--se-shadow-raised);
+  --shadow-overlay: var(--se-shadow-overlay);
+
+  --ease-se: var(--se-ease);
+  --spacing-control: var(--se-control-h);
+  --spacing-row: var(--se-row-h);
+  --spacing-gap: var(--se-gap);
+  --spacing-pad: var(--se-pad);
+}

@@ -1,0 +1,31 @@
+/*
+ * @se/ui 기본 스타일. 앱 CSS에서 tailwind + tokens 다음에 import 한다.
+ *   @import "tailwindcss";
+ *   @import "@se/tokens/tailwind.css";
+ *   @import "@se/ui/styles.css";
+ */
+@layer base {
+  html {
+    font-family: var(--se-font-sans);
+    font-size: var(--se-text-base);
+    line-height: var(--se-leading-normal);
+    color: var(--se-ink);
+    background: var(--se-canvas);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  body { margin: 0; }
+  ::selection { background: var(--se-accent-soft); }
+  :focus-visible { outline: 2px solid var(--se-accent); outline-offset: 2px; }
+  code, kbd, pre, samp, .font-mono { font-family: var(--se-font-mono); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+}
+@layer utilities {
+  .tnum { font-variant-numeric: tabular-nums; }
+}
+
+@keyframes se-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes se-slide-in-right { from { transform: translateX(16px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes se-slide-out-right { from { transform: none; opacity: 1 } to { transform: translateX(16px); opacity: 0 } }

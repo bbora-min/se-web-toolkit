@@ -1,0 +1,51 @@
+{
+  "name": "@se/tokens",
+  "version": "0.1.0",
+  "description": "SE 디자인 토큰 — 브랜드 코어(고정) + 서비스 아이덴티티(createTheme)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js"
+    },
+    "./tailwind.css": "./tailwind.css",
+    "./identity.schema.json": "./identity.schema.json"
+  },
+  "files": [
+    "dist",
+    "tailwind.css",
+    "identity.schema.json"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepare": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "culori": "^4.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/culori": "^2.1.1",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2",
+    "vite": "^7.0.0",
+    "vitest": "^3.0.0",
+    "tsup": "^8.3.5"
+  },
+  "peerDependencies": {
+    "vite": ">=6"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts"
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "../../packages/tokens/identity.schema.json",
+  "id": "job-monitor",
+  "name": "Job Monitor",
+  "mark": { "type": "monogram", "text": "JM" },
+  "accent": { "hue": 195 },
+  "neutralBias": "cool",
+  "signature": "status-strip",
+  "density": "comfortable",
+  "displayFont": "pretendard",
+  "chart": "accent-sequential",
+  "tone": "terse"
+}

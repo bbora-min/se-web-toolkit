@@ -1,0 +1,20 @@
+{
+  "name": "se-web-toolkit",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SE 내부 엔지니어링 도구용 디자인 시스템 + Claude Code 플러그인",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": "22.x",
+    "pnpm": "9.x"
+  },
+  "scripts": {
+    "dev": "pnpm --filter reference-app dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "check-identity": "node scripts/check-identity.mjs"
+  },
+  "devDependencies": {}
+}

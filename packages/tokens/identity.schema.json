@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "title": "SE service identity",
+  "type": "object",
+  "required": ["id", "name", "mark", "accent", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,39}$" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 40 },
+    "mark": {
+      "oneOf": [
+        { "type": "object", "required": ["type", "text"], "properties": { "type": { "const": "monogram" }, "text": { "type": "string", "minLength": 1, "maxLength": 3 } } },
+        { "type": "object", "required": ["type", "icon"], "properties": { "type": { "const": "icon" }, "icon": { "type": "string" } } }
+      ]
+    },
+    "accent": { "type": "object", "required": ["hue"], "properties": { "hue": { "type": "number", "minimum": 0, "maximum": 360 } } },
+    "neutralBias": { "enum": ["cool", "warm", "neutral", "accent"], "default": "neutral" },
+    "signature": { "enum": ["status-strip", "search-hero", "stage-rail", "timeline-ribbon", "metric-marquee"] },
+    "density": { "enum": ["compact", "comfortable"], "default": "compact" },
+    "displayFont": { "enum": ["pretendard", "ibm-plex-sans", "noto-sans-kr", "ibm-plex-mono"], "default": "pretendard" },
+    "chart": { "enum": ["accent-sequential", "categorical"], "default": "accent-sequential" },
+    "tone": { "enum": ["terse", "friendly", "procedural"], "default": "terse" }
+  }
+}

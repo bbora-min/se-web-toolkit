@@ -83,12 +83,6 @@ export function Shell() {
             ))}
           </NavSection>
           <NavSection title="워크스페이스">
-            <NavItem asChild>
-              <NavLink to="/settings">
-                <Settings />
-                <span className="flex-1 truncate">설정</span>
-              </NavLink>
-            </NavItem>
             {import.meta.env.DEV ? (
               <NavItem asChild>
                 <NavLink to="/__identity">

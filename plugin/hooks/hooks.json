@@ -1,0 +1,17 @@
+{
+  "description": "SE Web Toolkit — 세션 시작 시 환경·아이덴티티 요약, 파일 저장 시 디자인 시스템 린트",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [{ "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\"", "timeout": 10 }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [{ "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/lint-file.sh\"", "timeout": 30 }]
+      }
+    ]
+  }
+}

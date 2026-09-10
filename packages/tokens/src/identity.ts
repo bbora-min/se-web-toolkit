@@ -62,3 +62,33 @@ export function hueDistance(a: number, b: number): number {
 
 /** 형제 서비스와 최소한 이만큼 떨어져야 "다른 제품"으로 읽힌다 */
 export const MIN_HUE_DISTANCE = 30
+
+/** @se/ui 가 실제로 구현한 시그니처. SIGNATURES 의 나머지는 예약. @se/ui 에 추가하면 여기도 올린다 */
+export const IMPLEMENTED_SIGNATURES = ['status-strip', 'search-hero', 'stage-rail'] as const satisfies readonly (typeof SIGNATURES)[number][]
+
+export interface RegistryEntry {
+  id: string
+  name: string
+  hue: number
+  signature: string
+}
+export interface RegistryIssue {
+  level: 'error' | 'warn'
+  a: string
+  b: string
+  message: string
+}
+
+/** 가족 규칙 — hue 30° 미만은 error, 같은 시그니처는 warn. check-identity 스크립트와 create-se-app 이 같이 쓴다 */
+export function checkRegistry(services: RegistryEntry[]): RegistryIssue[] {
+  const issues: RegistryIssue[] = []
+  for (let i = 0; i < services.length; i++) {
+    for (let j = i + 1; j < services.length; j++) {
+      const a = services[i]!, b = services[j]!
+      const d = hueDistance(a.hue, b.hue)
+      if (d < MIN_HUE_DISTANCE) issues.push({ level: 'error', a: a.id, b: b.id, message: `${a.name}(${a.hue}°) ↔ ${b.name}(${b.hue}°): hue 거리 ${Math.round(d)}° < ${MIN_HUE_DISTANCE}° — 형제와 너무 닮음` })
+      if (a.signature === b.signature) issues.push({ level: 'warn', a: a.id, b: b.id, message: `${a.name} ↔ ${b.name}: 같은 시그니처(${a.signature}) — 가능하면 다르게` })
+    }
+  }
+  return issues
+}

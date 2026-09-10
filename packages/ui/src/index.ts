@@ -56,3 +56,4 @@ export { StageRail, type Stage, type StageRailProps } from './signatures/stage-r
 export { LogViewer, type LogViewerProps } from './components/log-viewer'
 export { parseAnsi, stripAnsi, type AnsiSpan } from './lib/ansi'
 export { formatRelative, formatAbsolute, formatDuration, formatCompact, formatBytes } from './lib/format'
+export { createApiClient, ApiError, type ApiClientOptions } from './lib/api'

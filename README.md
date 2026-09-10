@@ -15,10 +15,19 @@
 | `examples/dataset-explorer` | **Dataset Explorer** — 조회. 검색 히어로·상세(DetailPage) | ✓ |
 | `examples/release-desk` | **Release Desk** — 업무 처리. 단계 레일·위자드(FormWizard)·설정(Settings) | ✓ |
 | `identities/` | 서비스 아이덴티티 레지스트리 (hue·시그니처 충돌 검사) | ✓ |
-| `plugin/` | Claude Code 플러그인 (`se-ui`, `se-design`, `/se:*`) | 예정 |
-| `templates/` | `create-se-app` 템플릿 | 예정 |
+| `plugin/` | Claude Code 플러그인 — 스킬 11개(자동 2 + 명령 9), 에이전트 3, 훅 2 | ✓ |
+| `templates/app-vite-react` + `packages/create-se-app` | 새 서비스 템플릿(워크스페이스에서 컴파일됨)과 CLI — 지금은 모노레포 안 `examples/`에 생성 | ✓ |
 
-## 시작
+## 팀에서 쓰기
+
+```
+/plugin marketplace add bbora-min/se-web-toolkit     # Claude Code
+/plugin install se@se-web-toolkit
+/se:new incident-desk                                 # 새 서비스 — 인터뷰 → 생성 → 설치 → 실행
+```
+기존 프로젝트는 `/se:adopt`. 플러그인 상세는 [plugin/README.md](plugin/README.md).
+
+## 툴킷 개발
 
 ```bash
 # Node 22 (.nvmrc) + pnpm 9
@@ -27,6 +36,8 @@ pnpm dev                # Job Monitor 5173 (dataset-explorer 5174 · release-des
 pnpm lint               # @se/eslint-plugin 규칙 (warning도 실패)
 pnpm test               # 토큰 대비 검증 등
 pnpm check-identity     # 레지스트리 hue/시그니처 검사
+pnpm gen:skill-docs     # 컴포넌트 문서 → 플러그인 스킬 (CI: check:skill-docs)
+node packages/create-se-app/bin/create-se-app.mjs <id>   # 모노레포 안에서 새 예제 생성
 ```
 
 레퍼런스 앱은 MSW 목 서버로 동작하며 백엔드가 필요 없습니다.

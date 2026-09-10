@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/@se/tokens/identity.schema.json",
+  "id": "app-vite-react",
+  "name": "SE App",
+  "mark": {
+    "type": "monogram",
+    "text": "SE"
+  },
+  "accent": {
+    "hue": 205
+  },
+  "neutralBias": "neutral",
+  "signature": "status-strip",
+  "density": "comfortable",
+  "displayFont": "pretendard",
+  "chart": "accent-sequential",
+  "tone": "terse"
+}

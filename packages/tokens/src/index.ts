@@ -1,5 +1,5 @@
 export { brand, type StatusKey, type JobState } from './brand'
-export { createTheme, MIN_STATUS_HUE_DISTANCE, type Theme } from './createTheme'
+export { createTheme, statusHues, MIN_STATUS_HUE_DISTANCE, type Theme } from './createTheme'
 export { themeToCss } from './css'
 export {
   identitySchema,
@@ -7,6 +7,10 @@ export {
   hueDistance,
   MIN_HUE_DISTANCE,
   SIGNATURES,
+  IMPLEMENTED_SIGNATURES,
+  checkRegistry,
+  type RegistryEntry,
+  type RegistryIssue,
   DISPLAY_FONTS,
   type Identity,
   type IdentityInput,

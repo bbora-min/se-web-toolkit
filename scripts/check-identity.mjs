@@ -1,7 +1,7 @@
 // 아이덴티티 레지스트리 검사 — hue 거리·시그니처 중복·각 se.identity.json 유효성
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { createTheme, hueDistance, MIN_HUE_DISTANCE } from '../packages/tokens/dist/index.js'
+import { createTheme, checkRegistry } from '../packages/tokens/dist/index.js'
 
 const root = resolve(import.meta.dirname, '..')
 const registry = JSON.parse(readFileSync(resolve(root, 'identities/registry.json'), 'utf8'))
@@ -25,12 +25,8 @@ for (const s of services) {
     fail(`${s.id}: ${e.message}`)
   }
 }
-for (let i = 0; i < services.length; i++) {
-  for (let j = i + 1; j < services.length; j++) {
-    const a = services[i], b = services[j]
-    const d = hueDistance(a.hue, b.hue)
-    if (d < MIN_HUE_DISTANCE) fail(`${a.id} ↔ ${b.id}: hue 거리 ${d}° < ${MIN_HUE_DISTANCE}° — 형제와 너무 닮음`)
-    if (a.signature === b.signature) console.warn('!', `${a.id} ↔ ${b.id}: 같은 시그니처(${a.signature}) — 가능하면 다르게`)
-  }
+for (const issue of checkRegistry(services)) {
+  if (issue.level === 'error') fail(issue.message)
+  else console.warn('!', issue.message)
 }
 process.exit(failed ? 1 : 0)

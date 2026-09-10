@@ -1,0 +1,25 @@
+{
+  "name": "create-se-app",
+  "version": "0.1.0",
+  "description": "SE Web Toolkit 템플릿으로 새 내부 도구를 만든다 (지금은 툴킷 모노레포 안에서)",
+  "type": "module",
+  "bin": {
+    "create-se-app": "./bin/create-se-app.mjs"
+  },
+  "files": [
+    "bin"
+  ],
+  "scripts": {
+    "pretest": "pnpm --filter @se/tokens build",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@se/tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

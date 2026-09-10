@@ -29,10 +29,14 @@ const CONTRAST_RULES: Array<[fg: string, bg: string, min: number, why: string]> 
 /** 액센트가 의미 색(성공/경고/위험/정보)과 헷갈리지 않으려면 이만큼은 떨어져야 한다 */
 export const MIN_STATUS_HUE_DISTANCE = 18
 
+/** 의미 색의 hue — brand.status 에서 계산. 액센트 후보를 고를 때 피해야 할 값들 */
+export function statusHues(): Record<keyof typeof brand.status, number> {
+  return Object.fromEntries(Object.entries(brand.status).map(([k, v]) => [k, oklch(v.fg[0])?.h ?? 0])) as Record<keyof typeof brand.status, number>
+}
+
 function checkStatusHue(hue: number) {
   const clashes: string[] = []
-  for (const [name, v] of Object.entries(brand.status)) {
-    const h = oklch(v.fg[0])?.h ?? 0
+  for (const [name, h] of Object.entries(statusHues())) {
     const d = hueDistance(hue, h)
     if (d < MIN_STATUS_HUE_DISTANCE) clashes.push(`${name}(${Math.round(h)}°, 거리 ${Math.round(d)}°)`)
   }

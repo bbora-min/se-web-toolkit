@@ -14,7 +14,9 @@
     "test": "pnpm -r test",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "pnpm -r typecheck",
-    "check-identity": "node scripts/check-identity.mjs"
+    "check-identity": "node scripts/check-identity.mjs",
+    "gen:skill-docs": "tsx scripts/gen-skill-docs.ts",
+    "check:skill-docs": "tsx scripts/gen-skill-docs.ts --check"
   },
   "devDependencies": {
     "@se/eslint-plugin": "workspace:*",

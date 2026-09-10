@@ -1,0 +1,14 @@
+{
+  "name": "se",
+  "version": "0.1.0",
+  "description": "SE Web Toolkit — 내부 엔지니어링 도구용 디자인 시스템(@se/ui·@se/tokens·@se/charts)을 웹 디자이너처럼 쓰게 하는 스킬(se-ui·se-design)과 리뷰·마이그레이션 에이전트",
+  "author": {
+    "name": "SE Software Engineering"
+  },
+  "keywords": [
+    "design-system",
+    "react",
+    "internal-tools",
+    "korean"
+  ]
+}

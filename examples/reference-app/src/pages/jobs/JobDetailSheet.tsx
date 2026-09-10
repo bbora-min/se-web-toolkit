@@ -18,7 +18,7 @@ import {
 } from '@se/ui'
 import { useCancelJob, useJobLogs, useRetryJob } from '../../api/jobs'
 import type { Job } from '../../api/types'
-import { formatAbsolute, formatDuration } from '../../lib/format'
+import { formatAbsolute, formatDuration } from '@se/ui'
 
 export function JobDetailSheet({ job, open, onClose }: { job: Job | null; open: boolean; onClose: () => void }) {
   const retry = useRetryJob()

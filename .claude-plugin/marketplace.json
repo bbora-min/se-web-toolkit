@@ -1,0 +1,19 @@
+{
+  "name": "se-web-toolkit",
+  "owner": {
+    "name": "SE Software Engineering"
+  },
+  "metadata": {
+    "description": "SE 내부 도구 디자인 시스템 플러그인",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "se",
+      "source": "./plugin",
+      "description": "@se/ui 디자인 시스템으로 내부 도구를 만드는 스킬(se-ui·se-design)과 에이전트(se-design-critic·se-reviewer·se-migrator)",
+      "version": "0.1.0",
+      "category": "development"
+    }
+  ]
+}

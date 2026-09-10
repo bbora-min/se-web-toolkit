@@ -17,7 +17,7 @@ import {
 } from '@se/ui'
 import { useReleases } from '../../api/releases'
 import { SERVICES, type Release, type StageId } from '../../api/types'
-import { formatAbsolute, formatRelative } from '../../lib/format'
+import { formatAbsolute, formatRelative } from '@se/ui'
 import { ApproverStack, RiskLabel, StageBadge, TypeBadge } from './bits'
 import { DecisionDialog } from './DecisionDialog'
 

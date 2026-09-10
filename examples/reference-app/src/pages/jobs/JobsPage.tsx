@@ -36,7 +36,7 @@ import {
 } from '@se/ui'
 import { useBulkJobs, useClusterSummary, useJobs, useRetryJob, type JobFilters } from '../../api/jobs'
 import type { Job, JobState } from '../../api/types'
-import { formatAbsolute, formatDuration, formatRelative } from '../../lib/format'
+import { formatAbsolute, formatDuration, formatRelative } from '@se/ui'
 import { JobDetailSheet } from './JobDetailSheet'
 
 const TABS: Array<{ value: JobState | ''; label: string; tone?: 'danger' }> = [

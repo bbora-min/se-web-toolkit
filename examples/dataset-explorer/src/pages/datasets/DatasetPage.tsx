@@ -31,7 +31,7 @@ import {
 import { BarChart, ChartCard } from '@se/charts'
 import { useDataset } from '../../api/datasets'
 import type { Dataset } from '../../api/types'
-import { formatAbsolute, formatBytes, formatCompact, formatRelative } from '../../lib/format'
+import { formatAbsolute, formatBytes, formatCompact, formatRelative } from '@se/ui'
 import { FreshnessBadge } from './freshness'
 
 const TABS = ['overview', 'schema', 'lineage', 'query'] as const

@@ -7,9 +7,11 @@
     "create-se-app": "./bin/create-se-app.mjs"
   },
   "files": [
-    "bin"
+    "bin",
+    "templates"
   ],
   "scripts": {
+    "prepare": "node bin/sync-template.mjs",
     "pretest": "pnpm --filter @se/tokens build",
     "test": "vitest run"
   },

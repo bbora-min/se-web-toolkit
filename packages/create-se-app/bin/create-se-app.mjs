@@ -6,7 +6,7 @@
  *   node packages/create-se-app/bin/create-se-app.mjs incident-desk --name "Incident Desk" --hue 325 --signature stage-rail
  *
  * 옵션: --name --mark --hue --signature --neutral --density --tone --port --dir --subtitle
- * 지금은 툴킷 모노레포 안에서만 동작한다 (@se/* 는 아직 npm 에 배포되지 않았다).
+ * 모노레포 안이면 workspace:* 로 링크, 밖이면 git 서브디렉터리 의존성으로 설치한다.
  */
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
@@ -14,10 +14,14 @@ import { fileURLToPath } from 'node:url'
 import { checkRegistry, createTheme, hueDistance, IMPLEMENTED_SIGNATURES, SIGNATURES, statusHues } from '@se/tokens'
 
 const here = dirname(fileURLToPath(import.meta.url))
-const TEMPLATE = resolve(here, '..', '..', '..', 'templates', 'app-vite-react')
+// 동봉본(prepare 가 복사) 우선 — 모노레포 밖(pnpm dlx·git 설치)에서도 동작. 없으면 모노레포 원본
+const TEMPLATE = [resolve(here, '..', 'templates', 'app-vite-react'), resolve(here, '..', '..', '..', 'templates', 'app-vite-react')].find((p) => existsSync(p)) ?? resolve(here, '..', 'templates', 'app-vite-react')
 const TEMPLATE_ID = 'app-vite-react'
 const TEMPLATE_NAME = 'SE App'
 const TEMPLATE_PORT = 5170
+/** 워크스페이스 밖에서는 npm 배포 전까지 git 서브디렉터리로 설치한다 (pnpm 지원). 태그를 박으려면 #v0.1.0&path:… */
+const GIT_DEP = (pkg) => `github:bbora-min/se-web-toolkit#path:packages/${pkg}`
+const SE_PACKAGES = { '@se/ui': 'ui', '@se/tokens': 'tokens', '@se/charts': 'charts', '@se/eslint-plugin': 'eslint-plugin' }
 
 function parseArgs(argv) {
   const out = { _: [] }
@@ -124,7 +128,7 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
     editJson(join(dir, 'package.json'), (pkg) => {
       pkg.name = id
       pkg.description = `${name} — SE Web Toolkit으로 만든 내부 도구`
-      if (!inWorkspace) for (const sec of ['dependencies', 'devDependencies']) for (const k of Object.keys(pkg[sec] ?? {})) if (pkg[sec][k] === 'workspace:*') pkg[sec][k] = '^0.1.0'
+      if (!inWorkspace) for (const sec of ['dependencies', 'devDependencies']) for (const k of Object.keys(pkg[sec] ?? {})) if (pkg[sec][k] === 'workspace:*') pkg[sec][k] = SE_PACKAGES[k] ? GIT_DEP(SE_PACKAGES[k]) : '^0.1.0'
     })
     writeFileSync(join(dir, 'se.identity.json'), JSON.stringify({ $schema: 'node_modules/@se/tokens/identity.schema.json', ...identity }, null, 2) + '\n')
     editText(join(dir, 'index.html'), [[`<title>${TEMPLATE_NAME}</title>`, `<title>${name}</title>`]])
@@ -144,7 +148,7 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
 
   log(`✓ ${name} 생성 → ${dir}`)
   log(`  아이덴티티: hue ${hue}°${args.hue === undefined ? '(의미 색·형제와 가장 먼 값)' : ''} · ${signature} · ${identity.neutralBias} · ${identity.density} · ${identity.tone}${sameSig ? `\n  ! ${sameSig.message} (--signature)` : ''}`)
-  if (!inWorkspace) log(`  ! 워크스페이스 밖 — @se/* 는 아직 npm 에 배포되지 않아 pnpm install 이 실패합니다. 지금은 툴킷 모노레포의 examples/ 에 만드십시오`)
+  if (!inWorkspace) log(`  @se/* 는 git 에서 설치됩니다 (github:bbora-min/se-web-toolkit#path:packages/*) — 첫 pnpm install 에 1–2분`)
   log(`\n다음:\n  ${inWorkspace ? `pnpm install   # 워크스페이스에 링크\n  pnpm --filter ${id} dev` : `cd ${dir}\n  pnpm install && pnpm dev`}   # http://localhost:${port}\n  Claude Code에서 /se:identity → /se:spec → /se:page 로 첫 화면을 만드십시오.`)
   return { dir, identity, port, inWorkspace }
 }

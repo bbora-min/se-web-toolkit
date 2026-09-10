@@ -16,6 +16,14 @@
       "signature": "search-hero",
       "neutralBias": "warm",
       "path": "examples/dataset-explorer"
+    },
+    {
+      "id": "release-desk",
+      "name": "Release Desk",
+      "hue": 235,
+      "signature": "stage-rail",
+      "neutralBias": "neutral",
+      "path": "examples/release-desk"
     }
   ]
 }

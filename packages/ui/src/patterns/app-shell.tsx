@@ -57,8 +57,8 @@ export function AppShell({
             {mark}
           </span>
           <span className="flex min-w-0 flex-1 flex-col leading-tight">
-            <span className="truncate text-sm font-semibold text-ink">{name}</span>
-            {subtitle ? <span className="truncate text-[11px] text-muted">{subtitle}</span> : null}
+            <span className="truncate text-sm font-semibold text-ink" title={name}>{name}</span>
+            {subtitle ? <span className="truncate text-[11px] text-muted" title={subtitle}>{subtitle}</span> : null}
           </span>
           <ChevronsUpDown className="size-3.5 text-muted" aria-hidden />
         </button>

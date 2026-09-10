@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
-import type { ClusterSummary, Job, JobState } from './types'
+import type { ClusterSummary, Job, JobState, Overview } from './types'
 
 export interface JobFilters {
   q?: string
@@ -50,5 +50,14 @@ export function useCancelJob() {
   return useMutation({
     mutationFn: (id: string) => api<Job>(`/jobs/${id}/cancel`, { method: 'POST' }),
     onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
+  })
+}
+
+export function useOverview(range: '24h' | '7d') {
+  return useQuery({
+    queryKey: ['overview', range],
+    queryFn: () => api<Overview>(`/overview?range=${range}`),
+    refetchInterval: 30_000,
+    placeholderData: (prev) => prev,
   })
 }

@@ -1,5 +1,5 @@
 import { delay, http, HttpResponse } from 'msw'
-import type { ClusterSummary, Job } from '../api/types'
+import type { ClusterSummary, Job, Overview } from '../api/types'
 import { makeJobs } from './data'
 
 let jobs: Job[] = makeJobs()
@@ -49,7 +49,55 @@ async function devState(url: URL) {
   return null
 }
 
+function overview(range: '24h' | '7d'): Overview {
+  const n = range === '24h' ? 24 : 7 * 24
+  const now = Date.now()
+  const hourly = Array.from({ length: n }, (_, i) => {
+    const t = new Date(now - (n - 1 - i) * 3600_000)
+    t.setMinutes(0, 0, 0)
+    const h = t.getHours()
+    const busy = h >= 1 && h <= 6 ? 1.8 : h >= 9 && h <= 18 ? 1.2 : 0.6
+    let x = (i * 2654435761 + 97) % 2147483648
+    const r = () => ((x = (x * 1103515245 + 12345) % 2147483648) / 2147483648)
+    const succeeded = Math.round(6 * busy + r() * 8)
+    const failed = r() < 0.35 ? Math.round(r() * 3) : 0
+    const cancelled = r() < 0.15 ? 1 : 0
+    return { hour: t.toISOString(), succeeded, failed, cancelled }
+  })
+  const pipelines = [...new Set(jobs.map((j) => j.pipeline))].map((name, i) => {
+    const runs = 20 + ((i * 37) % 60)
+    const rate = [99.2, 97.5, 91.4, 100, 88.9, 95.8][i % 6]!
+    return { name, runs, successRate: rate, p50Sec: [420, 1300, 260, 3900, 2100, 720][i % 6]! }
+  })
+  const nodes = [
+    { name: 'wk-01', status: 'online' as const, cpu: 62, mem: 71, running: 2 },
+    { name: 'wk-02', status: 'online' as const, cpu: 48, mem: 55, running: 2 },
+    { name: 'wk-03', status: 'degraded' as const, cpu: 93, mem: 88, running: 1 },
+    { name: 'wk-04', status: 'online' as const, cpu: 21, mem: 40, running: 1 },
+    { name: 'gpu-01', status: 'online' as const, cpu: 77, mem: 83, running: 1 },
+  ]
+  const queueWait = hourly.map((b, i) => {
+    const base = 20 + (i % 6) * 6
+    const spike = i === Math.floor(n * 0.7) ? 90 : 0
+    return { t: b.hour, p50: base + spike * 0.3, p95: base * 2.6 + spike }
+  })
+  return {
+    range,
+    hourly,
+    pipelines: pipelines.sort((a, b) => a.successRate - b.successRate),
+    recentFailures: jobs.filter((j) => j.state === 'failed').slice(0, 5),
+    nodes,
+    queueWait,
+  }
+}
+
 export const handlers = [
+  http.get('/api/overview', async ({ request }) => {
+    const url = new URL(request.url)
+    const forced = await devState(url)
+    if (forced && forced.status !== 200) return forced
+    return HttpResponse.json(overview(url.searchParams.get('range') === '7d' ? '7d' : '24h'))
+  }),
   http.get('/api/jobs', async ({ request }) => {
     const url = new URL(request.url)
     const forced = await devState(url)

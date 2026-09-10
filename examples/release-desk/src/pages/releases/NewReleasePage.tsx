@@ -210,9 +210,10 @@ export function NewReleasePage() {
             <Button type="button" variant="ghost" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0}><ArrowLeft /> 이전</Button>
             <span className="text-xs text-muted tnum">{step + 1} / {STEPS.length}</span>
             {step < STEPS.length - 1 ? (
-              <Button type="button" variant="primary" onClick={next}>다음 <ArrowRight /></Button>
+              // key를 달리 줘야 한다: 같은 자리의 Button이 재사용되면 마지막 단계로 넘어가는 클릭이 submit으로 이어진다
+              <Button key="next" type="button" variant="primary" onClick={next}>다음 <ArrowRight /></Button>
             ) : (
-              <Button type="submit" variant="primary" loading={create.isPending}><Check /> 릴리스 등록</Button>
+              <Button key="submit" type="submit" variant="primary" loading={create.isPending}><Check /> 릴리스 등록</Button>
             )}
           </div>
         </form>

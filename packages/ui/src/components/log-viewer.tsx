@@ -74,7 +74,7 @@ export function LogViewer({ lines, live, height = 480, title, className, emptyTe
   React.useEffect(() => {
     setCursor(0)
     if (matches.length) rowVirtualizer.scrollToIndex(matches[0]!, { align: 'center' })
-  }, [q]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [q]) // matches·rowVirtualizer는 의도적으로 제외 — 검색어가 바뀔 때만 첫 일치로 이동
 
   const copy = () => void navigator.clipboard?.writeText(plain.join('\n'))
   const gutter = String(lines.length).length

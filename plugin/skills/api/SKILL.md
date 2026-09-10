@@ -1,7 +1,7 @@
 ---
 name: api
 description: 실제 백엔드에 연결한다 — OpenAPI 스펙이나 기존 코드에서 타입 클라이언트·useQuery 훅을 만들고 MSW 목을 실제 응답 형태에 맞춘다. "/se:api <openapi.yaml 경로 또는 API 설명>"
-argument-hint: <openapi.yaml | 엔드포인트 설명>
+argument-hint: "<openapi.yaml | 엔드포인트 설명>"
 ---
 
 # /se:api — 백엔드 연결

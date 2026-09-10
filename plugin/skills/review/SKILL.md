@@ -1,7 +1,7 @@
 ---
 name: review
 description: 화면을 스크린샷으로 찍고 se-design-critic(디자인)·se-reviewer(코드)로 검토해 수정 목록을 만들고 반영한다. "/se:review [라우트…]"
-argument-hint: [라우트 …] 기본은 e2e/screens.spec.ts 목록
+argument-hint: "[라우트 …] 생략하면 e2e/screens.spec.ts 목록"
 ---
 
 # /se:review — 시각·코드 리뷰 루프

@@ -1,7 +1,7 @@
 ---
 name: new
 description: 새 SE 내부 도구 프로젝트를 만든다 — create-se-app 템플릿 생성 → 아이덴티티 인터뷰 → 설치 → 첫 실행. "/se:new <id>"
-argument-hint: <kebab-id> [--name "표시 이름"]
+argument-hint: "<kebab-id> [--name '표시 이름']"
 ---
 
 # /se:new — 새 서비스

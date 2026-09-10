@@ -21,13 +21,16 @@
 ## 팀에서 쓰기
 
 ```
-/plugin marketplace add bbora-min/se-web-toolkit     # Claude Code
-/plugin install se@se-web-toolkit
-/se:new incident-desk                                 # 새 서비스 — 인터뷰 → 생성 → 설치 → 실행
+git clone https://github.com/bbora-min/se-web-toolkit && cd se-web-toolkit
+./scripts/setup.sh --dev      # Node 22 · pnpm · 설치 · 검사 · 플러그인 등록 · 레퍼런스 앱 실행 (sudo 없음, 멱등)
+claude                        # 새 세션
+/se:new incident-desk         # 새 서비스 — 인터뷰 → 생성 → 설치 → 실행
 ```
+스크립트 없이 하려면 Claude Code 안에서 `/plugin marketplace add bbora-min/se-web-toolkit` → `/plugin install se@se-web-toolkit`.
 기존 프로젝트는 `/se:adopt`. 플러그인 상세는 [plugin/README.md](plugin/README.md).
 
 ## 툴킷 개발
+`./scripts/setup.sh --full` 이 환경·설치·전체 검사를 한 번에 한다.
 
 ```bash
 # Node 22 (.nvmrc) + pnpm 9

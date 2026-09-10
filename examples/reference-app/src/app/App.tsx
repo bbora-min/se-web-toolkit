@@ -4,6 +4,7 @@ import { ThemeProvider, Toaster, TooltipProvider } from '@se/ui'
 import identity from '../../se.identity.json'
 import { Shell } from './Shell'
 import { JobsPage } from '../pages/jobs/JobsPage'
+import { OverviewPage } from '../pages/overview/OverviewPage'
 import { IdentityPage } from '../pages/identity/IdentityPage'
 
 const queryClient = new QueryClient({
@@ -18,7 +19,8 @@ export function App() {
           <BrowserRouter>
             <Routes>
               <Route element={<Shell />}>
-                <Route index element={<Navigate to="/jobs" replace />} />
+                <Route index element={<Navigate to="/overview" replace />} />
+                <Route path="/overview" element={<OverviewPage />} />
                 <Route path="/jobs" element={<JobsPage />} />
                 <Route path="/jobs/:jobId" element={<JobsPage />} />
                 {import.meta.env.DEV ? <Route path="/__identity" element={<IdentityPage />} /> : null}

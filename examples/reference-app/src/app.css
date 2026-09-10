@@ -2,3 +2,4 @@
 @import '@se/tokens/tailwind.css';
 @import '@se/ui/styles.css';
 @source '../../../packages/ui/src';
+@source '../../../packages/charts/src';

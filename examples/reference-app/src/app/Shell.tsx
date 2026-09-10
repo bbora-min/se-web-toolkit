@@ -1,9 +1,10 @@
-import { Activity, GitBranch, ListChecks, Palette, Server, Settings } from 'lucide-react'
+import { Activity, GitBranch, LayoutDashboard, ListChecks, Palette, Server, Settings } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
 import { AppShell, Avatar, NavItem, NavSection } from '@se/ui'
 import identity from '../../se.identity.json'
 
 const NAV = [
+  { to: '/overview', label: '개요', icon: <LayoutDashboard /> },
   { to: '/jobs', label: '잡', icon: <ListChecks /> },
   { to: '/pipelines', label: '파이프라인', icon: <GitBranch /> },
   { to: '/nodes', label: '노드', icon: <Server /> },

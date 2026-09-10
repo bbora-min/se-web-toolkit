@@ -39,3 +39,38 @@ export interface ClusterSummary {
   nodesTotal: number
   updatedAt: string
 }
+
+export interface HourBucket {
+  /** ISO, 정시 */
+  hour: string
+  succeeded: number
+  failed: number
+  cancelled: number
+}
+export interface PipelineStat {
+  name: string
+  runs: number
+  /** 0–100 */
+  successRate: number
+  p50Sec: number
+}
+export interface NodeStat {
+  name: string
+  status: 'online' | 'degraded' | 'offline'
+  cpu: number
+  mem: number
+  running: number
+}
+export interface QueuePoint {
+  t: string
+  p50: number
+  p95: number
+}
+export interface Overview {
+  range: '24h' | '7d'
+  hourly: HourBucket[]
+  pipelines: PipelineStat[]
+  recentFailures: Job[]
+  nodes: NodeStat[]
+  queueWait: QueuePoint[]
+}

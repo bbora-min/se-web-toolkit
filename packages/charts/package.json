@@ -1,0 +1,25 @@
+{
+  "name": "@se/charts",
+  "version": "0.1.0",
+  "description": "SE 차트 — Recharts 래퍼. 토큰·아이덴티티 팔레트 자동 적용, 얇은 마크, 조용한 축",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "files": ["src"],
+  "scripts": { "typecheck": "tsc --noEmit" },
+  "dependencies": {
+    "recharts": "^2.15.0"
+  },
+  "peerDependencies": {
+    "@se/ui": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@se/ui": "workspace:*",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.2"
+  }
+}

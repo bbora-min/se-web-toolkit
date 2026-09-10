@@ -12,9 +12,16 @@
     "dev": "pnpm --filter reference-app dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "lint": "pnpm -r lint",
+    "lint": "eslint . --max-warnings=0",
     "typecheck": "pnpm -r typecheck",
     "check-identity": "node scripts/check-identity.mjs"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@se/eslint-plugin": "workspace:*",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "react-docgen-typescript": "^2.2.2",
+    "tsx": "^4.19.2"
+  },
+  "type": "module"
 }

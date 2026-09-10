@@ -2,7 +2,7 @@ import * as React from 'react'
 import { CalendarClock, ChevronDown, ClipboardCheck, History, LogOut, Palette, Plus, Rocket, Settings, User } from 'lucide-react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router'
 import {
-  AppShell, Avatar, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
+  AppShell, Avatar, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
   NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup,
 } from '@se/ui'
 import identity from '../../se.identity.json'
@@ -70,11 +70,11 @@ export function Shell() {
       topEnd={
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button type="button" className="flex items-center gap-2 rounded-md px-1.5 py-1 text-sm transition-colors hover:bg-surface-2">
+            <Button variant="ghost" className="gap-2 px-1.5 [&_svg]:size-3.5">
               <Avatar name="bora" size="md" />
-              <span className="text-ink">bora</span>
-              <ChevronDown className="size-3.5 text-muted" />
-            </button>
+              <span>bora</span>
+              <ChevronDown className="text-muted" />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>bora@se · platform</DropdownMenuLabel>

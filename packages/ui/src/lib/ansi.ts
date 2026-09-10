@@ -13,7 +13,6 @@ const COLORS: Record<number, AnsiSpan['color']> = {
   30: 'black', 31: 'red', 32: 'green', 33: 'yellow', 34: 'blue', 35: 'magenta', 36: 'cyan', 37: 'white',
   90: 'gray', 91: 'red', 92: 'green', 93: 'yellow', 94: 'blue', 95: 'magenta', 96: 'cyan', 97: 'white',
 }
-// eslint-disable-next-line no-control-regex
 const RE = /\x1b\[([0-9;]*)m/g
 
 export function parseAnsi(line: string): AnsiSpan[] {

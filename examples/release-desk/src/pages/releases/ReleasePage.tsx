@@ -62,9 +62,9 @@ export function ReleasePage() {
             </div>
             <div className="flex shrink-0 items-center gap-2">
               {myTurn ? (
-                <Button variant="primary" onClick={() => setDecide(true)}><ThumbsUp /> 승인 / 반려</Button>
+                <Button key="decide" variant="primary" onClick={() => setDecide(true)}><ThumbsUp /> 승인 / 반려</Button>
               ) : isOwner && canAdvance ? (
-                <Button variant="primary" onClick={() => setConfirmAdvance(true)} loading={advance.isPending}>
+                <Button key="advance" variant="primary" onClick={() => setConfirmAdvance(true)} loading={advance.isPending}>
                   {r?.stage === 'deploy' ? <><Rocket /> 배포 완료 처리</> : <>{nextLabel} 단계로 <ArrowRight /></>}
                 </Button>
               ) : null}
@@ -188,7 +188,7 @@ function Approval({ r, myTurn, onDecide }: { r: Release; myTurn: boolean; onDeci
   return (
     <div className="flex flex-col gap-3">
       {myTurn ? (
-        <Alert tone="info" title="귀하의 승인 차례입니다" action={<Button variant="primary" size="sm" onClick={onDecide}>검토하기</Button>}>
+        <Alert tone="info" title="귀하의 승인 차례입니다" action={<Button size="sm" onClick={onDecide}>검토하기</Button>}>
           체크리스트와 롤백 계획을 확인한 뒤 결정하십시오.
         </Alert>
       ) : null}

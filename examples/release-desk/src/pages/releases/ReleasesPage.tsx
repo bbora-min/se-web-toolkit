@@ -142,7 +142,7 @@ export function ReleasesPage() {
           empty={
             hasFilter
               ? { title: '조건에 해당하는 릴리스가 없습니다', description: '필터를 조정하거나 초기화하십시오.', action: <Button onClick={() => setParams({}, { replace: true })}>필터 초기화</Button> }
-              : { title: '등록된 릴리스가 없습니다', description: '첫 릴리스를 등록하면 단계별 진행 상황이 여기에 표시됩니다.', action: <Button variant="primary" asChild><Link to="/releases/new"><Plus /> 새 릴리스</Link></Button> }
+              : { title: '등록된 릴리스가 없습니다', description: '첫 릴리스를 등록하면 단계별 진행 상황이 여기에 표시됩니다.', action: <Button asChild><Link to="/releases/new"><Plus /> 새 릴리스</Link></Button> }
           }
           onRowClick={(r) => navigate(`/releases/${r.id}`)}
           rowActions={(r) => (

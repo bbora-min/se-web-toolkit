@@ -180,14 +180,17 @@ API는 shadcn/Radix 관례를 그대로 따른다(Claude가 아는 이름 → �
 Recharts 래퍼. 색은 전부 CSS 변수(의미 색은 상태에만, 카테고리는 chart-1..8 고정 순서). 축선 없음·가로 점선 격자·얇은 마크·2개 이상 시리즈는 범례 필수. `ChartCard`(제목·설명·범례·링크), `BarChart`(스택), `LineChart`, `MeterList`(순위·비율), `Sparkline`은 `@se/ui`에.
 
 ### 6.4 `@se/eslint-plugin`
-| 규칙 | 내용 |
-|---|---|
-| `se/no-raw-color` | hex/rgb 리터럴, Tailwind 임의값 색상 금지 |
-| `se/no-raw-control` | `<button> <input> <select> <table>` 직접 사용 금지 |
-| `se/no-primitive-token` | primitive 토큰 직접 참조 금지 |
-| `se/page-states` | 페이지 컴포넌트에 loading/empty/error 분기 누락 경고 |
-| `se/import-from-ui` | `@radix-ui/*` 직접 import 금지 |
-| `se/single-accent` | 한 페이지 컴포넌트에 `variant="primary"` 버튼 2개 이상 경고 |
+| 규칙 | 수준 | 내용 |
+|---|---|---|
+| `se/no-raw-color` | error | hex/rgb/oklch 리터럴, Tailwind 기본 팔레트·임의값 색 금지 → 토큰 클래스만. `className`·`style`·`cn()` 인자·클래스 변수만 검사(URL 조각·일반 문자열은 안 봄) |
+| `se/no-raw-control` | error | `<button> <input> <select> <textarea> <table>` 직접 사용 금지 → `@se/ui` (`type="hidden"`·`file`은 허용) |
+| `se/import-from-ui` | error | `@radix-ui/*`·`cmdk`·`sonner`·`recharts`·`@tanstack/react-table` 직접 import·re-export·동적 import 금지 |
+| `se/single-accent` | warn | 한 화면에 **동시에 보이는** `variant="primary"` Button은 하나. 삼항의 양쪽 가지는 하나로 센다 |
+| `se/page-states` | warn | `DataTable`에 `empty` 필수, 파일이 원격 데이터를 다루면(`useQuery`·`isPending` 등) `loading`·`error`까지 필수 |
+
+- `recommended`(앱 코드)와 `library`(`@se/ui`·`@se/charts` 자체 — raw 컨트롤 규칙만 제외) 두 설정. 파서까지 들어 있어 서비스 저장소는 `{ files, ...se.configs.recommended }` 한 줄.
+- primitive 토큰은 CSS 변수로 내보내지 않으므로(semantic만 생성) `no-primitive-token` 규칙은 필요 없다.
+- 첫 적용에서 실제로 잡은 것: 승인 탭 배너와 헤더에 primary가 동시에 보이던 화면, raw `<button>` 사용자 메뉴.
 
 ### 6.5 `@se/codemods`
 jscodeshift 변환(MUI/antd/styled hex → se). 80% 자동, 나머지는 `se-migrator`.

@@ -73,7 +73,7 @@ export function StatusStrip({ health, headline, detail, stats, variant = 'full',
           </span>
           <span className="text-xs font-medium opacity-90">{h.label}</span>
         </div>
-        <p className="font-display text-lg font-semibold leading-tight tracking-tight">{headline}</p>
+        <p className="font-display text-xl font-semibold leading-tight tracking-[-0.02em]">{headline}</p>
         {detail ? <p className="text-xs opacity-75">{detail}</p> : null}
       </div>
       <div className="grid grid-cols-2 xl:grid-cols-4 [&>*]:border-line [&>*:nth-child(odd)]:border-r xl:[&>*:not(:last-child)]:border-r [&>*:nth-child(-n+2)]:border-b xl:[&>*]:border-b-0">

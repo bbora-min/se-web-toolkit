@@ -54,6 +54,7 @@
   --text-lg: var(--se-text-lg);
   --text-xl: var(--se-text-xl);
   --text-2xl: var(--se-text-2xl);
+  --text-3xl: var(--se-text-3xl);
 
   --radius-*: initial;
   --radius-sm: var(--se-radius-sm);

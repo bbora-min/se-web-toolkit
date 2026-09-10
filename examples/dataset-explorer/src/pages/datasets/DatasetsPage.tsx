@@ -11,6 +11,7 @@
  *  톤         : friendly — 빈 상태·힌트 문구는 부드럽게.
  */
 import * as React from 'react'
+import { ExternalLink, Star } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router'
 import {
   Avatar,
@@ -23,6 +24,10 @@ import {
   SearchHero,
   Select,
   Sparkline,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  toast,
   type ColumnDef,
 } from '@se/ui'
 import { useDatasets, type DatasetRow, type Quick } from '../../api/datasets'
@@ -193,6 +198,26 @@ export function DatasetsPage() {
               : { title: '아직 등록된 데이터셋이 없어요', description: '카탈로그 색인이 끝나면 여기에 나타납니다.' }
           }
           onRowClick={(d) => navigate(`/datasets/${d.id}`)}
+          rowActions={(d) => (
+            <>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon-sm" aria-label="즐겨찾기" onClick={() => toast('즐겨찾기에 추가했어요', { description: d.name })}>
+                    <Star />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>즐겨찾기</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon-sm" aria-label="쿼리 열기" onClick={() => navigate(`/datasets/${d.id}?tab=query`)}>
+                    <ExternalLink />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>쿼리 열기</TooltipContent>
+              </Tooltip>
+            </>
+          )}
           pageSize={15}
         />
       </section>

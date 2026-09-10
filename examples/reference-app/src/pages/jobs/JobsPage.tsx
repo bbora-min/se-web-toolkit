@@ -11,7 +11,7 @@
  *  3상태      : 로딩=스켈레톤 행, 빈=필터 초기화 행동, 에러=원인+다시 시도.
  */
 import * as React from 'react'
-import { Download, RefreshCw } from 'lucide-react'
+import { Download, FileText, RefreshCw, RotateCcw, XCircle } from 'lucide-react'
 import { useNavigate, useParams, useSearchParams } from 'react-router'
 import {
   Avatar,
@@ -29,9 +29,10 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  toast,
   type ColumnDef,
 } from '@se/ui'
-import { useClusterSummary, useJobs, type JobFilters } from '../../api/jobs'
+import { useClusterSummary, useJobs, useRetryJob, type JobFilters } from '../../api/jobs'
 import type { Job, JobState } from '../../api/types'
 import { formatAbsolute, formatDuration, formatRelative } from '../../lib/format'
 import { JobDetailSheet } from './JobDetailSheet'
@@ -132,6 +133,7 @@ export function JobsPage() {
   const hasFilter = Boolean(filters.q || filters.state || filters.pipeline)
 
   const summary = useClusterSummary()
+  const retry = useRetryJob()
   // 탭 카운트는 상태 필터를 뺀 목록 기준 — 탭을 옮겨도 숫자가 흔들리지 않는다
   const base = useJobs({ q: filters.q, pipeline: filters.pipeline })
   const jobs = useJobs(filters)
@@ -264,6 +266,43 @@ export function JobsPage() {
           }
           onRowClick={open}
           isRowSelected={(j) => j.id === jobId}
+          rowActions={(j) => (
+            <>
+              {j.state === 'failed' || j.state === 'cancelled' ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="재시도"
+                      onClick={() => retry.mutateAsync(j.id).then(() => toast.success('재시도를 큐에 넣었습니다', { description: j.name }))}
+                    >
+                      <RotateCcw />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>재시도</TooltipContent>
+                </Tooltip>
+              ) : null}
+              {j.state === 'running' || j.state === 'pending' ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon-sm" aria-label="취소" onClick={() => open(j)}>
+                      <XCircle />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>취소 (상세에서 확인)</TooltipContent>
+                </Tooltip>
+              ) : null}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon-sm" aria-label="로그 보기" onClick={() => open(j)}>
+                    <FileText />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>로그 보기</TooltipContent>
+              </Tooltip>
+            </>
+          )}
           initialSorting={[{ id: 'startedAt', desc: true }]}
           pageSize={20}
         />

@@ -5,6 +5,7 @@ import { cn } from '../lib/cn'
 import { useTheme, type ThemeMode } from '../lib/theme'
 import { Button } from '../components/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../components/tooltip'
+import { CommandPalette, useCommandPalette, type CommandGroup } from '../components/command-palette'
 
 /* ──────────────────────────────────────────────────────────────
  * AppShell — 브랜드 코어. 연한 회색 사이드바 + 흰 콘텐츠.
@@ -22,8 +23,8 @@ export interface AppShellProps {
   nav: React.ReactNode
   /** 상단 바 우측 (갱신 시각·아바타 등) */
   topEnd?: React.ReactNode
-  /** 검색 클릭 핸들러. 없으면 검색 버튼을 숨긴다 */
-  onSearch?: () => void
+  /** 커맨드 팔레트 그룹. 주면 상단 검색 버튼 + ⌘K가 켜진다 */
+  command?: CommandGroup[]
   searchPlaceholder?: string
   /** 콘텐츠 최대 폭(px). 표가 화면 끝까지 늘어나지 않게 */
   maxWidth?: number
@@ -36,11 +37,12 @@ export function AppShell({
   subtitle,
   nav,
   topEnd,
-  onSearch,
+  command,
   searchPlaceholder = '검색',
   maxWidth = 1120,
   children,
 }: AppShellProps) {
+  const palette = useCommandPalette()
   return (
     <div className="flex min-h-screen bg-canvas">
       <aside className="sticky top-0 flex h-screen w-52 shrink-0 flex-col border-r border-line bg-canvas px-3 py-3 xl:w-[232px]">
@@ -74,10 +76,10 @@ export function AppShell({
       <div className="flex min-w-0 flex-1 flex-col bg-surface">
         <div className="mx-auto flex w-full flex-col" style={{ maxWidth }}>
           <header className="flex h-14 items-center gap-3 px-6 xl:px-8">
-            {onSearch ? (
+            {command ? (
               <button
                 type="button"
-                onClick={onSearch}
+                onClick={() => palette.setOpen(true)}
                 className={cn(
                   'flex h-9 w-72 items-center gap-2 rounded-md border border-line-strong/80 bg-surface px-3 text-sm text-muted shadow-xs',
                   'transition-colors hover:border-line-strong hover:text-ink',
@@ -93,6 +95,7 @@ export function AppShell({
           <main className="flex min-w-0 flex-1 flex-col px-6 pb-16 xl:px-8">{children}</main>
         </div>
       </div>
+      {command ? <CommandPalette open={palette.open} onOpenChange={palette.setOpen} groups={command} placeholder={searchPlaceholder} /> : null}
     </div>
   )
 }
@@ -155,9 +158,9 @@ export function PageHeader({
   className?: string
 }) {
   return (
-    <div className={cn('flex items-start justify-between gap-4 pt-4', className)}>
-      <div className="flex flex-col gap-1">
-        <h1 className="font-display text-xl font-semibold leading-tight tracking-tight text-ink">{title}</h1>
+    <div className={cn('flex items-start justify-between gap-4 pt-5', className)}>
+      <div className="flex flex-col gap-1.5">
+        <h1 className="font-display text-2xl font-semibold leading-tight tracking-[-0.02em] text-ink">{title}</h1>
         {description ? <p className="text-sm text-muted">{description}</p> : null}
       </div>
       {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
@@ -167,7 +170,7 @@ export function PageHeader({
 
 /** 페이지 본문 컨테이너 — 섹션 간 24px. 화면마다 같은 리듬 */
 export function PageBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('flex flex-1 flex-col gap-6', className)} {...props} />
+  return <div className={cn('flex flex-1 flex-col gap-6 motion-safe:animate-[se-rise_220ms_cubic-bezier(.2,0,0,1)]', className)} {...props} />
 }
 
 const MODES: Array<{ value: ThemeMode; icon: React.ReactNode; label: string }> = [

@@ -7,8 +7,8 @@ export const brand = {
     sans: '"Pretendard Variable", Pretendard, "Noto Sans KR", -apple-system, "Segoe UI", system-ui, sans-serif',
     mono: '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
   },
-  /** 타입 스케일 (px). 이 7단계 밖의 크기는 쓰지 않는다 */
-  text: { xs: 12, sm: 13, base: 14, md: 16, lg: 20, xl: 24, '2xl': 32 },
+  /** 타입 스케일 (px). 이 8단계 밖의 크기는 쓰지 않는다. 2xl=페이지 제목, 3xl=히어로 숫자 */
+  text: { xs: 12, sm: 13, base: 14, md: 16, lg: 20, xl: 24, '2xl': 28, '3xl': 36 },
   leading: { tight: 1.25, snug: 1.4, normal: 1.6 },
   /** 반경 패밀리. 모서리는 세 가지뿐 */
   radius: { sm: 4, md: 6, lg: 10, full: 9999 },

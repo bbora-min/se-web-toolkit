@@ -7,7 +7,9 @@
     ".": "./src/index.ts",
     "./styles.css": "./src/styles.css"
   },
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
@@ -19,6 +21,7 @@
     "@tanstack/react-table": "^8.20.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "^1.0.4",
     "lucide-react": "^0.469.0",
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.6.0"

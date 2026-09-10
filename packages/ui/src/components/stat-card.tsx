@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { cn } from '../lib/cn'
 import { Sparkline } from './sparkline'
+import { useAnimatedNumber } from '../lib/use-animated-number'
 
 export interface StatCardProps {
   label: string
@@ -19,7 +20,13 @@ export interface StatCardProps {
  * 스탯 타일. 라벨 · 값(세미볼드, 비례 숫자) · 전기 대비 · 스파크라인.
  * 값이 이 화면의 목적일 때만 쓴다 — 장식용 KPI 나열 금지.
  */
+function AnimatedNumber({ value, decimals = 0 }: { value: number; decimals?: number }) {
+  const v = useAnimatedNumber(value)
+  return <>{v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}</>
+}
+
 export function StatCard({ label, value, delta, trend, trendFormat, tone = 'default', className }: StatCardProps) {
+  const shown = typeof value === 'number' ? <AnimatedNumber value={value} decimals={Number.isInteger(value) ? 0 : 1} /> : value
   let deltaEl: React.ReactNode = null
   if (delta) {
     const up = delta.value > 0
@@ -39,12 +46,12 @@ export function StatCard({ label, value, delta, trend, trendFormat, tone = 'defa
       <div className="flex min-w-0 items-end justify-between gap-3">
         <span
           className={cn(
-            'text-xl font-semibold leading-none tracking-tight',
+            'text-2xl font-semibold leading-none tracking-[-0.02em]',
             tone === 'warning' && 'text-warning',
             tone === 'danger' && 'text-danger',
           )}
         >
-          {value}
+          {shown}
         </span>
         {trend ? <Sparkline data={trend} format={trendFormat} className="shrink-0" /> : null}
       </div>

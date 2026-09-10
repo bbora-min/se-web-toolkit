@@ -84,9 +84,9 @@ export function OverviewPage() {
           actions={<MoreLink to="/jobs?state=failed">실패만 보기</MoreLink>}
         >
           {d ? (
-            <BarChart data={d.hourly} xKey="hour" series={COMPLETION} stacked xFormat={hourLabel} tooltipLabel={fullLabel} xInterval={range === '24h' ? 3 : 23} />
+            <BarChart data={d.hourly} xKey="hour" series={COMPLETION} stacked height={268} xFormat={hourLabel} tooltipLabel={fullLabel} xInterval={range === '24h' ? 3 : 23} />
           ) : (
-            <Skeleton className="h-[220px]" />
+            <Skeleton className="h-[268px]" />
           )}
         </ChartCard>
         <ChartCard title="파이프라인별 성공률" description="낮은 순. 눌러서 해당 파이프라인 잡을 봅니다." actions={<MoreLink to="/jobs">전체</MoreLink>}>

@@ -14,15 +14,17 @@ interface StateProps extends React.HTMLAttributes<HTMLDivElement> {
 function StateFrame({ title, description, action, icon, className, ...props }: StateProps) {
   return (
     <div
-      className={cn('flex flex-col items-center justify-center gap-2 px-6 py-12 text-center', className)}
+      className={cn('flex flex-col items-center justify-center gap-3 px-6 py-16 text-center', className)}
       {...props}
     >
-      <div className="text-muted [&_svg]:size-6" aria-hidden>
+      <div className="grid size-12 place-items-center rounded-full bg-surface-2 text-muted [&_svg]:size-5" aria-hidden>
         {icon}
       </div>
-      <p className="text-md font-medium text-ink">{title}</p>
-      {description ? <p className="max-w-[48ch] text-sm text-muted">{description}</p> : null}
-      {action ? <div className="mt-2">{action}</div> : null}
+      <div className="flex flex-col gap-1">
+        <p className="text-md font-semibold text-ink">{title}</p>
+        {description ? <p className="max-w-[44ch] text-sm leading-relaxed text-muted">{description}</p> : null}
+      </div>
+      {action ? <div className="mt-1 flex items-center gap-2">{action}</div> : null}
     </div>
   )
 }
@@ -38,6 +40,7 @@ export function ErrorState({ icon, ...props }: StateProps) {
     <StateFrame
       role="alert"
       icon={icon ?? <AlertTriangle className="text-danger" />}
+      className="[&>div:first-child]:bg-danger-soft"
       {...props}
     />
   )

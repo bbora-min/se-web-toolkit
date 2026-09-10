@@ -36,7 +36,7 @@ export function StatCard({ label, value, delta, trend, trendFormat, tone = 'defa
   return (
     <div className={cn('flex min-w-0 flex-col gap-1', className)}>
       <span className="text-xs text-muted">{label}</span>
-      <div className="flex items-end justify-between gap-3">
+      <div className="flex min-w-0 items-end justify-between gap-3">
         <span
           className={cn(
             'text-xl font-semibold leading-none tracking-tight',
@@ -46,7 +46,7 @@ export function StatCard({ label, value, delta, trend, trendFormat, tone = 'defa
         >
           {value}
         </span>
-        {trend ? <Sparkline data={trend} format={trendFormat} /> : null}
+        {trend ? <Sparkline data={trend} format={trendFormat} className="shrink-0" /> : null}
       </div>
       {deltaEl}
     </div>

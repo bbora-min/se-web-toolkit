@@ -43,7 +43,7 @@ export function AppShell({
 }: AppShellProps) {
   return (
     <div className="flex min-h-screen bg-canvas">
-      <aside className="sticky top-0 flex h-screen w-[232px] shrink-0 flex-col border-r border-line bg-canvas px-3 py-3">
+      <aside className="sticky top-0 flex h-screen w-52 shrink-0 flex-col border-r border-line bg-canvas px-3 py-3 xl:w-[232px]">
         <button
           type="button"
           className="flex h-10 items-center gap-2.5 rounded-md px-2 text-left transition-colors hover:bg-surface-2"
@@ -63,8 +63,8 @@ export function AppShell({
         <nav className="mt-3 flex flex-1 flex-col gap-0.5 overflow-y-auto" aria-label="주 메뉴">
           {nav}
         </nav>
-        <div className="mt-2 flex items-center justify-between px-1">
-          <span className="text-[11px] text-muted">
+        <div className="mt-2 flex items-center justify-between gap-2 px-1">
+          <span className="hidden truncate text-[11px] text-muted xl:inline">
             SE <span className="mx-0.5">·</span> Web Toolkit
           </span>
           <ThemeToggle />
@@ -73,7 +73,7 @@ export function AppShell({
 
       <div className="flex min-w-0 flex-1 flex-col bg-surface">
         <div className="mx-auto flex w-full flex-col" style={{ maxWidth }}>
-          <header className="flex h-14 items-center gap-3 px-8">
+          <header className="flex h-14 items-center gap-3 px-6 xl:px-8">
             {onSearch ? (
               <button
                 type="button"
@@ -90,7 +90,7 @@ export function AppShell({
             ) : null}
             <div className="ml-auto flex items-center gap-3">{topEnd}</div>
           </header>
-          <main className="flex min-w-0 flex-1 flex-col px-8 pb-16">{children}</main>
+          <main className="flex min-w-0 flex-1 flex-col px-6 pb-16 xl:px-8">{children}</main>
         </div>
       </div>
     </div>
@@ -114,7 +114,7 @@ export function NavItem({ icon, active, end, className, children, asChild, ...pr
       className={cn(
         'flex h-8 items-center gap-2.5 rounded-md px-2 text-sm text-ink/80',
         'transition-colors duration-150 hover:bg-surface-2 hover:text-ink',
-        'aria-[current=page]:bg-surface aria-[current=page]:font-medium aria-[current=page]:text-accent-fg aria-[current=page]:shadow-xs',
+        'aria-[current=page]:bg-accent-soft aria-[current=page]:font-medium aria-[current=page]:text-accent-fg',
         '[&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-muted aria-[current=page]:[&_svg]:text-accent-fg',
         className,
       )}

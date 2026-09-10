@@ -34,3 +34,5 @@ export { AppShell, NavItem, NavSection, PageHeader, PageBody, ThemeToggle, type 
 
 export { StatusStrip, type StatusStripProps, type StripHealth } from './signatures/status-strip'
 export { SearchHero, type SearchHeroProps } from './signatures/search-hero'
+export { CommandPalette, useCommandPalette, type CommandGroup, type CommandItem } from './components/command-palette'
+export { IdentitySheet, useIdentityFavicon, type IdentitySheetProps } from './patterns/identity-sheet'

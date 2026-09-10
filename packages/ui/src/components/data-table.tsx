@@ -30,6 +30,8 @@ export interface DataTableProps<T> {
   onRowClick?: (row: T) => void
   /** 선택된 행 판별 (상세 드로어와 연동) */
   isRowSelected?: (row: T) => boolean
+  /** 행 호버/포커스 시 오른쪽 끝에 나타나는 빠른 액션 (아이콘 버튼 1–3개) */
+  rowActions?: (row: T) => React.ReactNode
   getRowId?: (row: T) => string
   pageSize?: number
   initialSorting?: SortingState
@@ -51,6 +53,7 @@ export function DataTable<T>({
   onRowClick,
   isRowSelected,
   getRowId,
+  rowActions,
   pageSize = 25,
   initialSorting = [],
   variant = 'plain',
@@ -69,7 +72,7 @@ export function DataTable<T>({
     initialState: { pagination: { pageSize } },
   })
 
-  const colCount = columns.length
+  const colCount = columns.length + (rowActions ? 1 : 0)
   const { pageIndex } = table.getState().pagination
   const total = data.length
 
@@ -111,6 +114,7 @@ export function DataTable<T>({
                   </TableHead>
                 )
               })}
+              {rowActions ? <TableHead aria-label="액션" className="w-0" /> : null}
             </TableRow>
           ))}
         </TableHeader>
@@ -145,6 +149,7 @@ export function DataTable<T>({
             table.getRowModel().rows.map((row: Row<T>) => (
               <TableRow
                 key={row.id}
+                className="group"
                 data-clickable={!!onRowClick}
                 data-state={isRowSelected?.(row.original) ? 'selected' : undefined}
                 onClick={onRowClick ? () => onRowClick(row.original) : undefined}
@@ -168,6 +173,13 @@ export function DataTable<T>({
                     </TableCell>
                   )
                 })}
+                {rowActions ? (
+                  <TableCell className="w-0 pl-0" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-end gap-0.5 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 [tr[data-state=selected]_&]:opacity-100">
+                      {rowActions(row.original)}
+                    </div>
+                  </TableCell>
+                ) : null}
               </TableRow>
             ))
           )}

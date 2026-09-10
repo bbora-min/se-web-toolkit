@@ -16,4 +16,5 @@ jobs:
       - run: pnpm -r test
       - run: pnpm check-identity
       - run: pnpm check:skill-docs        # 스킬 문서가 코드와 어긋나면 실패
+      - run: pnpm check:plugin-version    # plugin.json = marketplace.json
       - run: pnpm -r --filter './examples/*' --filter './templates/*' build

@@ -16,7 +16,8 @@
     "typecheck": "pnpm -r typecheck",
     "check-identity": "node scripts/check-identity.mjs",
     "gen:skill-docs": "tsx scripts/gen-skill-docs.ts",
-    "check:skill-docs": "tsx scripts/gen-skill-docs.ts --check"
+    "check:skill-docs": "tsx scripts/gen-skill-docs.ts --check",
+    "check:plugin-version": "node scripts/check-plugin-version.mjs"
   },
   "devDependencies": {
     "@se/eslint-plugin": "workspace:*",

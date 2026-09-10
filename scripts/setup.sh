@@ -63,14 +63,15 @@ fi
 step "5/5 Claude Code 플러그인"
 if command -v claude >/dev/null 2>&1; then
   claude plugin validate ./plugin >/dev/null 2>&1 && ok "플러그인 매니페스트 검증" || warn "플러그인 검증 실패: claude plugin validate ./plugin"
-  # 로컬 체크아웃을 마켓플레이스로 — 이 저장소를 고치면 바로 반영된다
+  # GitHub 저장소로 등록한다. 로컬 경로를 넘기면 CLI가 github+path(절대경로)로 기록해 세션마다 매니페스트를 못 찾는다 (실제로 겪음)
   if claude plugin marketplace list 2>/dev/null | grep -q "se-web-toolkit"; then
     ok "마켓플레이스 se-web-toolkit 등록됨"
   else
-    claude plugin marketplace add "$ROOT" >/dev/null 2>&1 && ok "마켓플레이스 등록 ($ROOT)" || warn "마켓플레이스 등록 실패 — Claude Code 안에서: /plugin marketplace add $ROOT"
+    claude plugin marketplace add bbora-min/se-web-toolkit >/dev/null 2>&1 && ok "마켓플레이스 등록 (github: bbora-min/se-web-toolkit)" || warn "마켓플레이스 등록 실패 — Claude Code 안에서: /plugin marketplace add bbora-min/se-web-toolkit"
   fi
-  if claude plugin list 2>/dev/null | grep -q "^se@se-web-toolkit\|se@se-web-toolkit"; then
-    ok "플러그인 se 설치됨"
+  if claude plugin list 2>/dev/null | grep -q "se@se-web-toolkit"; then
+    # 이미 설치됨 → 최신으로. 버전이 같으면 update 가 '최신'이라 하므로 plugin/ 을 바꿀 때 version 을 올려야 한다 (CI 가 두 매니페스트 일치를 검사)
+    claude plugin update se@se-web-toolkit >/dev/null 2>&1 && ok "플러그인 se 최신화 ($(claude plugin list 2>/dev/null | grep -A1 'se@se-web-toolkit' | grep -o 'Version: [0-9.]*' | head -1))" || ok "플러그인 se 설치됨"
   else
     claude plugin install se@se-web-toolkit >/dev/null 2>&1 && ok "플러그인 se 설치" || warn "설치 실패 — Claude Code 안에서: /plugin install se@se-web-toolkit"
   fi

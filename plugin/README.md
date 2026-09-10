@@ -25,3 +25,6 @@
 | 훅 | PostToolUse(Edit·Write) | 저장한 `.ts(x)`를 `@se/eslint-plugin`으로 검사, 위반이면 exit 2 |
 
 문서 동기화: `pnpm gen:skill-docs` (CI에서 `--check`).
+
+## 릴리스 규칙
+`plugin/` 을 바꾸면 `plugin/.claude-plugin/plugin.json` 과 `.claude-plugin/marketplace.json` 의 `version` 을 **같이 올린다**. 같으면 `claude plugin update` 가 "이미 최신"이라며 새 스킬을 받지 않는다 (CI `check:plugin-version`). 사용자는 `claude plugin update se@se-web-toolkit` 또는 `scripts/setup.sh`.

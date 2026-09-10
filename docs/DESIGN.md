@@ -1,6 +1,6 @@
 # SE Web Toolkit 설계
 
-> 내부 엔지니어링 도구(데이터 조회·상태 모니터링·업무 처리)를 위한 디자인 시스템 + Claude Code 플러그인. (v0.4 · 2026-09-10)
+> 내부 엔지니어링 도구(데이터 조회·상태 모니터링·업무 처리)를 위한 디자인 시스템 + Claude Code 플러그인. (v0.5 · 2026-09-10)
 > 목표: 개발 속도, SE 아이덴티티의 일관성 **(양산형이 아닌, 서비스별 개성을 가진 일관성)**, 전문가 수준의 UI 품질, 낮은 진입 장벽.
 
 전제(확정): FE 표준 = React + Vite + TypeScript / 기존 서비스 = React 계열 / 백엔드·배포 = 비표준(무관해야 함) / 배포 = Claude Code 플러그인(marketplace).
@@ -212,6 +212,8 @@ jscodeshift 변환(MUI/antd/styled hex → se). 80% 자동, 나머지는 `se-mig
 
 ## 8. Layer 3 — Claude Code 플러그인 (`plugin/`)
 
+> **구현 상태 (v0.5)**: 아래 구조가 전부 존재한다 — 스킬 11개(자동 2 + 명령 9), 에이전트 3, 훅 2, `gen:skill-docs`(43 파일·98 컴포넌트, CI `--check`), `create-se-app`(E2E 검증). `templates/app-vite-react`는 플레이스홀더 없는 진짜 워크스페이스 앱이라 루트 typecheck·lint가 항상 본다. 미완: `@se/*` npm 배포(그 전까지 `/se:new`는 모노레포 `examples/`에 생성), `timeline-ribbon`·`metric-marquee` 시그니처, `@se/codemods`.
+
 ```
 plugin/
 ├── .claude-plugin/plugin.json      # name: "se", version = @se/ui major.minor
@@ -339,9 +341,9 @@ se-web-toolkit/
 
 | 단계 | 범위 | 완료 기준 |
 |---|---|---|
-| P1 기반+품질 | tokens(4계층, createTheme), T0 전부 + DataTable·AppShell·StatusBadge, 시그니처 2종, **레퍼런스 앱(최고 품질)**, 템플릿, `se-ui`·`se-design` 스킬, `/se:new`·`/se:identity`·`/se:page`(2패턴) | 신규 서비스 1개 출시. 팀 외부인이 보고 "누가 디자인했나"를 묻는다 |
-| P2 리뷰+도입 | `/se:review` 시각 루프, `se-design-critic`, eslint-plugin, 훅, `/se:adopt`·codemods, `/se:audit`, 나머지 패턴·시그니처 | 기존 서비스 1개 5단계 완료, 두 서비스를 나란히 놓았을 때 "같은 팀, 다른 제품" |
-| P3 전 과정 | `/se:spec`, `/se:api`, `/se:deploy`, charts, Storybook·아이덴티티 갤러리 공개, 기여 가이드 | 웹 비전공 구성원이 혼자 서비스 1개 출시 |
+| P1 기반+품질 **(완료)** | tokens(4계층, createTheme), 컴포넌트 50개(98 export), 시그니처 3종, **레퍼런스 앱 3개**(모니터링·조회·업무 처리), 템플릿+CLI, `se-ui`·`se-design` 스킬, 명령 9개, 훅 2, eslint-plugin, charts | 세 시나리오 원본 확보. 디자인 리뷰 56 → 70/80 |
+| P2 검증+도입 | **새 세션에서 `/se:new`로 4번째 서비스를 스킬만으로 생성해 품질 검증**, `/se:review` 루프 실사용, `/se:adopt`로 기존 서비스 1개, codemods, 나머지 시그니처 2종 | 기존 서비스 1개 5단계 완료. 스킬이 만든 화면이 70/80 이상 |
+| P3 배포 | `@se/*` npm 배포(→ 모노레포 밖 `npx create-se-app`), Storybook·아이덴티티 갤러리, 기여 가이드, 플러그인 버전 정책 | 웹 비전공 구성원이 혼자 서비스 1개 출시 |
 
 성공 지표: 셋업→첫 화면 배포 시간 / `/se:audit` 준수율·디자인 점수 / 서비스 간 hue·시그니처 중복 0 / 신규 구성원 첫 PR까지 시간.
 

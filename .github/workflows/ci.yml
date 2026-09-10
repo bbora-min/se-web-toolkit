@@ -1,0 +1,19 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4   # 버전은 package.json 의 packageManager
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r typecheck
+      - run: pnpm lint
+      - run: pnpm -r test
+      - run: pnpm check-identity
+      - run: pnpm check:skill-docs        # 스킬 문서가 코드와 어긋나면 실패
+      - run: pnpm -r --filter './examples/*' --filter './templates/*' build

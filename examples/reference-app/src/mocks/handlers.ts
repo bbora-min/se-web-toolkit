@@ -1,6 +1,6 @@
 import { delay, http, HttpResponse } from 'msw'
 import type { ClusterSummary, Job, Overview } from '../api/types'
-import { makeJobs } from './data'
+import { makeJobs, makeLogs } from './data'
 
 let jobs: Job[] = makeJobs()
 
@@ -105,13 +105,47 @@ export const handlers = [
     const q = url.searchParams.get('q')?.toLowerCase()
     const state = url.searchParams.get('state')
     const pipeline = url.searchParams.get('pipeline')
-    const items = jobs.filter(
+    const sort = url.searchParams.get('sort') ?? 'startedAt'
+    const dir = url.searchParams.get('dir') === 'asc' ? 1 : -1
+    const page = Number(url.searchParams.get('page') ?? 0)
+    const pageSize = Number(url.searchParams.get('pageSize') ?? 25)
+    const base = jobs.filter(
       (j) =>
         (!q || j.name.toLowerCase().includes(q) || j.owner.includes(q) || j.id.includes(q)) &&
-        (!state || j.state === state) &&
         (!pipeline || j.pipeline === pipeline),
     )
-    return HttpResponse.json({ items, pipelines: [...new Set(jobs.map((j) => j.pipeline))].sort() })
+    // 탭 카운트는 상태 필터를 뺀 기준
+    const counts: Record<string, number> = { '': base.length }
+    for (const j of base) counts[j.state] = (counts[j.state] ?? 0) + 1
+    const filtered = state ? base.filter((j) => j.state === state) : base
+    const sorted = [...filtered].sort((a, b) => {
+      const av = a[sort as keyof Job] ?? '', bv = b[sort as keyof Job] ?? ''
+      return (av < bv ? -1 : av > bv ? 1 : 0) * dir
+    })
+    return HttpResponse.json({
+      items: sorted.slice(page * pageSize, (page + 1) * pageSize),
+      total: filtered.length,
+      counts,
+      pipelines: [...new Set(jobs.map((j) => j.pipeline))].sort(),
+    })
+  }),
+  http.get('/api/jobs/:id/logs', async ({ params }) => {
+    await delay(150)
+    const j = jobs.find((x) => x.id === params.id)
+    if (!j) return HttpResponse.json({ message: '잡을 찾을 수 없습니다' }, { status: 404 })
+    return HttpResponse.json({ lines: makeLogs(j), live: j.state === 'running' })
+  }),
+  http.post('/api/jobs/bulk', async ({ request }) => {
+    await delay(500)
+    const { ids, action } = (await request.json()) as { ids: string[]; action: 'retry' | 'cancel' }
+    let n = 0
+    for (const j of jobs) {
+      if (!ids.includes(j.id)) continue
+      if (action === 'retry' && (j.state === 'failed' || j.state === 'cancelled')) { j.state = 'pending'; j.attempts += 1; j.error = undefined; j.durationSec = null; j.node = '—'; n++ }
+      if (action === 'cancel' && (j.state === 'running' || j.state === 'pending')) { j.state = 'cancelled'; n++ }
+    }
+    jobs = [...jobs]
+    return HttpResponse.json({ affected: n })
   }),
   http.get('/api/summary', async ({ request }) => {
     const forced = await devState(new URL(request.url))

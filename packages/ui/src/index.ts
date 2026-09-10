@@ -13,7 +13,7 @@ export { StatCard, type StatCardProps } from './components/stat-card'
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './components/tooltip'
 export { EmptyState, ErrorState } from './components/states'
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './components/table'
-export { DataTable, type DataTableProps, type ColumnDef } from './components/data-table'
+export { DataTable, type DataTableProps, type ColumnDef, type SortingState, type RowSelectionState, type ServerPagination } from './components/data-table'
 export { FilterBar, SearchInput } from './components/filter-bar'
 export {
   Sheet,
@@ -53,3 +53,5 @@ export { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, For
 export { Combobox, type ComboboxOption, type ComboboxProps } from './components/combobox'
 export { DateRangePicker, RANGE_PRESETS, formatRange, type DateRange, type ISODate, type DateRangePickerProps } from './components/date-range-picker'
 export { StageRail, type Stage, type StageRailProps } from './signatures/stage-rail'
+export { LogViewer, type LogViewerProps } from './components/log-viewer'
+export { parseAnsi, stripAnsi, type AnsiSpan } from './lib/ansi'

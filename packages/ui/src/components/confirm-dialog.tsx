@@ -41,19 +41,21 @@ export function ConfirmDialog({
   return (
     <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialog.Portal>
-        <AlertDialog.Overlay className="fixed inset-0 z-40 bg-black/20" />
+        <AlertDialog.Overlay className="fixed inset-0 z-[70] bg-black/25" />
         <AlertDialog.Content
           className={cn(
-            'fixed left-1/2 top-1/2 z-50 w-[420px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2',
+            'fixed left-1/2 top-1/2 z-[80] w-[440px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2',
             'flex flex-col gap-3 rounded-lg border border-line bg-surface p-5 shadow-overlay',
           )}
         >
           <AlertDialog.Title className="text-md font-semibold leading-tight">{title}</AlertDialog.Title>
           {description ? <AlertDialog.Description className="text-sm text-muted">{description}</AlertDialog.Description> : null}
           {typeToConfirm ? (
-            <label className="flex flex-col gap-1 text-xs text-muted">
-              확인하려면 <code className="text-ink">{typeToConfirm}</code> 을(를) 입력하세요
-              <Input mono value={typed} onChange={(e) => setTyped(e.target.value)} autoFocus />
+            <label className="flex flex-col gap-1.5 text-xs text-muted">
+              <span>
+                확인하려면 <code className="rounded-sm bg-surface-2 px-1 py-0.5 text-ink">{typeToConfirm}</code> 을(를) 입력하세요
+              </span>
+              <Input mono value={typed} onChange={(e) => setTyped(e.target.value)} autoFocus placeholder={typeToConfirm} />
             </label>
           ) : null}
           <div className="mt-1 flex justify-end gap-2">

@@ -28,6 +28,7 @@ import {
   Tabs,
   toast,
 } from '@se/ui'
+import { BarChart, ChartCard } from '@se/charts'
 import { useDataset } from '../../api/datasets'
 import type { Dataset } from '../../api/types'
 import { formatAbsolute, formatBytes, formatCompact, formatRelative } from '../../lib/format'
@@ -96,7 +97,7 @@ export function DatasetPage() {
                 <Fact
                   label="마지막 갱신"
                   value={formatRelative(d.updatedAt)}
-                  sub={`SLA ${d.slaHours}시간 · ${formatAbsolute(d.updatedAt)}`}
+                  sub={`SLA ${d.slaHours}시간 · ${formatAbsolute(d.updatedAt).replace(/:\d\d$/, '')}`}
                   tone={d.freshness === 'fresh' ? 'default' : d.freshness === 'stale' ? 'warning' : 'danger'}
                 />
                 <div className="flex flex-col gap-1">
@@ -154,19 +155,75 @@ function Fact({ label, value, sub, tone = 'default' }: { label: string; value: R
   )
 }
 
+const KIND: Record<Dataset['changes'][number]['kind'], { label: string; tone: 'neutral' | 'info' | 'warning' | 'danger' | 'accent' }> = {
+  schema: { label: '스키마', tone: 'accent' },
+  owner: { label: '소유자', tone: 'neutral' },
+  sla: { label: 'SLA', tone: 'info' },
+  backfill: { label: '재적재', tone: 'warning' },
+  incident: { label: '장애', tone: 'danger' },
+}
+
+/**
+ * 개요 탭 — "써도 되나"를 판단하는 데 필요한 것만.
+ * 상단 사실 행과 겹치는 정보(도메인·소유 팀·SLA)는 반복하지 않는다.
+ */
 function Overview({ d }: { d: Dataset }) {
+  const queries = d.queries30d.map((v, i) => ({
+    day: new Date(Date.now() - (29 - i) * 86400_000).toISOString().slice(5, 10).replace('-', '/'),
+    queries: v,
+  }))
+  const piiCols = d.columns.filter((c) => c.pii)
   return (
-    <div className="grid grid-cols-[2fr_1fr] gap-8">
+    <div className="grid grid-cols-[3fr_2fr] gap-6">
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-medium text-ink">이 테이블은</h3>
-          <p className="max-w-[64ch] text-sm leading-relaxed text-ink/80">
-            {d.description} 파티션은 <code className="rounded-sm bg-surface-2 px-1 py-0.5 font-mono text-xs">dt</code> 기준이고, 어제 파티션은 매일 {d.slaHours}시간 안에 채워져요.
-            {d.tags.includes('pii') ? ' 개인정보 컬럼이 있어 조회 로그가 남습니다.' : ''}
-          </p>
-        </div>
-        <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-medium text-ink">자주 쓰는 컬럼</h3>
+        <ChartCard title="조회 (30일)" description={`하루 평균 ${Math.round(d.queries30d.reduce((a, b) => a + b, 0) / 30).toLocaleString()}회. 최근 7일은 액센트.`}>
+          <BarChart
+            data={queries.map((q, i) => ({ ...q, recent: i >= 23 ? q.queries : 0, past: i < 23 ? q.queries : 0 }))}
+            xKey="day"
+            series={[
+              { key: 'past', label: '이전', color: 'neutral' },
+              { key: 'recent', label: '최근 7일', color: 'accent' },
+            ]}
+            stacked
+            height={180}
+            xInterval={6}
+            tooltipValue={(v) => `${v}회`}
+          />
+        </ChartCard>
+        <section className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-ink">최근 변경</h3>
+          <ol className="flex flex-col">
+            {d.changes.map((c, i) => (
+              <li key={i} className="grid grid-cols-[88px_auto_1fr_auto] items-baseline gap-3 border-b border-line py-2.5 text-sm last:border-0">
+                <span className="text-xs text-muted" title={formatAbsolute(c.at)}>
+                  {formatRelative(c.at)}
+                </span>
+                <Badge tone={KIND[c.kind].tone}>{KIND[c.kind].label}</Badge>
+                <span className="text-ink">{c.summary}</span>
+                <span className="text-xs text-muted">{c.by}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+      <div className="flex flex-col gap-6">
+        <section className="flex flex-col gap-2 rounded-lg border border-line bg-accent-soft/40 p-4">
+          <h3 className="text-sm font-semibold text-ink">쓰기 전에</h3>
+          <ul className="flex flex-col gap-1.5 text-sm text-ink/85">
+            <li>
+              파티션 키는 <code className="rounded-sm bg-surface px-1 py-0.5 font-mono text-xs">dt</code> — 조건 없이 전체 스캔하지 마세요.
+            </li>
+            <li>어제 파티션은 매일 {d.slaHours}시간 안에 채워져요.</li>
+            {piiCols.length ? (
+              <li>
+                개인정보 컬럼 {piiCols.length}개(<span className="font-mono text-xs">{piiCols.map((c) => c.name).join(', ')}</span>) — 조회 로그가 남아요.
+              </li>
+            ) : null}
+            {d.tags.includes('deprecated') ? <li className="text-warning">곧 폐기 예정이에요. 대체 테이블은 소유자에게 확인하세요.</li> : null}
+          </ul>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-sm font-semibold text-ink">자주 쓰는 컬럼</h3>
           <div className="flex flex-wrap gap-1.5">
             {d.columns.slice(0, 6).map((c) => (
               <span key={c.name} className="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface px-2 py-1 font-mono text-xs">
@@ -175,18 +232,21 @@ function Overview({ d }: { d: Dataset }) {
               </span>
             ))}
           </div>
-        </div>
+        </section>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-sm font-semibold text-ink">함께 보는 데이터셋</h3>
+          <ul className="flex flex-col gap-1">
+            {d.related.map((n) => (
+              <li key={n}>
+                <Link to={`/datasets/${n}`} className="flex items-center justify-between rounded-md border border-line bg-surface px-3 py-2 font-mono text-xs transition-colors hover:border-line-strong">
+                  {n}
+                  <span className="font-sans text-muted">→</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
-      <DescriptionList
-        items={[
-          { label: '데이터셋 ID', value: d.id, mono: true },
-          { label: '도메인', value: d.domain },
-          { label: '소유 팀', value: d.team },
-          { label: 'SLA', value: `${d.slaHours}시간` },
-          { label: '업스트림', value: d.upstream.length ? `${d.upstream.length}개` : '없음 (원본)' },
-          { label: '다운스트림', value: `${d.downstream.length}개` },
-        ]}
-      />
     </div>
   )
 }

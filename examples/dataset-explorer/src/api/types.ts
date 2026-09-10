@@ -32,4 +32,8 @@ export interface Dataset {
   /** 최근 30일 일별 조회 수 */
   queries30d: number[]
   sampleQuery: string
+  /** 최근 변경 이력 — 스키마·소유자·SLA 등 */
+  changes: Array<{ at: string; kind: 'schema' | 'owner' | 'sla' | 'backfill' | 'incident'; summary: string; by: string }>
+  /** 같은 도메인·같은 업스트림을 쓰는 이웃 */
+  related: string[]
 }

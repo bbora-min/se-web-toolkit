@@ -101,6 +101,13 @@ export function makeDatasets(): Dataset[] {
           })
         })(),
         sampleQuery: `SELECT *\nFROM ${domain}.${table}\nWHERE dt = CURRENT_DATE() - 1\nLIMIT 100`,
+        changes: [
+          { at: new Date(now - 2 * 86400_000).toISOString(), kind: 'schema', summary: `컬럼 추가: ${domain === 'events' ? 'experiment_id STRING' : 'refund_krw NUMERIC'}`, by: owner },
+          { at: new Date(now - 9 * 86400_000).toISOString(), kind: 'backfill', summary: '2026-08-25 ~ 08-31 파티션 재적재', by: 'jihoon' },
+          { at: new Date(now - 21 * 86400_000).toISOString(), kind: 'sla', summary: `SLA ${slaHours * 2}시간 → ${slaHours}시간`, by: owner },
+          { at: new Date(now - 40 * 86400_000).toISOString(), kind: 'incident', summary: '업스트림 지연으로 6시간 늦게 갱신', by: 'oncall' },
+        ],
+        related: [...new Set([`${domain}.${pick(TABLES[domain]!)}`, `fct.${pick(TABLES.fct!)}`, `dim.${pick(TABLES.dim!)}`])].filter((n) => n !== `${domain}.${table}`).slice(0, 3),
       })
     }
   }

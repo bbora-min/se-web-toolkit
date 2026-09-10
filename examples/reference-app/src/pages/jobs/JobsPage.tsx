@@ -154,7 +154,7 @@ export function JobsPage() {
             <Button variant="ghost" size="sm">
               <Download /> CSV
             </Button>
-            {s ? <span className="text-xs text-muted">{formatRelative(s.updatedAt)} 갱신됨</span> : null}
+            {s ? <span className="text-xs text-muted">마지막 갱신 {formatRelative(s.updatedAt)}</span> : null}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button size="sm" onClick={() => void Promise.all([jobs.refetch(), summary.refetch()])} disabled={jobs.isFetching}>
@@ -168,9 +168,10 @@ export function JobsPage() {
       />
 
       <StatusStrip
+        variant="compact"
         health={s?.health ?? (summary.isError ? 'down' : 'unknown')}
         headline={s?.headline ?? (summary.isError ? '상태를 가져올 수 없음' : '상태 확인 중…')}
-        detail={s ? `노드 ${s.nodesOnline}/${s.nodesTotal} 온라인 · 스케줄러 scheduler-01` : summary.isError ? summary.error.message : undefined}
+        detail={s ? `노드 ${s.nodesOnline}/${s.nodesTotal}` : summary.isError ? summary.error.message : undefined}
         stats={
           s
             ? [
@@ -250,7 +251,16 @@ export function JobsPage() {
                   description: '검색어나 필터를 바꿔 보세요.',
                   action: <Button onClick={() => setParams({}, { replace: true })}>필터 초기화</Button>,
                 }
-              : { title: '아직 스케줄된 잡이 없습니다', description: '파이프라인이 실행되면 여기에 표시됩니다.' }
+              : {
+                title: '아직 스케줄된 잡이 없습니다',
+                description: '파이프라인이 실행되면 여기에 표시됩니다. 스케줄이 걸려 있는지 먼저 확인해 보세요.',
+                action: (
+                  <>
+                    <Button variant="primary">파이프라인 보기</Button>
+                    <Button variant="ghost">스케줄러 문서</Button>
+                  </>
+                ),
+              }
           }
           onRowClick={open}
           isRowSelected={(j) => j.id === jobId}

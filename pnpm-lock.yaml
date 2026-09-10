@@ -10,6 +10,9 @@ importers:
 
   examples/dataset-explorer:
     dependencies:
+      '@se/charts':
+        specifier: workspace:*
+        version: link:../../packages/charts
       '@se/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens

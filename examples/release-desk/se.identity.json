@@ -1,0 +1,13 @@
+{
+  "$schema": "../../packages/tokens/identity.schema.json",
+  "id": "release-desk",
+  "name": "Release Desk",
+  "mark": { "type": "monogram", "text": "RD" },
+  "accent": { "hue": 235 },
+  "neutralBias": "neutral",
+  "signature": "stage-rail",
+  "density": "comfortable",
+  "displayFont": "pretendard",
+  "chart": "accent-sequential",
+  "tone": "procedural"
+}

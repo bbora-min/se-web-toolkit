@@ -31,3 +31,5 @@
 @keyframes se-slide-out-right { from { transform: none; opacity: 1 } to { transform: translateX(16px); opacity: 0 } }
 @keyframes se-pop { from { transform: translate(-50%, -6px) scale(.985); opacity: 0 } to { transform: translate(-50%, 0) scale(1); opacity: 1 } }
 @keyframes se-rise { from { transform: translateY(6px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes se-pop-in { from { transform: translateY(-4px) scale(.98); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes se-pop-center { from { transform: translate(-50%, calc(-50% + 6px)) scale(.985); opacity: 0 } to { transform: translate(-50%, -50%) scale(1); opacity: 1 } }

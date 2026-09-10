@@ -8,7 +8,7 @@
  * 옵션: --name --mark --hue --signature --neutral --density --tone --port --dir --subtitle
  * 모노레포 안이면 workspace:* 로 링크, 밖이면 git 서브디렉터리 의존성으로 설치한다.
  */
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkRegistry, createTheme, hueDistance, IMPLEMENTED_SIGNATURES, SIGNATURES, statusHues } from '@se/tokens'
@@ -153,7 +153,15 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
   return { dir, identity, port, inWorkspace }
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+// bin 은 node_modules/.bin 심볼릭 링크로 실행되므로 실제 경로로 비교한다 (그냥 resolve 하면 링크≠실경로라 아무것도 안 하고 끝난다)
+const invokedDirectly = (() => {
+  try {
+    return Boolean(process.argv[1]) && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))
+  } catch {
+    return false
+  }
+})()
+if (invokedDirectly) {
   try {
     main()
   } catch (e) {

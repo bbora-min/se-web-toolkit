@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { existsSync, mkdtempSync, readFileSync, readdirSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, readdirSync, symlinkSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { hueDistance, MIN_HUE_DISTANCE, statusHues } from '@se/tokens'
@@ -51,5 +53,17 @@ describe('create-se-app', () => {
     main(['first-app'], { cwd, ...quiet })
     expect(readdirSync(join(cwd, 'first-app')).length).toBeGreaterThan(0)
     expect(() => main(['first-app'], { cwd, ...quiet })).toThrow(/비어 있지 않습니다/)
+  })
+})
+
+describe('bin 실행', () => {
+  it('심볼릭 링크(node_modules/.bin)로 실행해도 동작한다', () => {
+    const cwd = tmp()
+    const real = fileURLToPath(new URL('../bin/create-se-app.mjs', import.meta.url))
+    const link = join(cwd, 'create-se-app-link.mjs')
+    symlinkSync(real, link)
+    const out = execFileSync(process.execPath, [link, 'link-app', '--port', '5190'], { cwd, encoding: 'utf8' })
+    expect(out).toContain('Link App 생성')
+    expect(existsSync(join(cwd, 'link-app', 'package.json'))).toBe(true)
   })
 })

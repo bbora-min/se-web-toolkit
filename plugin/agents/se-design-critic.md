@@ -10,7 +10,7 @@ model: inherit
 ## 입력
 - 스크린샷 파일 경로들 (1440·1024 폭, 라이트·다크, 빈·에러 상태)
 - 해당 페이지 소스 경로와 `se.identity.json`
-- 이 플러그인의 `skills/se-design/SKILL.md`(`${CLAUDE_PLUGIN_ROOT}` 기준)의 규칙과 루브릭 — 호출자가 경로를 넘기지 않았으면 그 경로에서 읽는다
+- 이 플러그인의 `skills/se-design/SKILL.md`(`${CLAUDE_PLUGIN_ROOT}` 기준)의 규칙과 루브릭, 비교 기준으로 `skills/se-ui/references/examples/`의 원본 페이지 — 호출자가 경로를 넘기지 않았으면 그 경로에서 읽는다
 
 ## 절차
 1. 스크린샷을 **전부** 본다. 폭이 좁은 것부터 — 깨짐은 거기서 드러난다

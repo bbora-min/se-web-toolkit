@@ -1,6 +1,6 @@
 # DashboardPage — 지표·차트·상태 요약
 
-원본: `examples/reference-app/src/pages/overview/OverviewPage.tsx`
+원본: `references/examples/reference-app/OverviewPage.tsx`
 
 ## 골격
 ```

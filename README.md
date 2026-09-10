@@ -16,17 +16,27 @@
 | `examples/release-desk` | **Release Desk** — 업무 처리. 단계 레일·위자드(FormWizard)·설정(Settings) | ✓ |
 | `identities/` | 서비스 아이덴티티 레지스트리 (hue·시그니처 충돌 검사) | ✓ |
 | `plugin/` | Claude Code 플러그인 — 스킬 11개(자동 2 + 명령 9), 에이전트 3, 훅 2 | ✓ |
-| `templates/app-vite-react` + `packages/create-se-app` | 새 서비스 템플릿(워크스페이스에서 컴파일됨)과 CLI — 지금은 모노레포 안 `examples/`에 생성 | ✓ |
+| `templates/app-vite-react` + `packages/create-se-app` | 새 서비스 템플릿(워크스페이스에서 컴파일됨)과 CLI — `pnpm dlx`로 어느 폴더에서든 | ✓ |
 
-## 팀에서 쓰기
+## 팀에서 쓰기 — 내 프로젝트 폴더에서
 
 ```
-git clone https://github.com/bbora-min/se-web-toolkit && cd se-web-toolkit
-./scripts/setup.sh --dev      # Node 22 · pnpm · 설치 · 검사 · 플러그인 등록 · 레퍼런스 앱 실행 (sudo 없음, 멱등)
-claude                        # 새 세션
-/se:new incident-desk         # 새 서비스 — 인터뷰 → 생성 → 설치 → 실행
+# 1. 플러그인 (한 번)
+claude plugin marketplace add bbora-min/se-web-toolkit && claude plugin install se@se-web-toolkit
+#    (또는 Claude Code 안에서 /plugin marketplace add … → /plugin install …)
+
+# 2-a. 새 프로젝트
+mkdir todo-web && cd todo-web && claude
+/se:new todo-web            # 인터뷰 → pnpm dlx 로 생성 → @se/* 를 git 에서 설치 → 실행
+
+# 2-b. 기존 프로젝트
+cd my-existing-app && claude
+/se:adopt                   # 감사 → 아이덴티티 → 기반 → 쉘 → 페이지 → 강제, 단계마다 PR
 ```
-스크립트 없이 하려면 Claude Code 안에서 `/plugin marketplace add bbora-min/se-web-toolkit` → `/plugin install se@se-web-toolkit`.
+`@se/ui` 등은 npm 배포 전까지 git 서브디렉터리(`github:bbora-min/se-web-toolkit#path:packages/ui`)로 설치된다. 툴킷 저장소를 클론할 필요는 없다.
+
+## 툴킷 개발
+`./scripts/setup.sh --dev` 가 Node 22 · pnpm · 설치 · 검사 · 플러그인 등록(로컬 체크아웃) · 레퍼런스 앱 3개 실행을 한 번에 한다 (sudo 없음, 멱등).
 기존 프로젝트는 `/se:adopt`. 플러그인 상세는 [plugin/README.md](plugin/README.md).
 
 ## 툴킷 개발

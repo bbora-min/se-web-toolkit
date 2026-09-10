@@ -1,6 +1,6 @@
 # FormWizardPage — 여러 단계 입력
 
-원본: `examples/release-desk/src/pages/releases/NewReleasePage.tsx`
+원본: `references/examples/release-desk/NewReleasePage.tsx`
 
 ## 골격
 ```

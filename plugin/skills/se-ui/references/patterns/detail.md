@@ -1,6 +1,6 @@
 # DetailPage — 단일 객체 + 탭
 
-원본: `examples/dataset-explorer/src/pages/datasets/DatasetPage.tsx`(정보형) · `examples/release-desk/src/pages/releases/ReleasePage.tsx`(워크플로형)
+원본: `references/examples/dataset-explorer/DatasetPage.tsx`(정보형) · `references/examples/release-desk/ReleasePage.tsx`(워크플로형)
 
 ## 골격
 ```

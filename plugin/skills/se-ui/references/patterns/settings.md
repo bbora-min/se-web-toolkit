@@ -1,6 +1,6 @@
 # SettingsPage — 설정·토글
 
-원본: `examples/release-desk/src/pages/settings/SettingsPage.tsx`
+원본: `references/examples/release-desk/SettingsPage.tsx`
 
 ## 골격
 ```

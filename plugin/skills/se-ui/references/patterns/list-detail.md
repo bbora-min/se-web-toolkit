@@ -1,6 +1,6 @@
 # ListDetailPage — 목록 + 필터 + 상세
 
-원본: `examples/reference-app/src/pages/jobs/JobsPage.tsx`(드로어 상세·서버 모드·선택·일괄) · `examples/release-desk/src/pages/releases/ReleasesPage.tsx`(페이지 상세·단계 레일)
+원본: `references/examples/reference-app/JobsPage.tsx`(드로어 상세·서버 모드·선택·일괄) · `references/examples/release-desk/ReleasesPage.tsx`(페이지 상세·단계 레일)
 
 ## 골격 (위에서 아래로, 이 순서를 지킨다)
 ```

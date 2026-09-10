@@ -96,12 +96,45 @@ for (const src of SOURCES) {
   }
 }
 
+/** 스킬이 "복사해서 변형하라"고 가리키는 원본 — 플러그인이 툴킷 저장소 없이도 자급자족하도록 동봉한다 */
+const EXAMPLES: Array<[string, string]> = [
+  ['examples/reference-app/src/pages/jobs/JobsPage.tsx', 'reference-app/JobsPage.tsx'],
+  ['examples/reference-app/src/pages/jobs/JobDetailSheet.tsx', 'reference-app/JobDetailSheet.tsx'],
+  ['examples/reference-app/src/pages/overview/OverviewPage.tsx', 'reference-app/OverviewPage.tsx'],
+  ['examples/reference-app/src/app/Shell.tsx', 'reference-app/Shell.tsx'],
+  ['examples/reference-app/src/mocks/handlers.ts', 'reference-app/mocks-handlers.ts'],
+  ['examples/reference-app/src/api/jobs.ts', 'reference-app/api-jobs.ts'],
+  ['examples/dataset-explorer/src/pages/datasets/DatasetsPage.tsx', 'dataset-explorer/DatasetsPage.tsx'],
+  ['examples/dataset-explorer/src/pages/datasets/DatasetPage.tsx', 'dataset-explorer/DatasetPage.tsx'],
+  ['examples/release-desk/src/pages/releases/ReleasesPage.tsx', 'release-desk/ReleasesPage.tsx'],
+  ['examples/release-desk/src/pages/releases/ReleasePage.tsx', 'release-desk/ReleasePage.tsx'],
+  ['examples/release-desk/src/pages/releases/NewReleasePage.tsx', 'release-desk/NewReleasePage.tsx'],
+  ['examples/release-desk/src/pages/releases/DecisionDialog.tsx', 'release-desk/DecisionDialog.tsx'],
+  ['examples/release-desk/src/pages/releases/bits.tsx', 'release-desk/bits.tsx'],
+  ['examples/release-desk/src/pages/settings/SettingsPage.tsx', 'release-desk/SettingsPage.tsx'],
+]
+const EX_OUT = join(OUT, '..', 'examples')
+for (const [src, dst] of EXAMPLES) {
+  const from = join(root, src)
+  const to = join(EX_OUT, dst)
+  const body = `// 원본: ${src} (자동 복사 — 수정하지 말 것, pnpm gen:skill-docs)\n` + readFileSync(from, 'utf8')
+  if (check) {
+    if (!existsSync(to) || readFileSync(to, 'utf8') !== body) {
+      console.error(`✗ 예제 동봉본이 코드와 다릅니다: ${relative(root, to)}`)
+      changed++
+    }
+  } else {
+    mkdirSync(join(to, '..'), { recursive: true })
+    writeFileSync(to, body)
+  }
+}
+
 // 사라진 컴포넌트의 문서 제거 + 인덱스
 if (!check) {
   for (const f of readdirSync(OUT)) if (!generated.has(f)) rmSync(join(OUT, f))
   const exportedCount = index.reduce((n, line) => n + (line.match(/^- \[(.+?)\]/)?.[1]?.split(' · ').length ?? 0), 0)
   writeFileSync(join(OUT, '..', 'INDEX.md'), `# 컴포넌트 레퍼런스 (자동 생성 — 수정하지 말 것, \`pnpm gen:skill-docs\`)\n\n파일 ${index.length}개 · 내보내는 컴포넌트 ${exportedCount}개\n\n${index.join('\n')}\n`)
-  console.log(`✓ ${generated.size}개 문서 생성 → ${relative(root, OUT)}`)
+  console.log(`✓ ${generated.size}개 문서 + 예제 ${EXAMPLES.length}개 → ${relative(root, join(OUT, '..'))}`)
 } else {
   const idx = join(OUT, '..', 'INDEX.md')
   if (!existsSync(idx)) changed++

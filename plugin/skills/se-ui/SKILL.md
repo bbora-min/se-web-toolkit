@@ -22,14 +22,14 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 ## 패턴 선택표 — 화면이 …이면
 | 화면 | 패턴 | 원본 (복사해서 변형) | 골격 |
 |---|---|---|---|
-| 목록 + 필터 + 상세 | **ListDetailPage** | `examples/reference-app/src/pages/jobs/JobsPage.tsx` (드로어 상세, 서버 페이지네이션, 일괄 액션) · `examples/release-desk/src/pages/releases/ReleasesPage.tsx` (페이지 상세) | `references/patterns/list-detail.md` |
-| 지표·차트·상태 요약 | **DashboardPage** | `examples/reference-app/src/pages/overview/OverviewPage.tsx` | `references/patterns/dashboard.md` |
-| 단일 객체 + 탭 | **DetailPage** | `examples/dataset-explorer/src/pages/datasets/DatasetPage.tsx` · `examples/release-desk/src/pages/releases/ReleasePage.tsx` (워크플로 액션) | `references/patterns/detail.md` |
-| 여러 단계 입력 | **FormWizardPage** | `examples/release-desk/src/pages/releases/NewReleasePage.tsx` | `references/patterns/form-wizard.md` |
-| 설정·토글 | **SettingsPage** | `examples/release-desk/src/pages/settings/SettingsPage.tsx` | `references/patterns/settings.md` |
-| 검색이 전부인 목록 | ListDetail + `SearchHero` | `examples/dataset-explorer/src/pages/datasets/DatasetsPage.tsx` | — |
+| 목록 + 필터 + 상세 | **ListDetailPage** | `references/examples/reference-app/JobsPage.tsx` (드로어 상세, 서버 페이지네이션, 일괄 액션) + `JobDetailSheet.tsx` · `references/examples/release-desk/ReleasesPage.tsx` (페이지 상세) | `references/patterns/list-detail.md` |
+| 지표·차트·상태 요약 | **DashboardPage** | `references/examples/reference-app/OverviewPage.tsx` | `references/patterns/dashboard.md` |
+| 단일 객체 + 탭 | **DetailPage** | `references/examples/dataset-explorer/DatasetPage.tsx` · `references/examples/release-desk/ReleasePage.tsx` (워크플로 액션) | `references/patterns/detail.md` |
+| 여러 단계 입력 | **FormWizardPage** | `references/examples/release-desk/NewReleasePage.tsx` (+ `DecisionDialog.tsx` 폼 모달) | `references/patterns/form-wizard.md` |
+| 설정·토글 | **SettingsPage** | `references/examples/release-desk/SettingsPage.tsx` | `references/patterns/settings.md` |
+| 검색이 전부인 목록 | ListDetail + `SearchHero` | `references/examples/dataset-explorer/DatasetsPage.tsx` | — |
 
-원본 파일 상단의 `디자인 플랜` 주석까지 읽는다 — 왜 그렇게 놓았는지가 거기 있다.
+원본 파일 상단의 `디자인 플랜` 주석까지 읽는다 — 왜 그렇게 놓았는지가 거기 있다. 쉘·목·훅의 원본은 `references/examples/reference-app/{Shell.tsx,mocks-handlers.ts,api-jobs.ts}`. (동봉본은 툴킷의 `examples/`에서 자동 복사된다 — 어느 폴더에서 열어도 있다)
 
 ## 절차
 1. `se-design`으로 디자인 플랜 작성 (목적·첫 시선·주 액션·계층·밀도·시그니처)
@@ -48,7 +48,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 - **숫자 셀**: `meta: { align: 'right' }` + `font-mono text-xs` + `tnum`
 - **ID·경로·버전**: `font-mono text-[13px]`
 - **상태**: `StatusBadge`(작업) · `Badge tone=`(그 외). 의미 색은 액센트가 아니다
-- **사람**: `Avatar` + 이름, 승인 상태는 아바타 스택(`release-desk/…/bits.tsx`)
+- **사람**: `Avatar` + 이름, 승인 상태는 아바타 스택(`references/examples/release-desk/bits.tsx`)
 - **시간·숫자**: `@se/ui`의 `formatRelative` + `title={formatAbsolute}`, `formatDuration`, `formatCompact`, `formatBytes`
 - **행 액션**: `DataTable rowActions` — 호버 시 아이콘 1–3개, 위험 동작은 `ConfirmDialog`(이름 재입력)
 - **폼**: `Form`/`FormField`/`FormItem`/`FormLabel`/`FormControl`/`FormMessage` + zod. 섹션은 `FormSection`(좌 설명·우 필드)
@@ -59,3 +59,4 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 - `references/components/<name>.md` — props·기본값·설명 (자동 생성, 코드와 항상 일치)
 - `references/tokens.md` — 토큰 클래스 전체와 밀도·테마 전환
 - `references/patterns/*.md` — 패턴 골격
+- `references/examples/**` — 복사해서 변형할 원본 페이지 (자동 동봉)

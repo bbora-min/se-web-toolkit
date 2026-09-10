@@ -12,9 +12,11 @@ import {
   SheetHeader,
   SheetTitle,
   StatusBadge,
+  LogViewer,
+  Tabs,
   toast,
 } from '@se/ui'
-import { useCancelJob, useRetryJob } from '../../api/jobs'
+import { useCancelJob, useJobLogs, useRetryJob } from '../../api/jobs'
 import type { Job } from '../../api/types'
 import { formatAbsolute, formatDuration } from '../../lib/format'
 
@@ -22,6 +24,11 @@ export function JobDetailSheet({ job, open, onClose }: { job: Job | null; open: 
   const retry = useRetryJob()
   const cancel = useCancelJob()
   const [confirmCancel, setConfirmCancel] = React.useState(false)
+  const [tab, setTab] = React.useState('overview')
+  const logs = useJobLogs(open && tab === 'logs' ? job?.id : undefined, job?.state === 'running')
+  React.useEffect(() => {
+    if (!open) setTab('overview')
+  }, [open])
 
   const canRetry = job?.state === 'failed' || job?.state === 'cancelled'
   const canCancel = job?.state === 'running' || job?.state === 'pending'
@@ -38,7 +45,7 @@ export function JobDetailSheet({ job, open, onClose }: { job: Job | null; open: 
 
   return (
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent width={560} aria-describedby={undefined}>
+      <SheetContent width={tab === 'logs' ? 760 : 560} aria-describedby={undefined} className="transition-[width] duration-200">
         {job ? (
           <>
             <SheetHeader>
@@ -49,6 +56,11 @@ export function JobDetailSheet({ job, open, onClose }: { job: Job | null; open: 
               <SheetDescription className="font-mono text-xs">{job.id}</SheetDescription>
             </SheetHeader>
             <SheetBody className="flex flex-col gap-5">
+              <Tabs value={tab} onChange={setTab} aria-label="상세" items={[{ value: 'overview', label: '개요' }, { value: 'logs', label: '로그', count: logs.data?.lines.length }]} className="-mt-1" />
+              {tab === 'logs' ? (
+                <LogViewer lines={logs.data?.lines ?? []} live={logs.data?.live} height="calc(100vh - 220px)" title={job.name} emptyText={logs.isPending ? '로그를 불러오는 중…' : job.state === 'pending' ? '아직 시작되지 않았습니다' : '로그가 없습니다'} />
+              ) : (
+              <>
               {job.error ? (
                 <div role="alert" className="flex gap-2.5 rounded-lg border border-danger/20 bg-danger-soft px-4 py-3 text-sm">
                   <AlertTriangle className="mt-0.5 size-4 shrink-0 text-danger" aria-hidden />
@@ -70,11 +82,16 @@ export function JobDetailSheet({ job, open, onClose }: { job: Job | null; open: 
                 ]}
               />
               <section className="flex flex-col gap-1.5">
-                <h3 className="text-xs font-medium text-muted">로그 (마지막 {job.logTail.length}줄)</h3>
+                <div className="flex items-baseline justify-between">
+                  <h3 className="text-xs font-medium text-muted">로그 (마지막 {job.logTail.length}줄)</h3>
+                  <Button variant="link" size="sm" onClick={() => setTab('logs')}>전체 로그</Button>
+                </div>
                 <pre className="overflow-x-auto rounded-lg border border-line bg-canvas p-4 font-mono text-xs leading-relaxed text-ink">
                   {job.logTail.join('\n')}
                 </pre>
               </section>
+              </>
+              )}
             </SheetBody>
             <SheetFooter>
               {canCancel ? (

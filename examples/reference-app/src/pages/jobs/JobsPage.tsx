@@ -31,8 +31,10 @@ import {
   TooltipTrigger,
   toast,
   type ColumnDef,
+  type RowSelectionState,
+  type SortingState,
 } from '@se/ui'
-import { useClusterSummary, useJobs, useRetryJob, type JobFilters } from '../../api/jobs'
+import { useBulkJobs, useClusterSummary, useJobs, useRetryJob, type JobFilters } from '../../api/jobs'
 import type { Job, JobState } from '../../api/types'
 import { formatAbsolute, formatDuration, formatRelative } from '../../lib/format'
 import { JobDetailSheet } from './JobDetailSheet'
@@ -119,28 +121,38 @@ export function JobsPage() {
   const navigate = useNavigate()
   const { jobId } = useParams()
 
+  const page = Number(params.get('page') ?? 0)
+  const pageSize = Number(params.get('size') ?? 25)
+  const sort = params.get('sort') ?? 'startedAt'
+  const dir = (params.get('dir') as 'asc' | 'desc' | null) ?? 'desc'
   const filters: JobFilters = {
     q: params.get('q') ?? '',
     state: (params.get('state') as JobState | null) ?? '',
     pipeline: params.get('pipeline') ?? '',
+    page,
+    pageSize,
+    sort,
+    dir,
   }
-  const setFilter = (key: keyof JobFilters, value: string) => {
+  const setParam = (patch: Record<string, string>) => {
     const next = new URLSearchParams(params)
-    if (value) next.set(key, value)
-    else next.delete(key)
+    for (const [k, v] of Object.entries(patch)) v ? next.set(k, v) : next.delete(k)
     setParams(next, { replace: true })
   }
+  // 필터가 바뀌면 1페이지로
+  const setFilter = (key: keyof JobFilters, value: string) => setParam({ [key]: value, page: '' })
   const hasFilter = Boolean(filters.q || filters.state || filters.pipeline)
 
   const summary = useClusterSummary()
   const retry = useRetryJob()
-  // 탭 카운트는 상태 필터를 뺀 목록 기준 — 탭을 옮겨도 숫자가 흔들리지 않는다
-  const base = useJobs({ q: filters.q, pipeline: filters.pipeline })
   const jobs = useJobs(filters)
+  const bulk = useBulkJobs()
+  const [selection, setSelection] = React.useState<RowSelectionState>({})
   const items = jobs.data?.items ?? []
-  const baseItems = base.data?.items ?? []
-  const counts = (s: JobState | '') => (s ? baseItems.filter((j) => j.state === s).length : baseItems.length)
+  // 탭 카운트는 서버가 상태 필터를 뺀 기준으로 계산 — 탭을 옮겨도 숫자가 흔들리지 않는다
+  const counts = (s: JobState | '') => jobs.data?.counts[s] ?? 0
   const selected = jobId ? items.find((j) => j.id === jobId) ?? null : null
+  const sortingState: SortingState = [{ id: sort, desc: dir === 'desc' }]
 
   const open = (job: Job) => navigate({ pathname: `/jobs/${job.id}`, search: params.toString() })
   const close = () => navigate({ pathname: '/jobs', search: params.toString() })
@@ -206,7 +218,7 @@ export function JobsPage() {
       <section className="flex flex-col gap-4">
         <Tabs
           aria-label="상태"
-          items={TABS.map((t) => ({ ...t, count: base.data ? counts(t.value) : undefined }))}
+          items={TABS.map((t) => ({ ...t, count: jobs.data ? counts(t.value) : undefined }))}
           value={filters.state ?? ''}
           onChange={(v) => setFilter('state', v)}
         />
@@ -241,6 +253,31 @@ export function JobsPage() {
           data={items}
           getRowId={(j) => j.id}
           loading={jobs.isPending}
+          fetching={jobs.isFetching}
+          pagination={{ pageIndex: page, pageSize, total: jobs.data?.total ?? 0, onChange: (p) => setParam({ page: p.pageIndex ? String(p.pageIndex) : '', size: p.pageSize === 25 ? '' : String(p.pageSize) }) }}
+          sorting={{ state: sortingState, onChange: (st) => setParam({ sort: st[0]?.id ?? '', dir: st[0] ? (st[0].desc ? 'desc' : 'asc') : '', page: '' }) }}
+          selectable
+          selection={selection}
+          onSelectionChange={setSelection}
+          bulkActions={(rows, clear) => {
+            const retryable = rows.filter((j) => j.state === 'failed' || j.state === 'cancelled')
+            const cancellable = rows.filter((j) => j.state === 'running' || j.state === 'pending')
+            const run = async (action: 'retry' | 'cancel', ids: string[]) => {
+              const r = await bulk.mutateAsync({ ids, action })
+              toast.success(action === 'retry' ? `${r.affected}건을 재시도 큐에 넣었습니다` : `${r.affected}건을 취소했습니다`)
+              clear()
+            }
+            return (
+              <>
+                <Button variant="ghost" size="sm" disabled={!retryable.length || bulk.isPending} onClick={() => run('retry', retryable.map((j) => j.id))}>
+                  <RotateCcw /> 재시도 {retryable.length ? `(${retryable.length})` : ''}
+                </Button>
+                <Button variant="ghost" size="sm" disabled={!cancellable.length || bulk.isPending} onClick={() => run('cancel', cancellable.map((j) => j.id))}>
+                  <XCircle /> 취소 {cancellable.length ? `(${cancellable.length})` : ''}
+                </Button>
+              </>
+            )
+          }}
           error={
             jobs.isError
               ? { title: '잡 목록을 불러오지 못했습니다', description: jobs.error.message, onRetry: () => jobs.refetch() }

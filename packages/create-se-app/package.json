@@ -16,7 +16,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@se/tokens": "workspace:*"
+    "@se/tokens": "github:bbora-min/se-web-toolkit#path:packages/tokens"
   },
   "devDependencies": {
     "vitest": "^3.0.0"

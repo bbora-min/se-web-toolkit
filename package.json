@@ -25,5 +25,13 @@
     "react-docgen-typescript": "^2.2.2",
     "tsx": "^4.19.2"
   },
-  "type": "module"
+  "type": "module",
+  "pnpm": {
+    "overrides": {
+      "@se/tokens": "workspace:*",
+      "@se/ui": "workspace:*",
+      "@se/charts": "workspace:*",
+      "@se/eslint-plugin": "workspace:*"
+    }
+  }
 }

@@ -4,6 +4,12 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@se/tokens': workspace:*
+  '@se/ui': workspace:*
+  '@se/charts': workspace:*
+  '@se/eslint-plugin': workspace:*
+
 importers:
 
   .:

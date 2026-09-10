@@ -55,3 +55,4 @@ export { DateRangePicker, RANGE_PRESETS, formatRange, type DateRange, type ISODa
 export { StageRail, type Stage, type StageRailProps } from './signatures/stage-rail'
 export { LogViewer, type LogViewerProps } from './components/log-viewer'
 export { parseAnsi, stripAnsi, type AnsiSpan } from './lib/ansi'
+export { formatRelative, formatAbsolute, formatDuration, formatCompact, formatBytes } from './lib/format'

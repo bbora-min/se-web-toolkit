@@ -15,7 +15,7 @@ import { Link, useSearchParams } from 'react-router'
 import { Badge, Button, PageBody, PageHeader, Select, Skeleton, StatusBadge, StatusStrip } from '@se/ui'
 import { BarChart, ChartCard, LineChart, MeterList, type Series } from '@se/charts'
 import { useClusterSummary, useOverview } from '../../api/jobs'
-import { formatDuration, formatRelative } from '../../lib/format'
+import { formatDuration, formatRelative } from '@se/ui'
 
 const COMPLETION: Series[] = [
   { key: 'succeeded', label: '성공', color: 'success' },

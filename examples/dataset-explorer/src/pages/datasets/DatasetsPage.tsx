@@ -31,7 +31,7 @@ import {
   type ColumnDef,
 } from '@se/ui'
 import { useDatasets, type DatasetRow, type Quick } from '../../api/datasets'
-import { formatAbsolute, formatBytes, formatCompact, formatRelative } from '../../lib/format'
+import { formatAbsolute, formatBytes, formatCompact, formatRelative } from '@se/ui'
 import { FreshnessBadge } from './freshness'
 
 const QUICK: Array<{ value: Exclude<Quick, ''>; label: string }> = [

@@ -1,0 +1,47 @@
+# 컴포넌트 레퍼런스 (자동 생성 — 수정하지 말 것, `pnpm gen:skill-docs`)
+
+파일 43개 · 내보내는 컴포넌트 98개
+
+- [Alert](components/alert.md) — 컴포넌트 · 페이지 안의 안내 배너. 토스트는 "방금 일어난 일", 배너는 "지금 상태"
+- [Avatar](components/avatar.md) — 컴포넌트 · 이니셜 아바타. 사진 없는 내부 도구에 딱 필요한 만큼
+- [Badge · StatusBadge](components/badge.md) — 컴포넌트
+- [Button](components/button.md) — 컴포넌트
+- [CheckboxField · Checkbox](components/checkbox.md) — 컴포넌트 · 체크박스 + 라벨 + 설명 한 줄. 체크리스트에 쓴다
+- [Combobox](components/combobox.md) — 컴포넌트 · 검색되는 셀렉트. 항목이 8개를 넘으면 Select 대신 이걸 쓴다
+- [CommandPalette](components/command-palette.md) — 컴포넌트 · 커맨드 팔레트 — ⌘K. 페이지 이동·항목 점프·액션을 한 입력창에서.
+- [ConfirmDialog](components/confirm-dialog.md) — 컴포넌트 · 확인 다이얼로그. 위험 동작은 항상 이걸 거친다
+- [DataTable](components/data-table.md) — 컴포넌트 · 내부 도구용 데이터 표. 정렬·페이지네이션·3상태·행 액션·행 선택·일괄 액션.
+- [DateRangePicker](components/date-range-picker.md) — 컴포넌트 · 기간 선택 — 프리셋 열 + 한 달 달력. 시작일 클릭 → 종료일 클릭.
+- [DescriptionList](components/description-list.md) — 컴포넌트 · 라벨/값 목록. 상세 화면의 기본 재료
+- [DialogHeader · DialogBody · DialogFooter · Dialog · DialogTrigger · DialogClose · DialogContent · DialogTitle · DialogDescription](components/dialog.md) — 컴포넌트
+- [DropdownMenuContent · DropdownMenuItem · DropdownMenuCheckboxItem · DropdownMenuRadioItem · DropdownMenuSubTrigger · DropdownMenuSubContent](components/dropdown-menu.md) — 컴포넌트
+- [FilterBar · SearchInput](components/filter-bar.md) — 컴포넌트 · 필터바 — 표 바로 위 한 줄. 왼쪽은 필터, 오른쪽(`end`)은 요약·액션.
+- [FormField · FormSection · Form · FormItem · FormLabel · FormControl · FormDescription · FormMessage](components/form.md) — 컴포넌트
+- [Input](components/input.md) — 컴포넌트
+- [LogViewer](components/log-viewer.md) — 컴포넌트 · 로그 뷰어 — 수천 줄을 가상 스크롤로. ANSI 색, 레벨 강조, 검색(일치 이동), 따라가기, 줄바꿈, 복사.
+- [Popover · PopoverTrigger · PopoverAnchor · PopoverContent](components/popover.md) — 컴포넌트
+- [RadioCards · RadioGroup · RadioGroupItem](components/radio-group.md) — 컴포넌트 · 선택지가 3–5개고 각각 설명이 필요할 때 — 카드형 라디오
+- [Select](components/select.md) — 컴포넌트 · 네이티브 select. 필터바처럼 값 목록이 짧고 정적인 곳에 쓴다
+- [Separator · Kbd](components/separator.md) — 컴포넌트
+- [SheetHeader · SheetBody · SheetFooter · Sheet · SheetTrigger · SheetClose · SheetContent · SheetTitle · SheetDescription](components/sheet.md) — 컴포넌트
+- [Skeleton](components/skeleton.md) — 컴포넌트 · 로딩 자리표시. 최종 콘텐츠와 같은 크기·위치로 놓아 레이아웃이 튀지 않게 한다
+- [Sparkline](components/sparkline.md) — 컴포넌트 · 스파크라인. 선 2px, 회색(de-emphasis) + 마지막 구간 액센트, 끝점 강조.
+- [StatCard](components/stat-card.md) — 컴포넌트
+- [EmptyState · ErrorState](components/states.md) — 컴포넌트 · 데이터가 0건일 때. "없음"이 아니라 "다음에 무엇을 할지"를 말한다
+- [Steps](components/steps.md) — 컴포넌트 · 다단계 폼의 진행 표시. 완료=체크, 현재=액센트, 이후=회색
+- [SwitchRow · Switch](components/switch.md) — 컴포넌트 · 설정 화면의 한 줄: 라벨·설명 왼쪽, 스위치 오른쪽
+- [Table · TableHeader · TableBody · TableRow · TableHead · TableCell](components/table.md) — 컴포넌트 · 표 프리미티브. 데이터 표는 DataTable을, 정적 표만 이걸 직접 쓴다
+- [Tabs](components/tabs.md) — 컴포넌트 · 밑줄 탭. 목록의 1차 분류(상태·유형)에 쓴다. 필터바는 그 아래 2차.
+- [Textarea](components/textarea.md) — 컴포넌트
+- [Toaster](components/toast.md) — 컴포넌트 · 토스트는 우하단 한 곳. 완료 알림은 짧게, 실패는 원인을 포함
+- [TooltipProvider · Tooltip · TooltipTrigger · TooltipContent](components/tooltip.md) — 컴포넌트
+- [AppShell · NavItem · NavSection · PageHeader · PageBody](components/app-shell.md) — 패턴
+- [IdentitySheet](components/identity-sheet.md) — 패턴 · 아이덴티티 시트 — 서비스의 "얼굴"을 한 장으로.
+- [SearchHero](components/search-hero.md) — 시그니처 · 시그니처 · 검색 히어로 — 데이터 조회 서비스의 얼굴.
+- [StageRail](components/stage-rail.md) — 시그니처 · 시그니처 · 단계 레일 — 워크플로 서비스의 얼굴.
+- [StatusStrip](components/status-strip.md) — 시그니처 · 시그니처 · 상태 스트립 — 모니터링 서비스의 얼굴.
+- [BarChart](components/charts-bar-chart.md) — 차트 · 막대. 얇게, 위쪽 모서리만 둥글게, 막대 사이 표면 간격.
+- [ChartCard](components/charts-chart-card.md) — 차트
+- [ChartCard · BarChart · LineChart · MeterList · SeriesColor](components/charts-index.md) — 차트
+- [LineChart](components/charts-line-chart.md) — 차트 · 선 2px, 점 없음(호버 시만), 크로스헤어 툴팁
+- [MeterList](components/charts-meter-list.md) — 차트 · 미터 목록 — 순위·비율 비교. 막대 차트보다 라벨을 읽기 쉽다.

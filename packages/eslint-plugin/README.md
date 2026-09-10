@@ -17,4 +17,4 @@ export default [{ files: ['src/**/*.{ts,tsx}'], ...se.configs.recommended }]
 | `se/page-states` | warn | `DataTable`에 `loading`·`error`·`empty` 세 상태 필수 |
 
 `packages/ui` 안에서는 쓰지 않는다 — raw 컨트롤이 사는 곳이다. 앱 코드(`examples/`, `templates/`, 각 서비스 저장소)에만 적용한다.
-Claude Code 플러그인의 PostToolUse 훅이 파일 저장 시 이 규칙을 돌려 위반을 즉시 되돌려준다.
+Claude Code 플러그인의 PostToolUse 훅이 파일 저장 시 이 규칙을 돌려 위반을 바로 알려준다 (훅은 플러그인 다음 릴리스에서).

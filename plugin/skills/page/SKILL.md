@@ -1,7 +1,7 @@
 ---
 name: page
 description: docs/spec.md의 화면 하나를 코드로 만든다 — 디자인 플랜 → 패턴 원본 복사·변형 → MSW 목 → 3상태 → 라우트·네비·팔레트 등록 → lint/typecheck → 스크린샷 1회. "/se:page <화면 이름>"
-argument-hint: <화면 이름>
+argument-hint: "<화면 이름>"
 ---
 
 # /se:page — 화면 하나

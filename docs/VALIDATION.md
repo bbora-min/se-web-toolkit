@@ -3,13 +3,13 @@
 목적: 사람이 손으로 만든 레퍼런스 앱(Job Monitor·Dataset Explorer·Release Desk)과 **스킬만으로** 만든 앱의 차이를 잰다.
 차이가 곧 스킬에 넣어야 할 다음 내용이다. 결과는 `docs/validation/<날짜>-<서비스>.md`에 남긴다(템플릿은 맨 아래).
 
-## 0. 준비 (10분)
+## 0. 준비 (2분, 스크립트 하나)
 ```
-cd ~/claude/se-web-toolkit && git pull && pnpm install
-claude                                       # 새 세션 (이 저장소에서 — @se/* 가 npm 미배포라 모노레포 안에서만)
-/plugin marketplace add bbora-min/se-web-toolkit
-/plugin install se@se-web-toolkit
+git clone https://github.com/bbora-min/se-web-toolkit && cd se-web-toolkit
+./scripts/setup.sh --dev     # Node 22 · pnpm · 의존성 · 검사 · 플러그인 등록·설치 · 레퍼런스 앱 3개 실행
+claude                       # 이 저장소에서 새 세션 (@se/* 가 npm 미배포라 모노레포 안에서만)
 ```
+sudo 없이 동작하고 다시 실행해도 안전하다. `claude` CLI가 없으면 스크립트가 세션 안에서 칠 명령(`/plugin marketplace add …`)을 알려준다.
 확인: 세션 시작 메시지에 `[SE Web Toolkit] @se/ui 0.1.0 · Node v22…` 가 뜨는가 → 훅 동작. `/se:` 를 치면 명령 9개가 보이는가.
 
 **시험자 규칙**: 시험 중 Claude에게 디자인·컴포넌트 힌트를 주지 않는다. 질문에만 답한다. 개입할 때마다 기록한다(개입 수가 지표다).

@@ -1,7 +1,7 @@
 ---
 name: spec
 description: 요구사항 문장을 화면 명세(docs/spec.md)로 바꾼다 — 화면 목록·패턴·라우트·데이터·상태·액션·3상태 문구. 코드 전 단계. "/se:spec <요구사항>"
-argument-hint: <요구사항 한두 문장>
+argument-hint: "<요구사항 한두 문장>"
 ---
 
 # /se:spec — 요구사항 → 화면 명세

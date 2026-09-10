@@ -1,7 +1,7 @@
 ---
 name: adopt
 description: 기존 React 프로젝트에 디자인 시스템을 점진 도입한다 — 감사 → 아이덴티티 → 기반 → 쉘 → 페이지 → 강제. 각 단계가 PR 하나, 어디서 멈춰도 동작. "/se:adopt [0-5]"
-argument-hint: [단계 번호] 생략하면 현재 단계를 판단
+argument-hint: "[0-5] 생략하면 현재 단계를 판단"
 ---
 
 # /se:adopt — 점진 도입 (strangler)

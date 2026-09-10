@@ -1,0 +1,10 @@
+{
+  "$comment": "이 저장소를 여는 Claude Code 세션에 se 플러그인을 권한다. 팀원은 승인 한 번이면 된다 (scripts/setup.sh 가 CLI로도 설치).",
+  "extraKnownMarketplaces": {
+    "se-web-toolkit": { "source": { "source": "github", "repo": "bbora-min/se-web-toolkit" } }
+  },
+  "enabledPlugins": { "se@se-web-toolkit": true },
+  "permissions": {
+    "allow": ["Bash(pnpm typecheck)", "Bash(pnpm -r typecheck)", "Bash(pnpm lint)", "Bash(pnpm test)", "Bash(pnpm -r test)", "Bash(pnpm check-identity)", "Bash(pnpm check:skill-docs)", "Bash(pnpm gen:skill-docs)", "Bash(pnpm --filter *)", "Bash(node packages/create-se-app/bin/create-se-app.mjs *)"]
+  }
+}

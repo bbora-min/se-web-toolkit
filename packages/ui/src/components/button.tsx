@@ -24,7 +24,7 @@ const buttonVariants = cva(
         secondary:
           'bg-surface text-ink border border-line-strong/80 shadow-xs hover:bg-surface-2/70 active:bg-surface-2',
         ghost: 'text-ink hover:bg-surface-2 active:bg-line/70',
-        danger: 'bg-danger text-white shadow-xs hover:opacity-90 active:opacity-80',
+        danger: 'bg-danger text-on-danger shadow-xs hover:opacity-90 active:opacity-80',
         link: 'text-accent-fg underline-offset-4 hover:underline h-auto px-0',
       },
       size: {

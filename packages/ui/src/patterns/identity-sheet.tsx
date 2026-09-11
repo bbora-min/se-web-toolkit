@@ -40,7 +40,7 @@ function useVars(keys: string[]) {
 }
 
 const SWATCH_ROWS: Array<{ title: string; note: string; keys: string[] }> = [
-  { title: '액센트', note: '이 서비스의 것. 한 화면에 한 곳', keys: ['accent-active', 'accent', 'accent-hover', 'accent-soft'] },
+  { title: '액센트', note: '이 서비스의 것. 한 화면에 한 곳', keys: ['accent-active', 'accent', 'accent-hover', 'accent-soft', 'on-accent'] },
   { title: '뉴트럴', note: '브랜드 명도 밴드 + 서비스 편향', keys: ['ink', 'muted', 'line-strong', 'line', 'surface-2', 'canvas'] },
   { title: '의미 색', note: '모든 서비스에서 같다', keys: ['status-success', 'status-warning', 'status-danger', 'status-info'] },
   { title: '차트', note: '순서 고정', keys: ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5', 'chart-6'] },

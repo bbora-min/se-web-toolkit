@@ -23,6 +23,12 @@ export interface ApiClientOptions {
   devState?: boolean
 }
 
+/** 개발 중 URL에 `?__state=`가 있는가 — 화면 상태를 강제하는 중이면 react-query 재시도도 꺼야 스크린샷이 에러 화면을 찍는다 */
+export function hasForcedState(): boolean {
+  const env = (import.meta as unknown as { env?: Record<string, string | boolean | undefined> }).env ?? {}
+  return Boolean(env.DEV) && typeof location !== 'undefined' && new URLSearchParams(location.search).has('__state')
+}
+
 export function createApiClient(opts: ApiClientOptions = {}) {
   const env = (import.meta as unknown as { env?: Record<string, string | boolean | undefined> }).env ?? {}
   const base = opts.base ?? (typeof env.VITE_API_BASE === 'string' && env.VITE_API_BASE ? env.VITE_API_BASE : '/api')

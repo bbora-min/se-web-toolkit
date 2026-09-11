@@ -21,9 +21,9 @@
 | `onRowClick` | `((row: T) => void)` |  |  |
 | `onSelectionChange` | `((s: RowSelectionState) => void)` |  |  |
 | `pageSize` | `number` | `25` | 클라이언트 모드 페이지 크기 |
-| `pagination` | `ServerPagination` |  | 서버 모드. 주면 정렬·페이지네이션을 서버가 담당한다 — `sorting`과 함께 쓴다. 1만 건 넘는 목록은 반드시 이 모드. |
+| `pagination` | `ServerPagination` |  | 서버 모드. 주면 정렬·페이지네이션을 서버가 담당한다 — `sorting`과 함께 쓴다. 1만 건 넘는 목록은 반드시 이 모드. `sorting` 없이 쓰면 정렬 클릭 시 표가 알아서 1페이지로 돌린다. |
 | `rowActions` | `((row: T) => ReactNode)` |  |  |
 | `selectable` | `boolean` |  | 행 선택 — 체크박스 열이 생기고 선택 시 하단에 일괄 액션 바가 뜬다 |
 | `selection` | `RowSelectionState` |  |  |
-| `sorting` | `{ state: SortingState; onChange: (s: SortingState) => void; }` |  | 컨트롤드 정렬 (서버 모드) |
+| `sorting` | `{ state: SortingState; onChange: (s: SortingState) => void; }` |  | 컨트롤드 정렬 (서버 모드). onChange 안에서 page 도 0 으로 — 한 번의 setSearchParams 로 |
 | `variant` | `enum` | `plain` |  |

@@ -36,7 +36,7 @@ export function StatCard({ label, value, delta, trend, trendFormat, tone = 'defa
     const fmt = delta.format ?? ((v: number) => `${v > 0 ? '+' : ''}${v}`)
     deltaEl = (
       <span className={cn('text-xs tnum', neutral ? 'text-ink/70' : good ? 'text-success' : 'text-danger')}>
-        {flat ? '변동 없음' : fmt(delta.value)} <span className="text-muted">{delta.period}</span>
+        <span className="text-muted">{delta.period}</span> {flat ? '변동 없음' : fmt(delta.value)}
       </span>
     )
   }

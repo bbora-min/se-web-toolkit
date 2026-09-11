@@ -13,7 +13,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 - 코드를 쓰기 **전에** `se-design` 스킬의 디자인 플랜을 먼저 쓴다 (10줄). 플랜 없이 코드부터 쓰지 않는다
 
 ## 규칙 — 1–3은 `@se/eslint-plugin`이 error로 막고, 4–5는 warn(템플릿의 `lint`는 `--max-warnings=0`이라 역시 실패)
-1. **색은 토큰 클래스만.** `bg-canvas` `bg-surface` `bg-surface-2` `text-ink` `text-muted` `border-line` `border-line-strong` `bg-accent` `text-on-accent` `text-accent-fg` `bg-accent-soft` `text-success|warning|danger|info` `bg-*-soft` `bg-chart-1..8`. hex·rgb·Tailwind 기본 팔레트(`bg-blue-500`) 금지. 서비스 색은 `se.identity.json`이 정한다 — 코드에서 고르지 않는다.
+1. **색은 토큰 클래스만.** `bg-canvas` `bg-surface` `bg-surface-2` `text-ink` `text-muted` `border-line` `border-line-strong` `bg-accent` `text-on-accent` `text-accent-fg` `bg-accent-soft` `text-success|warning|danger|info` `bg-*-soft` `text-on-danger|warning|success|info`(의미 색 블록 위 글자) `bg-chart-1..8`. hex·rgb·Tailwind 기본 팔레트(`bg-blue-500`) 금지. 서비스 색은 `se.identity.json`이 정한다 — 코드에서 고르지 않는다.
 2. **폼 컨트롤·표·다이얼로그는 `@se/ui`.** raw `<button> <input> <select> <textarea> <table>` 금지.
 3. **기반 라이브러리 직접 import 금지.** `@radix-ui/*` `cmdk` `sonner` `recharts` `@tanstack/react-table` → 항상 `@se/ui`·`@se/charts`를 거친다.
 4. **한 화면에 `variant="primary"` Button은 하나.** 주 액션이 둘이면 둘 다 아니다. 린터는 파일 단위로만 보므로 여러 파일이 한 라우트를 이룰 땐 직접 확인한다.
@@ -51,6 +51,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 - **사람**: `Avatar` + 이름, 승인 상태는 아바타 스택(`references/examples/release-desk/bits.tsx`)
 - **시간·숫자**: `@se/ui`의 `formatRelative` + `title={formatAbsolute}`, `formatDuration`, `formatCompact`, `formatBytes`
 - **행 액션**: `DataTable rowActions` — 호버 시 아이콘 1–3개, 위험 동작은 `ConfirmDialog`(이름 재입력)
+- **서버 모드 정렬**: `sorting.onChange`에서 `set({ sort, dir, page: '' })` **한 번에**. 필터·탭이 바뀌면 선택(`selection`)도 비운다
 - **폼**: `Form`/`FormField`/`FormItem`/`FormLabel`/`FormControl`/`FormMessage` + zod. 섹션은 `FormSection`(좌 설명·우 필드)
 - **차트**: `ChartCard` + `BarChart|LineChart|MeterList`. 성공/실패/취소는 의미 색, 계열은 `chart-1..8` 순서 고정, 2개 이상이면 `legend`
 

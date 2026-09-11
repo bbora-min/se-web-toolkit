@@ -1,6 +1,6 @@
 {
   "name": "se",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "SE Web Toolkit — 내부 엔지니어링 도구용 디자인 시스템(@se/ui·@se/tokens·@se/charts)을 웹 디자이너처럼 쓰게 하는 스킬(se-ui·se-design·/se:new·/se:identity·/se:spec·/se:page·/se:api·/se:review·/se:audit·/se:adopt·/se:deploy), 에이전트, 린트 훅",
   "author": {
     "name": "SE Software Engineering"

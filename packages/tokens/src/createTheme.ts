@@ -23,6 +23,14 @@ const CONTRAST_RULES: Array<[fg: string, bg: string, min: number, why: string]> 
   ['accent-fg', 'canvas', 4.5, '액센트 색 텍스트·링크'],
   ['accent-fg', 'surface', 4.5, '카드 위 액센트 텍스트'],
   ['on-accent', 'accent', 4.5, '버튼 라벨'],
+  ['on-danger', 'status-danger', 4.5, '위험 블록 라벨'],
+  ['on-warning', 'status-warning', 4.5, '경고 블록 라벨'],
+  ['on-success', 'status-success', 4.5, '성공 블록 라벨'],
+  ['on-info', 'status-info', 4.5, '정보 블록 라벨'],
+  ['status-danger', 'canvas', 4.5, '위험 텍스트'],
+  ['status-warning', 'canvas', 4.5, '경고 텍스트'],
+  ['status-success', 'canvas', 4.5, '성공 텍스트'],
+  ['status-info', 'canvas', 4.5, '정보 텍스트'],
   ['line-strong', 'canvas', 1.3, '강조 테두리'],
 ]
 
@@ -51,11 +59,16 @@ function colorsFor(mode: Mode, id: Identity): Record<string, string> {
   const n = neutralParams(id.neutralBias, id.accent.hue)
   const i = mode === 'light' ? 0 : 1
   const status: Record<string, string> = {}
+  const neutral = neutralScale(mode, n.h, n.c)
   for (const [k, v] of Object.entries(brand.status)) {
     status[`status-${k}`] = v.fg[i]
     status[`status-${k}-soft`] = v.soft[i]
+    // 의미 색을 배경으로 쓴 블록(장애 스트립·danger 버튼)의 글자 — 흰색과 어두운 중성색 중 더 잘 읽히는 쪽.
+    // 라이트: 경고 노랑만 어두운 글자가 이긴다. 다크: 의미 색이 밝아서 전부 어두운 글자(=canvas)가 이긴다
+    const white = '#FFFFFF'
+    const dark = mode === 'light' ? neutral.ink! : neutral.canvas!
+    status[`on-${k}`] = contrast(white, v.fg[i]!) >= contrast(dark, v.fg[i]!) ? white : dark
   }
-  const neutral = neutralScale(mode, n.h, n.c)
   status['status-neutral'] = neutral.muted
   status['status-neutral-soft'] = neutral['surface-2']
   return {

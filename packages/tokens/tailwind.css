@@ -19,6 +19,10 @@
   --color-accent-soft: var(--se-accent-soft);
   --color-accent-fg: var(--se-accent-fg);
   --color-on-accent: var(--se-on-accent);
+  --color-on-success: var(--se-on-success);
+  --color-on-warning: var(--se-on-warning);
+  --color-on-danger: var(--se-on-danger);
+  --color-on-info: var(--se-on-info);
   --color-success: var(--se-status-success);
   --color-success-soft: var(--se-status-success-soft);
   --color-warning: var(--se-status-warning);

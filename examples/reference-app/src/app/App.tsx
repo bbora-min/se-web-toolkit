@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
-import { ThemeProvider, Toaster, TooltipProvider } from '@se/ui'
+import { ThemeProvider, Toaster, TooltipProvider, hasForcedState } from '@se/ui'
 import identity from '../../se.identity.json'
 import { Shell } from './Shell'
 import { JobsPage } from '../pages/jobs/JobsPage'
@@ -8,7 +8,7 @@ import { OverviewPage } from '../pages/overview/OverviewPage'
 import { IdentityPage } from '../pages/identity/IdentityPage'
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: 1, staleTime: 5_000 } },
+  defaultOptions: { queries: { retry: (n) => !hasForcedState() && n < 1, staleTime: 5_000 } },
 })
 
 export function App() {

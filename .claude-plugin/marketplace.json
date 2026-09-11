@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "SE 내부 도구 디자인 시스템 플러그인",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "se",
       "source": "./plugin",
       "description": "@se/ui 디자인 시스템으로 내부 도구를 만드는 스킬(se-ui·se-design, /se:new /se:identity /se:spec /se:page /se:api /se:review /se:audit /se:adopt /se:deploy), 에이전트(se-design-critic·se-reviewer·se-migrator), 세션 시작·저장 시 린트 훅",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "category": "development"
     }
   ]

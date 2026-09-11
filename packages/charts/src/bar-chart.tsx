@@ -15,6 +15,8 @@ export interface BarChartProps<T extends object> {
   tooltipValue?: (v: number, key: string) => React.ReactNode
   /** x축 눈금 간격 (예: 24포인트에 4면 6개만) */
   xInterval?: number
+  /** 막대 폭 고정(px). 값이 0–3건인 도구에서 기본(최대 28)이 너무 가늘 때 */
+  barSize?: number
 }
 
 /**
@@ -32,6 +34,7 @@ export function BarChart<T extends object>({
   tooltipLabel,
   tooltipValue,
   xInterval,
+  barSize,
 }: BarChartProps<T>) {
   return (
     <div style={{ height }} className="text-xs">
@@ -53,6 +56,7 @@ export function BarChart<T extends object>({
               fill={cssColor(s.color)}
               radius={stacked ? (i === series.length - 1 ? [3, 3, 0, 0] : 0) : [3, 3, 0, 0]}
               maxBarSize={28}
+              barSize={barSize}
               stroke="var(--se-surface)"
               strokeWidth={stacked ? 1 : 0}
               isAnimationActive={false}

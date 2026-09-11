@@ -22,6 +22,7 @@
 | `data` **필수** | `T[]` |  |  |
 | `series` **필수** | `Series[]` |  |  |
 | `xKey` **필수** | `string` |  |  |
+| `barSize` | `number` |  | 막대 폭 고정(px). 값이 0–3건인 도구에서 기본(최대 28)이 너무 가늘 때 |
 | `height` | `number` | `220` |  |
 | `stacked` | `boolean` |  |  |
 | `tooltipLabel` | `((v: unknown) => ReactNode)` |  |  |

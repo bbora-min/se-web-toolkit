@@ -21,8 +21,8 @@ export interface StatusStripProps {
 const HEALTH: Record<StripHealth, { dot: string; text: string; label: string; block: string }> = {
   // block: full 변형의 좌측 블록. 정상일 땐 서비스 액센트가 블록을 "들고", 이상이 있으면 의미 색이 넘겨받는다
   ok: { dot: 'bg-success', text: 'text-success', label: '정상', block: 'bg-accent text-on-accent' },
-  degraded: { dot: 'bg-warning', text: 'text-warning', label: '저하', block: 'bg-warning text-white' },
-  down: { dot: 'bg-danger', text: 'text-danger', label: '장애', block: 'bg-danger text-white' },
+  degraded: { dot: 'bg-warning', text: 'text-warning', label: '저하', block: 'bg-warning text-on-warning' },
+  down: { dot: 'bg-danger', text: 'text-danger', label: '장애', block: 'bg-danger text-on-danger' },
   unknown: { dot: 'bg-neutral', text: 'text-muted', label: '알 수 없음', block: 'bg-surface-2 text-ink' },
 }
 

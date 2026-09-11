@@ -9,8 +9,17 @@ export interface MeterItem {
   display?: React.ReactNode
   /** 보조 텍스트 — "12 runs" */
   sub?: React.ReactNode
-  tone?: 'accent' | 'success' | 'warning' | 'danger'
+  tone?: 'accent' | 'success' | 'warning' | 'danger' | 'info' | 'neutral'
   onClick?: () => void
+}
+
+const TONE: Record<NonNullable<MeterItem['tone']>, { text?: string; track: string; bar: string }> = {
+  accent: { track: 'bg-accent-soft', bar: 'bg-accent' },
+  success: { track: 'bg-success-soft', bar: 'bg-success' },
+  warning: { text: 'text-warning', track: 'bg-warning-soft', bar: 'bg-warning' },
+  danger: { text: 'text-danger', track: 'bg-danger-soft', bar: 'bg-danger' },
+  info: { track: 'bg-info-soft', bar: 'bg-info' },
+  neutral: { text: 'text-muted', track: 'bg-surface-2', bar: 'bg-line-strong' },
 }
 
 /**
@@ -21,7 +30,7 @@ export function MeterList({ items, className }: { items: MeterItem[]; className?
   return (
     <ul className={cn('flex flex-col', className)}>
       {items.map((it, i) => {
-        const tone = it.tone ?? 'accent'
+        const t = TONE[it.tone ?? 'accent']
         const Comp = it.onClick ? 'button' : 'div'
         return (
           <li key={i} className="border-b border-line last:border-0">
@@ -32,12 +41,12 @@ export function MeterList({ items, className }: { items: MeterItem[]; className?
             >
               <span className="truncate text-sm text-ink">{it.label}</span>
               <span className="flex items-baseline gap-2 tnum text-sm">
-                <span className={cn('font-medium', tone === 'danger' && 'text-danger', tone === 'warning' && 'text-warning')}>{it.display ?? `${it.value}%`}</span>
+                <span className={cn('font-medium', t.text)}>{it.display ?? `${it.value}%`}</span>
                 {it.sub ? <span className="text-xs text-muted">{it.sub}</span> : null}
               </span>
-              <span className={cn('col-span-2 h-1.5 overflow-hidden rounded-full', tone === 'accent' && 'bg-accent-soft', tone === 'success' && 'bg-success-soft', tone === 'warning' && 'bg-warning-soft', tone === 'danger' && 'bg-danger-soft')}>
+              <span className={cn('col-span-2 h-1.5 overflow-hidden rounded-full', t.track)}>
                 <span
-                  className={cn('block h-full rounded-full', tone === 'accent' && 'bg-accent', tone === 'success' && 'bg-success', tone === 'warning' && 'bg-warning', tone === 'danger' && 'bg-danger')}
+                  className={cn('block h-full rounded-full', t.bar)}
                   style={{ width: `${Math.max(0, Math.min(100, it.value))}%` }}
                 />
               </span>

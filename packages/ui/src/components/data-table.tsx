@@ -20,6 +20,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 
 export type { ColumnDef, SortingState, RowSelectionState }
 
+/** 행 액션 열의 기준 폭(px) — 아이콘 버튼 3개 */
+const ACTIONS_COL_PX = 112
+
 export interface ServerPagination {
   pageIndex: number
   pageSize: number
@@ -46,10 +49,10 @@ export interface DataTableProps<T> {
   initialSorting?: SortingState
   /**
    * 서버 모드. 주면 정렬·페이지네이션을 서버가 담당한다 — `sorting`과 함께 쓴다.
-   * 1만 건 넘는 목록은 반드시 이 모드.
+   * 1만 건 넘는 목록은 반드시 이 모드. `sorting` 없이 쓰면 정렬 클릭 시 표가 알아서 1페이지로 돌린다.
    */
   pagination?: ServerPagination
-  /** 컨트롤드 정렬 (서버 모드) */
+  /** 컨트롤드 정렬 (서버 모드). onChange 안에서 page 도 0 으로 — 한 번의 setSearchParams 로 */
   sorting?: { state: SortingState; onChange: (s: SortingState) => void }
   /** 행 선택 — 체크박스 열이 생기고 선택 시 하단에 일괄 액션 바가 뜬다 */
   selectable?: boolean
@@ -120,9 +123,16 @@ export function DataTable<T>({
     state: { sorting, rowSelection, ...(pagination ? { pagination: { pageIndex: pagination.pageIndex, pageSize: pagination.pageSize } } : {}) },
     onSortingChange: (u) => {
       const next = typeof u === 'function' ? u(sorting) : u
-      if (sortingCtl) sortingCtl.onChange(next)
-      else setInnerSorting(next)
+      if (sortingCtl) {
+        // 컨트롤드 정렬: 페이지 리셋은 앱이 onChange 안에서 한 번의 상태 갱신으로 한다
+        // (여기서 pagination.onChange 를 따로 부르면 같은 틱의 setSearchParams 가 서로 덮어쓴다 — 실제로 겪음)
+        sortingCtl.onChange(next)
+        return
+      }
+      setInnerSorting(next)
+      // 언컨트롤드 정렬 + 서버 페이지네이션: 앱이 정렬을 모르니 여기서 1페이지로 (호출은 이것 하나)
       if (pagination && pagination.pageIndex !== 0) pagination.onChange({ pageIndex: 0, pageSize: pagination.pageSize })
+      // 클라이언트 모드는 react-table 의 autoResetPageIndex 가 알아서 한다
     },
     onRowSelectionChange: (u) => setRowSelection(typeof u === 'function' ? u(rowSelection) : u),
     enableRowSelection: !!selectable,
@@ -144,6 +154,15 @@ export function DataTable<T>({
   const canNext = pageIndex < pageCount - 1
   const goto = (i: number) => (pagination ? pagination.onChange({ pageIndex: i, pageSize: size }) : table.setPageIndex(i))
 
+  // 열 폭은 비율(%) — table-fixed 로 헤더·본문·빈/에러 행의 열이 항상 같은 자리, 좁은 화면에선 넘치지 않고 비례로 줄어든다
+  // size 를 안 준 열(react-table 기본 150)은 비율에서 빼고 남는 폭을 균등하게 갖게 둔다 — 그 경우 준 열은 px 로 고정
+  const leafCols = table.getAllLeafColumns()
+  const sized = (c: (typeof leafCols)[number]) => c.columnDef.size !== undefined
+  const allSized = leafCols.every(sized)
+  const widthTotal = leafCols.reduce((sum, c) => sum + (sized(c) ? c.getSize() : 0), 0) + (rowActions ? ACTIONS_COL_PX : 0)
+  const colWidth = (px: number | undefined) =>
+    px === undefined ? undefined : allSized && widthTotal > 0 ? `${(px / widthTotal) * 100}%` : px
+
   const selectedRows = table.getSelectedRowModel().rows.map((r) => r.original)
   const selectedCount = Object.values(rowSelection).filter(Boolean).length
   const clearSelection = () => setRowSelection({})
@@ -151,7 +170,13 @@ export function DataTable<T>({
   return (
     <div className={cn('relative flex flex-col', variant === 'card' && 'rounded-lg border border-line bg-surface shadow-xs', variant === 'plain' && 'border-t border-line', className)}>
       <div className={cn('transition-opacity duration-150', fetching && !loading && 'opacity-60')}>
-        <Table>
+        <Table className="table-fixed">
+          <colgroup>
+            {leafCols.map((c) => (
+              <col key={c.id} style={{ width: colWidth(sized(c) ? c.getSize() : undefined) }} />
+            ))}
+            {rowActions ? <col style={{ width: colWidth(ACTIONS_COL_PX) }} /> : null}
+          </colgroup>
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id} className="hover:bg-transparent">
@@ -160,7 +185,7 @@ export function DataTable<T>({
                   const dir = h.column.getIsSorted()
                   const align = (h.column.columnDef.meta as { align?: 'right' } | undefined)?.align
                   return (
-                    <TableHead key={h.id} data-align={align} style={{ width: h.getSize() !== 150 ? h.getSize() : undefined }} className={cn(h.column.id === '__select' && 'pr-0')}>
+                    <TableHead key={h.id} data-align={align} className={cn(h.column.id === '__select' && 'pr-0')}>
                       {h.isPlaceholder ? null : canSort ? (
                         <button
                           type="button"
@@ -176,7 +201,7 @@ export function DataTable<T>({
                     </TableHead>
                   )
                 })}
-                {rowActions ? <TableHead aria-label="액션" className="w-0" /> : null}
+                {rowActions ? <TableHead aria-label="액션" /> : null}
               </TableRow>
             ))}
           </TableHeader>
@@ -226,14 +251,15 @@ export function DataTable<T>({
                 >
                   {row.getVisibleCells().map((cell) => {
                     const align = (cell.column.columnDef.meta as { align?: 'right' } | undefined)?.align
+                    // 좁은 화면에서 열이 비례로 줄면 글은 줄바꿈되지만 숫자(우측 정렬)는 한 줄을 지킨다 — "1.7 / MB" 로 꺾이면 못 읽는다
                     return (
-                      <TableCell key={cell.id} data-align={align} className={cn(cell.column.id === '__select' && 'pr-0')}>
+                      <TableCell key={cell.id} data-align={align} className={cn('data-[align=right]:whitespace-nowrap', cell.column.id === '__select' && 'pr-0')}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     )
                   })}
                   {rowActions ? (
-                    <TableCell className="w-0 pl-0" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                    <TableCell className="pl-0" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-0.5 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 [tr[data-state=selected]_&]:opacity-100">
                         {rowActions(row.original)}
                       </div>

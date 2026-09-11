@@ -35,7 +35,7 @@ export const brand = {
    */
   status: {
     success: { fg: ['#2E7D4F', '#5BC08A'], soft: ['#E6F3EC', '#183A28'] },
-    warning: { fg: ['#B7791F', '#E0A64A'], soft: ['#FBF1DE', '#3D2E12'] },
+    warning: { fg: ['#9A6700', '#E0A64A'], soft: ['#FBF1DE', '#3D2E12'] },
     danger: { fg: ['#C03A2B', '#E5705F'], soft: ['#FAE6E3', '#3F1B17'] },
     info: { fg: ['#2F6FD1', '#6E9FF0'], soft: ['#E5EEFB', '#17284A'] },
   },

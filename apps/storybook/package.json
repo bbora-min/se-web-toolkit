@@ -1,0 +1,33 @@
+{
+  "name": "se-storybook",
+  "private": true,
+  "version": "0.0.0",
+  "description": "SE Web Toolkit Storybook — 사람용 컴포넌트·시그니처·아이덴티티 갤러리 (스킬 레퍼런스와 같은 TSDoc 이 원본)",
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev -p 6006 --no-open",
+    "build": "storybook build -o dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@se/charts": "workspace:*",
+    "@se/tokens": "workspace:*",
+    "@se/ui": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "lucide-react": "^0.469.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.0",
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/react-vite": "^10.6.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "storybook": "^10.6.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^7.0.0"
+  }
+}

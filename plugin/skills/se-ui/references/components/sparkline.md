@@ -12,4 +12,5 @@
 | `emphasizeLast` | `boolean` | `true` | 마지막 구간을 액센트로 강조 (현재 기간) |
 | `format` | `((v: number) => string)` |  | 값 포맷 (호버 라벨) |
 | `height` | `number` | `28` |  |
+| `inverse` | `boolean` | `false` | 액센트 블록(bg-accent) 위에 놓일 때 — 선·끝점을 on-accent 로 |
 | `width` | `number` | `96` |  |

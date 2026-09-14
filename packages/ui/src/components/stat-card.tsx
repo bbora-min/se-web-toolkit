@@ -25,18 +25,24 @@ function AnimatedNumber({ value, decimals = 0 }: { value: number; decimals?: num
   return <>{v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}</>
 }
 
+/** 전기 대비 문구 — "어제 대비 +2" / "변동 없음". good: null 이면 방향에 가치 없음(중립) */
+export function formatDelta(delta: NonNullable<StatCardProps['delta']>): { text: string; good: boolean | null } {
+  const up = delta.value > 0
+  const flat = delta.value === 0
+  const neutral = flat || delta.upIsGood === null
+  const good = neutral ? null : (delta.upIsGood ?? true) === up
+  const fmt = delta.format ?? ((v: number) => `${v > 0 ? '+' : ''}${v}`)
+  return { text: flat ? '변동 없음' : fmt(delta.value), good }
+}
+
 export function StatCard({ label, value, delta, trend, trendFormat, tone = 'default', className }: StatCardProps) {
   const shown = typeof value === 'number' ? <AnimatedNumber value={value} decimals={Number.isInteger(value) ? 0 : 1} /> : value
   let deltaEl: React.ReactNode = null
   if (delta) {
-    const up = delta.value > 0
-    const flat = delta.value === 0
-    const neutral = flat || delta.upIsGood === null
-    const good = neutral ? null : (delta.upIsGood ?? true) === up
-    const fmt = delta.format ?? ((v: number) => `${v > 0 ? '+' : ''}${v}`)
+    const d = formatDelta(delta)
     deltaEl = (
-      <span className={cn('text-xs tnum', neutral ? 'text-ink/70' : good ? 'text-success' : 'text-danger')}>
-        <span className="text-muted">{delta.period}</span> {flat ? '변동 없음' : fmt(delta.value)}
+      <span className={cn('text-xs tnum', d.good === null ? 'text-ink/70' : d.good ? 'text-success' : 'text-danger')}>
+        <span className="text-muted">{delta.period}</span> {d.text}
       </span>
     )
   }
@@ -53,7 +59,7 @@ export function StatCard({ label, value, delta, trend, trendFormat, tone = 'defa
         >
           {shown}
         </span>
-        {trend ? <Sparkline data={trend} format={trendFormat} className="shrink-0" /> : null}
+        {trend ? <Sparkline data={trend} format={trendFormat} className="min-w-0 shrink" /> : null}
       </div>
       {deltaEl}
     </div>

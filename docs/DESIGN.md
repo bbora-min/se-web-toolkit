@@ -1,6 +1,6 @@
 # SE Web Toolkit 설계
 
-> 내부 엔지니어링 도구(데이터 조회·상태 모니터링·업무 처리)를 위한 디자인 시스템 + Claude Code 플러그인. (툴킷 0.5.0 · 2026-09-14)
+> 내부 엔지니어링 도구(데이터 조회·상태 모니터링·업무 처리)를 위한 디자인 시스템 + Claude Code 플러그인. (툴킷 0.6.0 · 2026-09-14)
 > 목표: 개발 속도, SE 아이덴티티의 일관성 **(양산형이 아닌, 서비스별 개성을 가진 일관성)**, 전문가 수준의 UI 품질, 낮은 진입 장벽.
 
 전제(확정): FE 표준 = React + Vite + TypeScript / 기존 서비스 = React 계열 / 백엔드·배포 = 비표준(무관해야 함) / 배포 = Claude Code 플러그인(marketplace).
@@ -212,7 +212,7 @@ jscodeshift 변환(MUI/antd/styled hex → se). 80% 자동, 나머지는 `se-mig
 
 ## 8. Layer 3 — Claude Code 플러그인 (`plugin/`)
 
-> **구현 상태 (0.5.0)**: 아래 구조가 전부 존재한다 — 스킬 12개(자동 2 + 명령 10), 에이전트 3, 훅 2, `gen:skill-docs`(43 파일·98 컴포넌트, CI `--check`), `create-se-app`(E2E 검증). `templates/app-vite-react`는 플레이스홀더 없는 진짜 워크스페이스 앱이라 루트 typecheck·lint가 항상 본다. 미완: `@se/*` npm 배포(그 전까지 `/se:new`는 모노레포 `examples/`에 생성), `timeline-ribbon`·`metric-marquee` 시그니처, `@se/codemods`.
+> **구현 상태 (0.6.0)**: 아래 구조가 전부 존재한다 — 스킬 12개(자동 2 + 명령 10), 에이전트 3, 훅 2, `gen:skill-docs`(45 파일·100 컴포넌트, CI `--check`), `create-se-app`(E2E 검증). `templates/app-vite-react`는 플레이스홀더 없는 진짜 워크스페이스 앱이라 루트 typecheck·lint가 항상 본다. 미완: `@se/*` npm 배포, `@se/codemods`. 시그니처 5종 전부 구현(`/__signatures` 갤러리).
 
 ```
 plugin/
@@ -345,7 +345,7 @@ se-web-toolkit/
 | P1 기반+품질 **(완료)** | tokens(4계층, createTheme), 컴포넌트 50개(98 export), 시그니처 3종, **레퍼런스 앱 3개**(모니터링·조회·업무 처리), 템플릿+CLI, `se-ui`·`se-design` 스킬, 명령 9개, 훅 2, eslint-plugin, charts | 세 시나리오 원본 확보. 디자인 리뷰 56 → 70/80 |
 | P2 검증+도입 | **새 세션에서 `/se:new`로 4번째 서비스를 스킬만으로 생성해 품질 검증**, `/se:review` 루프 실사용, `/se:adopt`로 기존 서비스 1개, codemods, 나머지 시그니처 2종 | 기존 서비스 1개 5단계 완료. 스킬이 만든 화면이 70/80 이상 |
 | P2.5 운영 **(완료)** | 버전 한 값·CHANGELOG·태그 자동·CI `check:release`, 앱은 태그 고정, `/se:upgrade`, `/se:audit` 버전 비교 (§15) | 툴킷 변경이 앱에 닿는 경로가 한 가지 |
-| P3 배포 | `@se/*` npm 배포(→ 모노레포 밖 `npx create-se-app`), 시그니처 2종 추가, Storybook·아이덴티티 갤러리, 기여 가이드, 자동 업그레이드 PR | 웹 비전공 구성원이 혼자 서비스 1개 출시 |
+| P3 배포 | `@se/*` npm 배포(→ 모노레포 밖 `npx create-se-app`), Storybook·아이덴티티 갤러리, 기여 가이드, 자동 업그레이드 PR | 웹 비전공 구성원이 혼자 서비스 1개 출시 |
 
 성공 지표: 셋업→첫 화면 배포 시간 / `/se:audit` 준수율·디자인 점수 / 서비스 간 hue·시그니처 중복 0 / 신규 구성원 첫 PR까지 시간.
 

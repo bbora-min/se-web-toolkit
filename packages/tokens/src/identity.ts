@@ -63,8 +63,8 @@ export function hueDistance(a: number, b: number): number {
 /** 형제 서비스와 최소한 이만큼 떨어져야 "다른 제품"으로 읽힌다 */
 export const MIN_HUE_DISTANCE = 30
 
-/** @se/ui 가 실제로 구현한 시그니처. SIGNATURES 의 나머지는 예약. @se/ui 에 추가하면 여기도 올린다 */
-export const IMPLEMENTED_SIGNATURES = ['status-strip', 'search-hero', 'stage-rail'] as const satisfies readonly (typeof SIGNATURES)[number][]
+/** @se/ui 가 실제로 구현한 시그니처 — 지금은 SIGNATURES 전부. 새 시그니처를 스키마에 먼저 예약하고 @se/ui 에 구현한 뒤 여기 올리는 순서를 위해 따로 둔다 */
+export const IMPLEMENTED_SIGNATURES = ['status-strip', 'search-hero', 'stage-rail', 'timeline-ribbon', 'metric-marquee'] as const satisfies readonly (typeof SIGNATURES)[number][]
 
 export interface RegistryEntry {
   id: string

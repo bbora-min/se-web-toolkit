@@ -8,7 +8,7 @@
 | 경로 | 내용 | 상태 |
 |---|---|---|
 | `packages/tokens` | `@se/tokens` — 브랜드 코어(고정) + `createTheme(identity)`, Vite 플러그인, Tailwind v4 매핑 | P1 ✓ |
-| `packages/ui` | `@se/ui` — shadcn/Radix 관례의 React 컴포넌트 50개, AppShell, 시그니처 3종 | ✓ |
+| `packages/ui` | `@se/ui` — shadcn/Radix 관례의 React 컴포넌트 50개, AppShell, 시그니처 5종(`/__signatures` 갤러리) | ✓ |
 | `packages/charts` | `@se/charts` — Recharts 래퍼 (ChartCard·Bar·Line·MeterList) | ✓ |
 | `packages/eslint-plugin` | `@se/eslint-plugin` — 규칙 5개, recommended/library 설정 | ✓ |
 | `examples/reference-app` | **Job Monitor** — 모니터링. 개요(Dashboard)·잡 목록(ListDetail, 서버 모드)·로그 뷰어 | ✓ |
@@ -47,11 +47,7 @@ claude plugin update se@se-web-toolkit   # 스킬·규칙
 브랜치에서 수정 → 레퍼런스 앱 3개 스크린샷(라이트·다크·1024) → `/code-review` → `pnpm release:bump <x.y.z>` 로 버전을 한 번에 올리고 CHANGELOG 세 칸(바뀐 것 / 화면 변화 / 앱에서 할 일)을 채움 → PR. CI `check:release` 가 코드 변경에 버전·CHANGELOG 가 없으면 실패시키고, merge 되면 `v<버전>` 태그가 자동으로 찍힌다.
 
 ## 툴킷 개발
-`./scripts/setup.sh --dev` 가 Node 22 · pnpm · 설치 · 검사 · 플러그인 등록(로컬 체크아웃) · 레퍼런스 앱 3개 실행을 한 번에 한다 (sudo 없음, 멱등).
-기존 프로젝트는 `/se:adopt`. 플러그인 상세는 [plugin/README.md](plugin/README.md).
-
-## 툴킷 개발
-`./scripts/setup.sh --full` 이 환경·설치·전체 검사를 한 번에 한다.
+`./scripts/setup.sh --dev` 가 Node 22 · pnpm · 설치 · 검사 · 플러그인 등록 · 레퍼런스 앱 3개 실행(5173–5175)을 한 번에 한다 (sudo 없음, 멱등). `--full` 은 전체 검사까지. 플러그인 상세는 [plugin/README.md](plugin/README.md), 시험 절차와 결과는 [docs/VALIDATION.md](docs/VALIDATION.md).
 
 ```bash
 # Node 22 (.nvmrc) + pnpm 9

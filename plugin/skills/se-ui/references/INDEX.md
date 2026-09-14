@@ -1,6 +1,6 @@
 # 컴포넌트 레퍼런스 (자동 생성 — 수정하지 말 것, `pnpm gen:skill-docs`)
 
-파일 43개 · 내보내는 컴포넌트 98개
+파일 45개 · 내보내는 컴포넌트 100개
 
 - [Alert](components/alert.md) — 컴포넌트 · 페이지 안의 안내 배너. 토스트는 "방금 일어난 일", 배너는 "지금 상태"
 - [Avatar](components/avatar.md) — 컴포넌트 · 이니셜 아바타. 사진 없는 내부 도구에 딱 필요한 만큼
@@ -37,9 +37,11 @@
 - [TooltipProvider · Tooltip · TooltipTrigger · TooltipContent](components/tooltip.md) — 컴포넌트
 - [AppShell · NavItem · NavSection · PageHeader · PageBody](components/app-shell.md) — 패턴
 - [IdentitySheet](components/identity-sheet.md) — 패턴 · 아이덴티티 시트 — 서비스의 "얼굴"을 한 장으로.
+- [MetricMarquee](components/metric-marquee.md) — 시그니처 · 시그니처 · 지표 마키 — 숫자가 목적인 서비스(비용·사용량·품질 지표)의 얼굴.
 - [SearchHero](components/search-hero.md) — 시그니처 · 시그니처 · 검색 히어로 — 데이터 조회 서비스의 얼굴.
 - [StageRail](components/stage-rail.md) — 시그니처 · 시그니처 · 단계 레일 — 워크플로 서비스의 얼굴.
 - [StatusStrip](components/status-strip.md) — 시그니처 · 시그니처 · 상태 스트립 — 모니터링 서비스의 얼굴.
+- [TimelineRibbon](components/timeline-ribbon.md) — 시그니처 · 시그니처 · 타임라인 리본 — 활동·이력 서비스의 얼굴.
 - [BarChart](components/charts-bar-chart.md) — 차트 · 막대. 얇게, 위쪽 모서리만 둥글게, 막대 사이 표면 간격.
 - [ChartCard](components/charts-chart-card.md) — 차트
 - [ChartCard · BarChart · LineChart · MeterList · SeriesColor](components/charts-index.md) — 차트

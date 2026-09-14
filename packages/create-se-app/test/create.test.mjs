@@ -35,10 +35,9 @@ describe('create-se-app', () => {
   it('의미 색과 가까운 hue는 거부한다', () => {
     expect(() => main(['x-app', '--hue', '30'], { cwd: tmp(), ...quiet })).toThrow(/danger/)
   })
-  it('잘못된 id·signature·미구현 signature를 거부한다', () => {
+  it('잘못된 id·signature 를 거부한다', () => {
     expect(() => main(['BadName'], { cwd: tmp(), ...quiet })).toThrow(/kebab-case/)
     expect(() => main(['ok-app', '--signature', 'confetti'], { cwd: tmp(), ...quiet })).toThrow(/signature/)
-    expect(() => main(['ok-app', '--signature', 'timeline-ribbon'], { cwd: tmp(), ...quiet })).toThrow(/구현되지 않았습니다/)
   })
   it('실패하면 디렉터리를 남기지 않는다', () => {
     const cwd = tmp()

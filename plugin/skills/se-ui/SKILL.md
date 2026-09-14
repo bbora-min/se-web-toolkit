@@ -16,7 +16,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 1. **색은 토큰 클래스만.** `bg-canvas` `bg-surface` `bg-surface-2` `text-ink` `text-muted` `border-line` `border-line-strong` `bg-accent` `text-on-accent` `text-accent-fg` `bg-accent-soft` `text-success|warning|danger|info` `bg-*-soft` `text-on-danger|warning|success|info`(의미 색 블록 위 글자) `bg-chart-1..8`. hex·rgb·Tailwind 기본 팔레트(`bg-blue-500`) 금지. 서비스 색은 `se.identity.json`이 정한다 — 코드에서 고르지 않는다.
 2. **폼 컨트롤·표·다이얼로그는 `@se/ui`.** raw `<button> <input> <select> <textarea> <table>` 금지.
 3. **기반 라이브러리 직접 import 금지.** `@radix-ui/*` `cmdk` `sonner` `recharts` `@tanstack/react-table` → 항상 `@se/ui`·`@se/charts`를 거친다.
-4. **한 화면에 `variant="primary"` Button은 하나.** 주 액션이 둘이면 둘 다 아니다. 린터는 파일 단위로만 보므로 여러 파일이 한 라우트를 이룰 땐 직접 확인한다.
+4. **한 화면에 `variant="primary"` Button은 하나.** 주 액션이 둘이면 둘 다 아니다. 린터는 파일 단위로만 보므로 여러 파일이 한 라우트를 이룰 땐 직접 확인한다. `variant="danger"` 는 파괴적 액션(삭제·종결·강제 중단)에만 — "등록 버튼을 빨갛게" 처럼 색 요청이 의미와 어긋나면 그대로 하지 말고 되묻는다(강조가 목적이면 primary 가 이미 이 서비스의 색이다). 주 액션을 danger 로 바꾸면 화면에서 primary 가 사라진다.
 5. **모든 목록은 3상태.** `DataTable`에 `loading`(스켈레톤)·`error`(원인+다시 시도)·`empty`(다음 행동 버튼). 빈 상태는 "없음"이 아니라 "다음에 무엇을 할지".
 
 ## 패턴 선택표 — 화면이 …이면

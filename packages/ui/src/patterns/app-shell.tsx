@@ -28,6 +28,8 @@ export interface AppShellProps {
   searchPlaceholder?: string
   /** 콘텐츠 최대 폭(px). 표가 화면 끝까지 늘어나지 않게 */
   maxWidth?: number
+  /** 사이드바 하단 크레딧. 기본 "SE · Web Toolkit", `false`/`null` 이면 숨김, 노드면 그것으로 (버전·환경 등) */
+  credit?: React.ReactNode
   children: React.ReactNode
 }
 
@@ -39,6 +41,7 @@ export function AppShell({
   topEnd,
   command,
   searchPlaceholder = '검색',
+  credit = 'SE · Web Toolkit',
   maxWidth = 1120,
   children,
 }: AppShellProps) {
@@ -66,9 +69,7 @@ export function AppShell({
           {nav}
         </nav>
         <div className="mt-2 flex items-center justify-between gap-2 px-1">
-          <span className="hidden truncate text-[11px] text-muted xl:inline">
-            SE <span className="mx-0.5">·</span> Web Toolkit
-          </span>
+          {credit ? <span className="hidden truncate text-[11px] text-muted xl:inline">{credit}</span> : null}
           <ThemeToggle />
         </div>
       </aside>

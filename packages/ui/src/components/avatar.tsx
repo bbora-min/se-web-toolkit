@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { cn } from '../lib/cn'
 
 /** 이니셜 아바타. 사진 없는 내부 도구에 딱 필요한 만큼 */

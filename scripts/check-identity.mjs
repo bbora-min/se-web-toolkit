@@ -13,6 +13,16 @@ const fail = (m) => {
 }
 
 for (const s of services) {
+  if (!s.path) {
+    // 툴킷 밖 서비스: 레지스트리 행으로 최소 아이덴티티를 만들어 같은 규칙(의미 색 18°·대비)을 돌린다
+    try {
+      createTheme({ id: s.id, name: s.name, mark: { type: 'monogram', text: 'SE' }, accent: { hue: s.hue }, signature: s.signature, neutralBias: s.neutralBias })
+      console.log('·', s.id, `hue ${s.hue}°`, s.signature, '(툴킷 밖 — 레지스트리 행으로 검사)')
+    } catch (e) {
+      fail(`${s.id}: ${e.message}`)
+    }
+    continue
+  }
   const file = resolve(root, s.path, 'se.identity.json')
   try {
     const id = JSON.parse(readFileSync(file, 'utf8'))

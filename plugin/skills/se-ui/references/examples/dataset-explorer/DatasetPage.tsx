@@ -15,7 +15,6 @@ import { Link, useParams, useSearchParams } from 'react-router'
 import {
   Badge,
   Button,
-  DescriptionList,
   ErrorState,
   PageBody,
   Skeleton,

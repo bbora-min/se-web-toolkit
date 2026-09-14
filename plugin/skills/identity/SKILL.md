@@ -8,12 +8,12 @@ description: 서비스 아이덴티티(se.identity.json)를 정하거나 다듬�
 `se.identity.json`의 슬롯 8개(액센트 hue · 뉴트럴 편향 · 마크 · 시그니처 · 밀도 · 헤딩 폰트 · 차트 · 톤)를 정한다. 골격(타이포·간격·컴포넌트·쉘)은 고정이라 여기서 바꾸지 않는다.
 
 ## 절차
-1. 현재 `se.identity.json`을 읽는다 (있으면). 툴킷 모노레포면 `identities/registry.json`도 — 형제들의 hue·시그니처
+1. 현재 `se.identity.json`을 읽는다 (있으면). **형제 목록은 반드시 읽는다**: 툴킷 모노레포면 `identities/registry.json`, 아니면 플러그인에 동봉된 `${CLAUDE_PLUGIN_ROOT}/skills/identity/references/registry.json`(툴킷 main 의 사본). 형제 hue 와 30° 미만인 후보는 내지 않는다 — 안 읽고 고르면 20° 차이 형제가 나온다(실제로 겪음)
 2. 인터뷰 5문항 (이미 답이 있으면 건너뛴다): 서비스가 하는 일 / 주 사용자와 사용 순간 / 분위기 3단어 / 닮으면 안 되는 형제 / 가장 중요한 화면
 3. **2–3안**을 표로: 각 안은 hue(이름과 °)·뉴트럴·시그니처·밀도·톤이 서로 다르다. 각 안이 "가장 중요한 화면"에서 어떻게 보일지 한 문장
    - hue 후보는 규칙을 통과하는 것만: 의미 색(danger 30°·warning 70°·success 155°·info 260°)과 18°, 형제와 30° 이상. 통과 여부는 `node -e "import('@se/tokens').then(m=>m.createTheme({...}))"`로 확인한다
 4. 선택 → `se.identity.json` 갱신. dev 서버가 떠 있으면 즉시 반영된다(HMR). `/__identity`에서 확인하라고 안내
-5. 모노레포면 `identities/registry.json`에 반영하고 `pnpm check-identity`
+5. 모노레포면 `identities/registry.json`에 반영하고 `pnpm check-identity`. 툴킷 밖이면 결정 요약(id·name·hue·signature·neutralBias)을 사용자에게 보여 주고 툴킷 리포 `identities/registry.json` 에 등록해 달라고 안내한다(path 없이)
 
 ## 판단 기준
 - 액센트는 "이 서비스는 누구인가"다. 소극적으로 고르지 않는다 — 시그니처 블록·활성 탭·primary에 확신 있게 쓰인다

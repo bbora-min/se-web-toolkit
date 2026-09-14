@@ -36,7 +36,7 @@ export function StatusStrip({ health, headline, detail, stats, variant = 'full',
   if (variant === 'compact') {
     return (
       <section
-        className={cn('flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-line bg-accent-soft/40 px-4 py-2.5 text-sm', className)}
+        className={cn('flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-line border-l-2 border-l-accent bg-accent-soft/40 px-4 py-2.5 text-sm', className)}
         role="status"
         aria-live="polite"
       >

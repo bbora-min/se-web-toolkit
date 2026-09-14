@@ -47,7 +47,7 @@ export function makeReleases(count = 28): Release[] {
     const checklist = CHECKLIST_TEMPLATE.map((c) => ({ ...c, done: stageIdx >= 3 ? true : rnd() < 0.5 }))
     const timeline = [
       { at: createdAt, who: owner.name, what: `${version} 초안 작성`, kind: 'create' as const },
-      ...['review', 'staging', 'approval', 'deploy', 'done'].slice(0, stageIdx).map((s, k) => ({
+      ...['review', 'staging', 'approval', 'deploy', 'done'].slice(0, stageIdx).map((_s, k) => ({
         at: new Date(Date.parse(createdAt) + (k + 1) * 86400_000 * 1.3).toISOString(),
         who: k % 2 ? 'yuna' : owner.name,
         what: `${['코드 검토', '스테이징 검증', '승인', '배포', '완료'][k]} 단계로 이동`,

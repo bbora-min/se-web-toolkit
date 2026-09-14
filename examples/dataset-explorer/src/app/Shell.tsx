@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Database, LayoutGrid, Monitor, Moon, Palette, Rows3, Settings, ShieldAlert, Star, Sun, Tags, Users } from 'lucide-react'
+import { Database, LayoutGrid, Monitor, Moon, Palette, Rows3, ShieldAlert, Star, Sun, Tags, Users } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { AppShell, Avatar, Badge, NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
 import identity from '../../se.identity.json'

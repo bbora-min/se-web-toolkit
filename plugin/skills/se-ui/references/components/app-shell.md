@@ -10,6 +10,7 @@
 | `name` **필수** | `string` |  | 서비스 이름 — se.identity.json의 name |
 | `nav` **필수** | `ReactNode` |  |  |
 | `command` | `CommandGroup[]` |  | 커맨드 팔레트 그룹. 주면 상단 검색 버튼 + ⌘K가 켜진다 |
+| `credit` | `ReactNode` | `SE · Web Toolkit` | 사이드바 하단 크레딧. 기본 "SE · Web Toolkit", `false`/`null` 이면 숨김, 노드면 그것으로 (버전·환경 등) |
 | `maxWidth` | `number` | `1120` | 콘텐츠 최대 폭(px). 표가 화면 끝까지 늘어나지 않게 |
 | `searchPlaceholder` | `string` | `검색` |  |
 | `subtitle` | `string` |  | 로크업 아래 한 줄 (환경·팀 등) |

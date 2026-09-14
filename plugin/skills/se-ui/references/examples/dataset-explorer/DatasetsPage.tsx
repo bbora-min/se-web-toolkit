@@ -11,7 +11,6 @@
  *  액센트     : 검색 포커스 링, 활성 칩, 스파크라인 끝점.
  *  톤         : friendly — 빈 상태·힌트 문구는 부드럽게.
  */
-import * as React from 'react'
 import { ExternalLink, Star } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router'
 import {

@@ -1,0 +1,33 @@
+{
+  "$comment": "SE 서비스 아이덴티티 레지스트리 사본 (툴킷 main 에서 자동 동봉 — 수정하지 말 것). 새 서비스는 기존 항목과 hue 30° 이상, 같은 시그니처는 피한다.",
+  "services": [
+    {
+      "id": "job-monitor",
+      "name": "Job Monitor",
+      "hue": 195,
+      "signature": "status-strip",
+      "neutralBias": "cool"
+    },
+    {
+      "id": "dataset-explorer",
+      "name": "Dataset Explorer",
+      "hue": 310,
+      "signature": "search-hero",
+      "neutralBias": "warm"
+    },
+    {
+      "id": "release-desk",
+      "name": "Release Desk",
+      "hue": 235,
+      "signature": "stage-rail",
+      "neutralBias": "neutral"
+    },
+    {
+      "id": "ai-voc",
+      "name": "AI VOC",
+      "hue": 278,
+      "signature": "status-strip",
+      "neutralBias": "cool"
+    }
+  ]
+}

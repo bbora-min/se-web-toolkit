@@ -5,7 +5,7 @@
  * 손으로 쓴 patterns/·recipes/ 는 건드리지 않는다.
  */
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync } from 'node:fs'
-import { join, resolve, relative } from 'node:path'
+import { dirname, join, resolve, relative } from 'node:path'
 import { withCustomConfig } from 'react-docgen-typescript'
 
 const root = resolve(import.meta.dirname, '..')
@@ -113,28 +113,36 @@ const EXAMPLES: Array<[string, string]> = [
   ['examples/release-desk/src/pages/releases/bits.tsx', 'release-desk/bits.tsx'],
   ['examples/release-desk/src/pages/settings/SettingsPage.tsx', 'release-desk/SettingsPage.tsx'],
 ]
-const EX_OUT = join(OUT, '..', 'examples')
-for (const [src, dst] of EXAMPLES) {
-  const from = join(root, src)
-  const to = join(EX_OUT, dst)
-  const body = `// 원본: ${src} (자동 복사 — 수정하지 말 것, pnpm gen:skill-docs)\n` + readFileSync(from, 'utf8')
+/** 파일 하나를 플러그인에 동봉한다 — --check 면 커밋본과 비교만. transform 으로 내용을 바꿔 담을 수 있다 */
+function bundle(src: string, to: string, header = '', transform: (s: string) => string = (s) => s) {
+  const body = header + transform(readFileSync(join(root, src), 'utf8'))
   if (check) {
     if (!existsSync(to) || readFileSync(to, 'utf8') !== body) {
-      console.error(`✗ 예제 동봉본이 코드와 다릅니다: ${relative(root, to)}`)
+      console.error(`✗ 동봉본이 원본과 다릅니다: ${relative(root, to)}`)
       changed++
     }
   } else {
-    mkdirSync(join(to, '..'), { recursive: true })
+    mkdirSync(dirname(to), { recursive: true })
     writeFileSync(to, body)
   }
 }
+
+const EX_OUT = join(OUT, '..', 'examples')
+for (const [src, dst] of EXAMPLES) bundle(src, join(EX_OUT, dst), `// 원본: ${src} (자동 복사 — 수정하지 말 것, pnpm gen:skill-docs)\n`)
+// 아이덴티티 레지스트리 — 툴킷 밖 프로젝트의 /se:identity 가 형제 hue 를 알아야 30° 규칙을 지킨다
+// 툴킷 안에서만 뜻이 있는 path·note 는 빼고, 형제 판단에 필요한 것(id·name·hue·signature·neutralBias)만
+bundle('identities/registry.json', join(root, 'plugin/skills/identity/references/registry.json'), '', (raw) => {
+  const reg = JSON.parse(raw) as { services: Array<Record<string, unknown>> }
+  const services = reg.services.map(({ id, name, hue, signature, neutralBias }) => ({ id, name, hue, signature, neutralBias }))
+  return JSON.stringify({ $comment: 'SE 서비스 아이덴티티 레지스트리 사본 (툴킷 main 에서 자동 동봉 — 수정하지 말 것). 새 서비스는 기존 항목과 hue 30° 이상, 같은 시그니처는 피한다.', services }, null, 2) + '\n'
+})
 
 // 사라진 컴포넌트의 문서 제거 + 인덱스
 if (!check) {
   for (const f of readdirSync(OUT)) if (!generated.has(f)) rmSync(join(OUT, f))
   const exportedCount = index.reduce((n, line) => n + (line.match(/^- \[(.+?)\]/)?.[1]?.split(' · ').length ?? 0), 0)
   writeFileSync(join(OUT, '..', 'INDEX.md'), `# 컴포넌트 레퍼런스 (자동 생성 — 수정하지 말 것, \`pnpm gen:skill-docs\`)\n\n파일 ${index.length}개 · 내보내는 컴포넌트 ${exportedCount}개\n\n${index.join('\n')}\n`)
-  console.log(`✓ ${generated.size}개 문서 + 예제 ${EXAMPLES.length}개 → ${relative(root, join(OUT, '..'))}`)
+  console.log(`✓ ${generated.size}개 문서 + 예제 ${EXAMPLES.length}개 + 레지스트리 → ${relative(root, join(OUT, '..'))}`)
 } else {
   const idx = join(OUT, '..', 'INDEX.md')
   if (!existsSync(idx)) changed++

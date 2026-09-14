@@ -1,6 +1,6 @@
 // 원본: examples/reference-app/src/app/Shell.tsx (자동 복사 — 수정하지 말 것, pnpm gen:skill-docs)
 import * as React from 'react'
-import { Activity, GitBranch, LayoutDashboard, ListChecks, Monitor, Moon, Palette, RefreshCw, Rows3, Server, Settings, Sun } from 'lucide-react'
+import { Activity, GitBranch, LayoutDashboard, ListChecks, Monitor, Moon, Palette, RefreshCw, Rows3, Server, Sun } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { AppShell, Avatar, NavItem, NavSection, StatusBadge, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'

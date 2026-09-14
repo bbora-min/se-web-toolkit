@@ -41,6 +41,7 @@
 | `series` **필수** | `Series[]` |  |  |
 | `xKey` **필수** | `string` |  |  |
 | `height` | `number` | `220` |  |
+| `referenceLines` | `{ y: number; label?: string; color?: SeriesColor; }[] \| undefined` |  | 목표선·임계선 — y 값에 점선 하나. 라벨은 우측 끝에 작게 |
 | `tooltipLabel` | `((v: unknown) => ReactNode)` |  |  |
 | `tooltipValue` | `((v: number, key: string) => ReactNode)` |  |  |
 | `xFormat` | `((v: unknown) => string)` |  |  |
@@ -51,6 +52,7 @@
 
 미터 목록 — 순위·비율 비교. 막대 차트보다 라벨을 읽기 쉽다.
 채움은 심각도(accent → warning → danger), 트랙은 같은 계열의 옅은 단계.
+항목 `tone` 에 `chart-1..8` 을 주면 카테고리 색 — 같은 카테고리의 배지·차트와 맞춘다.
 
 | prop | 타입 | 기본 | 설명 |
 |---|---|---|---|

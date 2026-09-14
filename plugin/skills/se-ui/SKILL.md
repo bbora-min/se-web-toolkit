@@ -53,7 +53,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 - **행 액션**: `DataTable rowActions` — 호버 시 아이콘 1–3개, 위험 동작은 `ConfirmDialog`(이름 재입력)
 - **서버 모드 정렬**: `sorting.onChange`에서 `set({ sort, dir, page: '' })` **한 번에**. 필터·탭이 바뀌면 선택(`selection`)도 비운다
 - **폼**: `Form`/`FormField`/`FormItem`/`FormLabel`/`FormControl`/`FormMessage` + zod. 섹션은 `FormSection`(좌 설명·우 필드)
-- **차트**: `ChartCard` + `BarChart|LineChart|MeterList`. 성공/실패/취소는 의미 색, 계열은 `chart-1..8` 순서 고정, 2개 이상이면 `legend`
+- **차트**: `ChartCard` + `BarChart|LineChart|MeterList`. 성공/실패/취소는 의미 색, 계열은 `chart-1..8` 순서 고정, 2개 이상이면 `legend`. `MeterList` 항목의 `tone` 도 같은 값(`chart-N` = 그 카테고리의 배지·차트 색과 일치). 목표·임계는 `LineChart referenceLines`
 
 ## 레퍼런스
 - `references/INDEX.md` — 컴포넌트 목록과 개수 (자동 생성)

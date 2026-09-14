@@ -8,7 +8,7 @@ import * as React from 'react'
 import { ArrowLeft, ArrowRight, CheckCircle2, MessageSquare, Rocket, ThumbsDown, ThumbsUp, XCircle } from 'lucide-react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import {
-  Alert, Avatar, Badge, Button, CheckboxField, ConfirmDialog, DescriptionList, ErrorState, PageBody, Skeleton, Steps, Tabs, cn, toast,
+  Alert, Avatar, Badge, Button, CheckboxField, ConfirmDialog, ErrorState, PageBody, Skeleton, Steps, Tabs, cn, toast,
 } from '@se/ui'
 import { useAdvance, useChecklist, useRelease } from '../../api/releases'
 import { STAGES, type Release, type StageId } from '../../api/types'

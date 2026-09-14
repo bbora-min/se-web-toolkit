@@ -102,6 +102,7 @@ const EXAMPLES: Array<[string, string]> = [
   ['examples/reference-app/src/pages/jobs/JobDetailSheet.tsx', 'reference-app/JobDetailSheet.tsx'],
   ['examples/reference-app/src/pages/overview/OverviewPage.tsx', 'reference-app/OverviewPage.tsx'],
   ['examples/reference-app/src/app/Shell.tsx', 'reference-app/Shell.tsx'],
+  ['examples/reference-app/src/pages/signatures/SignaturesPage.tsx', 'reference-app/SignaturesPage.tsx'],
   ['examples/reference-app/src/mocks/handlers.ts', 'reference-app/mocks-handlers.ts'],
   ['examples/reference-app/src/api/jobs.ts', 'reference-app/api-jobs.ts'],
   ['examples/dataset-explorer/src/pages/datasets/DatasetsPage.tsx', 'dataset-explorer/DatasetsPage.tsx'],

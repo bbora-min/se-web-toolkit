@@ -9,6 +9,8 @@ export interface SparklineProps {
   emphasizeLast?: boolean
   /** 값 포맷 (호버 라벨) */
   format?: (v: number) => string
+  /** 액센트 블록(bg-accent) 위에 놓일 때 — 선·끝점을 on-accent 로 */
+  inverse?: boolean
   className?: string
 }
 
@@ -16,7 +18,7 @@ export interface SparklineProps {
  * 스파크라인. 선 2px, 회색(de-emphasis) + 마지막 구간 액센트, 끝점 강조.
  * 축·격자 없음 — 방향만 읽는 그림이다. 호버하면 값을 보여준다.
  */
-export function Sparkline({ data, width = 96, height = 28, emphasizeLast = true, format, className }: SparklineProps) {
+export function Sparkline({ data, width = 96, height = 28, emphasizeLast = true, format, inverse = false, className }: SparklineProps) {
   const [hover, setHover] = React.useState<number | null>(null)
   if (data.length < 2) return null
   const pad = 2
@@ -34,33 +36,35 @@ export function Sparkline({ data, width = 96, height = 28, emphasizeLast = true,
   const hv = hover != null ? data[hover]! : null
 
   return (
-    <span className={cn('relative inline-block', className)} style={{ width, height }}>
+    <span className={cn('relative inline-block max-w-full leading-none', className)} style={{ width }}>
       <svg
         width={width}
         height={height}
         viewBox={`0 0 ${width} ${height}`}
         role="img"
         aria-label={`추세: ${data.map((v) => (format ? format(v) : v)).join(', ')}`}
-        className="overflow-visible"
+        className="h-auto max-w-full overflow-visible"
         onMouseLeave={() => setHover(null)}
         onMouseMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect()
-          const i = Math.round(((e.clientX - r.left - pad) / (width - pad * 2)) * (data.length - 1))
+          // svg 가 max-w-full 로 줄어들 수 있으니 실제 렌더 폭(r.width) 기준 — pad 도 같은 비율로
+          const scale = r.width / width
+          const i = Math.round(((e.clientX - r.left - pad * scale) / ((width - pad * 2) * scale)) * (data.length - 1))
           setHover(Math.max(0, Math.min(lastIdx, i)))
         }}
       >
-        <path d={area} className="fill-line/40" />
-        <path d={line} fill="none" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" className="stroke-line-strong" />
+        <path d={area} className={inverse ? 'fill-on-accent/15' : 'fill-line/40'} />
+        <path d={line} fill="none" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" className={inverse ? 'stroke-on-accent/50' : 'stroke-line-strong'} />
         {emphasizeLast ? (
           <path
             d={`M${x(lastIdx - 1)},${y(prev)}L${x(lastIdx)},${y(last)}`}
             fill="none"
             strokeWidth={2}
             strokeLinecap="round"
-            className="stroke-accent"
+            className={inverse ? 'stroke-on-accent' : 'stroke-accent'}
           />
         ) : null}
-        <circle cx={x(lastIdx)} cy={y(last)} r={2.5} className="fill-accent" />
+        <circle cx={x(lastIdx)} cy={y(last)} r={2.5} className={inverse ? 'fill-on-accent' : 'fill-accent'} />
         {hover != null ? (
           <>
             <line x1={x(hover)} x2={x(hover)} y1={0} y2={height} className="stroke-line-strong" strokeDasharray="2 2" />
@@ -71,7 +75,7 @@ export function Sparkline({ data, width = 96, height = 28, emphasizeLast = true,
       {hover != null ? (
         <span
           className="pointer-events-none absolute -top-5 -translate-x-1/2 whitespace-nowrap rounded-sm bg-ink px-1.5 py-0.5 text-[10px] text-canvas tnum"
-          style={{ left: x(hover) }}
+          style={{ left: `${(x(hover) / width) * 100}%` }}
         >
           {format ? format(hv!) : hv}
         </span>

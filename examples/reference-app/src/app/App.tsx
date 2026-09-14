@@ -5,6 +5,7 @@ import identity from '../../se.identity.json'
 import { Shell } from './Shell'
 import { JobsPage } from '../pages/jobs/JobsPage'
 import { OverviewPage } from '../pages/overview/OverviewPage'
+import { SignaturesPage } from '../pages/signatures/SignaturesPage'
 import { IdentityPage } from '../pages/identity/IdentityPage'
 
 const queryClient = new QueryClient({
@@ -24,6 +25,7 @@ export function App() {
                 <Route path="/jobs" element={<JobsPage />} />
                 <Route path="/jobs/:jobId" element={<JobsPage />} />
                 {import.meta.env.DEV ? <Route path="/__identity" element={<IdentityPage />} /> : null}
+                {import.meta.env.DEV ? <Route path="/__signatures" element={<SignaturesPage />} /> : null}
                 <Route path="*" element={<Navigate to="/jobs" replace />} />
               </Route>
             </Routes>

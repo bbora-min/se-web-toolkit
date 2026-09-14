@@ -41,7 +41,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 
 ## 쉘과 시그니처
 - 모든 페이지는 `AppShell` 안. 사이드바 로크업(마크+이름)·상단 검색(⌘K)·`PageHeader`·`PageBody`는 건드리지 않는다
-- 시그니처는 `se.identity.json`의 `signature`가 정한다. 페이지 맨 위 한 자리: `StatusStrip`(모니터링) · `SearchHero`(조회) · `StageRail`(워크플로). `StatusStrip`은 목록 페이지에서 `variant="compact"`(한 줄), 개요 페이지에서 full. `SearchHero`·`StageRail`은 변형 없이 그대로
+- 시그니처는 `se.identity.json`의 `signature`가 정한다. 페이지 맨 위 한 자리: `StatusStrip`(모니터링 — 지금 괜찮은가) · `SearchHero`(조회 — 무엇을 찾나) · `StageRail`(워크플로 — 어디까지 왔나) · `TimelineRibbon`(활동·이력 — 최근 무슨 일이) · `MetricMarquee`(비용·사용량·품질 — 얼마인가). `StatusStrip`은 목록 페이지에서 `variant="compact"`(한 줄), 개요 페이지에서 full. 나머지는 변형 없이 그대로. 다섯을 한눈에: `references/examples/reference-app/SignaturesPage.tsx`
 - 커맨드 팔레트: `AppShell`의 `command` prop에 그룹만 넘긴다 (이동·항목 점프·액션). 새 페이지를 만들면 여기에도 등록한다
 
 ## 자주 쓰는 조합

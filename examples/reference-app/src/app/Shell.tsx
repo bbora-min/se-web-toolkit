@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Activity, GitBranch, LayoutDashboard, ListChecks, Monitor, Moon, Palette, RefreshCw, Rows3, Server, Sun } from 'lucide-react'
+import { Activity, GitBranch, LayoutDashboard, ListChecks, Monitor, Moon, Palette, RefreshCw, Rows3, Server, Shapes, Sun } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { AppShell, Avatar, NavItem, NavSection, StatusBadge, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
@@ -88,6 +88,14 @@ export function Shell() {
                 <NavLink to="/__identity">
                   <Palette />
                   <span className="flex-1 truncate">아이덴티티</span>
+                </NavLink>
+              </NavItem>
+            ) : null}
+            {import.meta.env.DEV ? (
+              <NavItem asChild>
+                <NavLink to="/__signatures">
+                  <Shapes />
+                  <span className="flex-1 truncate">시그니처</span>
                 </NavLink>
               </NavItem>
             ) : null}

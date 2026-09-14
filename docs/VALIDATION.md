@@ -3,6 +3,17 @@
 목적: 사람이 손으로 만든 레퍼런스 앱(Job Monitor·Dataset Explorer·Release Desk)과 **스킬만으로** 만든 앱의 차이를 잰다.
 차이가 곧 스킬에 넣어야 할 다음 내용이다. 결과는 `docs/validation/<날짜>-<서비스>.md`에 남긴다(템플릿은 맨 아래).
 
+## 결과 (2026-09-14 기준)
+
+| 시험 | 대상 | 결과 | 툴킷에 되돌린 것 |
+|---|---|---|---|
+| A 신규 블라인드 | `~/claude/incident-desk` (`/se:new` → `/se:page` ×2 → `/se:review`) | 통과. 리뷰 55 → 68/80, 기계 검사 전부 통과 | 0.3.0: DataTable 고정 레이아웃 비율 폭, `text-on-*` 토큰(경고색 `#9A6700`), `hasForcedState`, 스킬 교훈. 0.4.0: 레지스트리 동봉(형제 hue 를 못 읽어 215° 가 나온 원인) |
+| B 규칙 강제 | incident-desk, `claude -p` 새 세션 3건 | 3/3 통과 — hex → `danger`, raw `<table>` → `Table`, primary 둘 → secondary. lint·typecheck 0 | 0.4.1: "danger 는 파괴적 액션에만, 색 요청이 의미와 어긋나면 되묻는다" |
+| C 기존 프로젝트 | `~/claude/ai_voc/frontend` — React 18 · Vite 5 · Tailwind 3 · npm · 레거시 CSS 607줄 · 5페이지 | `/se:adopt` 0~5단계 완주, 14 커밋, 진행률 100 %, 기존 버그 2건 발견 | 0.4.0: React 18·Vite 5 peer, pnpm 전제, 공존 레시피 동봉, unused 검사 상시화, MeterList 카테고리 색·LineChart 목표선·StatusStrip compact 보더·AppShell `credit`, 훅 하위 폴더 인식 |
+| D 비전공자 | — | 생략하기로 함(README 온보딩 점검으로 대체) | — |
+
+재채점: incident-desk 는 0.3.0 이후 `/se:review` 재실행 전(목표 ≥ 70).
+
 ## 0. 준비 (2분)
 실제 사용 시나리오 그대로 — **툴킷 저장소가 아니라 빈 프로젝트 폴더**에서 한다:
 ```

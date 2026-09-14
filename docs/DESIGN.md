@@ -1,6 +1,6 @@
 # SE Web Toolkit 설계
 
-> 내부 엔지니어링 도구(데이터 조회·상태 모니터링·업무 처리)를 위한 디자인 시스템 + Claude Code 플러그인. (v0.5 · 2026-09-10)
+> 내부 엔지니어링 도구(데이터 조회·상태 모니터링·업무 처리)를 위한 디자인 시스템 + Claude Code 플러그인. (툴킷 0.5.0 · 2026-09-14)
 > 목표: 개발 속도, SE 아이덴티티의 일관성 **(양산형이 아닌, 서비스별 개성을 가진 일관성)**, 전문가 수준의 UI 품질, 낮은 진입 장벽.
 
 전제(확정): FE 표준 = React + Vite + TypeScript / 기존 서비스 = React 계열 / 백엔드·배포 = 비표준(무관해야 함) / 배포 = Claude Code 플러그인(marketplace).
@@ -212,7 +212,7 @@ jscodeshift 변환(MUI/antd/styled hex → se). 80% 자동, 나머지는 `se-mig
 
 ## 8. Layer 3 — Claude Code 플러그인 (`plugin/`)
 
-> **구현 상태 (v0.5)**: 아래 구조가 전부 존재한다 — 스킬 11개(자동 2 + 명령 9), 에이전트 3, 훅 2, `gen:skill-docs`(43 파일·98 컴포넌트, CI `--check`), `create-se-app`(E2E 검증). `templates/app-vite-react`는 플레이스홀더 없는 진짜 워크스페이스 앱이라 루트 typecheck·lint가 항상 본다. 미완: `@se/*` npm 배포(그 전까지 `/se:new`는 모노레포 `examples/`에 생성), `timeline-ribbon`·`metric-marquee` 시그니처, `@se/codemods`.
+> **구현 상태 (0.5.0)**: 아래 구조가 전부 존재한다 — 스킬 12개(자동 2 + 명령 10), 에이전트 3, 훅 2, `gen:skill-docs`(43 파일·98 컴포넌트, CI `--check`), `create-se-app`(E2E 검증). `templates/app-vite-react`는 플레이스홀더 없는 진짜 워크스페이스 앱이라 루트 typecheck·lint가 항상 본다. 미완: `@se/*` npm 배포(그 전까지 `/se:new`는 모노레포 `examples/`에 생성), `timeline-ribbon`·`metric-marquee` 시그니처, `@se/codemods`.
 
 ```
 plugin/
@@ -301,7 +301,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens)을 쓰는 React 프로�
 - **에이전트 역할 분리**: critic·reviewer는 읽기 전용, 수정은 메인 세션.
 - **아이덴티티 레지스트리**: 서비스별 hue·시그니처·마크 등록. 신규 서비스는 충돌 검사 통과 필수. 형제와 너무 닮으면 `/se:identity`가 거부.
 - **승격 규칙**: 로컬 컴포넌트/시그니처가 2개 서비스에서 반복되면 `@se/ui`로 승격(TSDoc·story·example 필수).
-- **버전**: changesets + semver, 플러그인은 `@se/ui`와 major.minor 동기.
+- **버전·업그레이드**: §15. 툴킷은 한 버전으로 움직이고 앱은 태그에 고정, 받는 절차는 `/se:upgrade`.
 - **문서**: Storybook(사람용) = 스킬 레퍼런스와 같은 소스. 아이덴티티 갤러리(모든 서비스 시트 나열)로 가족 초상화를 유지.
 
 ### Node 버전 정책
@@ -331,6 +331,7 @@ se-web-toolkit/
 ├── apps/storybook/ (+ 아이덴티티 갤러리)
 ├── scripts/ gen-skill-docs.ts · check-identity.ts
 ├── .claude-plugin/marketplace.json
+├── CHANGELOG.md (세 칸: 바뀐 것 / 화면 변화 / 앱에서 할 일)
 └── docs/DESIGN.md
 ```
 설치: `/plugin marketplace add <org>/se-web-toolkit` → `/plugin install se@se-web-toolkit`
@@ -343,7 +344,8 @@ se-web-toolkit/
 |---|---|---|
 | P1 기반+품질 **(완료)** | tokens(4계층, createTheme), 컴포넌트 50개(98 export), 시그니처 3종, **레퍼런스 앱 3개**(모니터링·조회·업무 처리), 템플릿+CLI, `se-ui`·`se-design` 스킬, 명령 9개, 훅 2, eslint-plugin, charts | 세 시나리오 원본 확보. 디자인 리뷰 56 → 70/80 |
 | P2 검증+도입 | **새 세션에서 `/se:new`로 4번째 서비스를 스킬만으로 생성해 품질 검증**, `/se:review` 루프 실사용, `/se:adopt`로 기존 서비스 1개, codemods, 나머지 시그니처 2종 | 기존 서비스 1개 5단계 완료. 스킬이 만든 화면이 70/80 이상 |
-| P3 배포 | `@se/*` npm 배포(→ 모노레포 밖 `npx create-se-app`), Storybook·아이덴티티 갤러리, 기여 가이드, 플러그인 버전 정책 | 웹 비전공 구성원이 혼자 서비스 1개 출시 |
+| P2.5 운영 **(완료)** | 버전 한 값·CHANGELOG·태그 자동·CI `check:release`, 앱은 태그 고정, `/se:upgrade`, `/se:audit` 버전 비교 (§15) | 툴킷 변경이 앱에 닿는 경로가 한 가지 |
+| P3 배포 | `@se/*` npm 배포(→ 모노레포 밖 `npx create-se-app`), 시그니처 2종 추가, Storybook·아이덴티티 갤러리, 기여 가이드, 자동 업그레이드 PR | 웹 비전공 구성원이 혼자 서비스 1개 출시 |
 
 성공 지표: 셋업→첫 화면 배포 시간 / `/se:audit` 준수율·디자인 점수 / 서비스 간 hue·시그니처 중복 0 / 신규 구성원 첫 PR까지 시간.
 
@@ -371,3 +373,32 @@ se-web-toolkit/
 - 레퍼런스 앱 품질 확보 → P1에 디자이너 1회 참여 또는 팀 내 디자인 감각 있는 인원이 최종 승인.
 - 기존 서비스 UI 라이브러리 혼재 → codemod 80% + `se-migrator`.
 - 기존 서비스 Node 버전 상이(18 이하) → 0단계 감사에서 드러나고, 기반 단계 전 별도 업그레이드 PR로 분리. 못 올리면 도입 제외.
+
+---
+
+## 15. 운영 — 툴킷이 바뀌면 앱은 어떻게 받나
+
+배포된 서비스가 생긴 뒤의 질문은 "툴킷을 고치면 서비스들은 어떻게 되나"다. 답은 **아무것도 저절로 바뀌지 않는다**이고, 받는 경로를 한 가지로 고정한다.
+
+### 15.1 툴킷 쪽 — 한 버전, 한 기록
+- `@se/tokens`·`ui`·`charts`·`eslint-plugin`·`create-se-app`·플러그인은 **한 버전**으로 움직인다(루트 `package.json` 이 기준, `pnpm release:bump x.y.z` 로 한 번에). 따로 올리면 조합이 폭발한다.
+- semver 의미를 고정한다: **patch** = 화면 변화 없음 · **minor** = 추가 또는 화면 변화, 코드 수정 불필요 · **major** = 앱 코드를 고쳐야 함.
+- `CHANGELOG.md` 는 항목마다 세 칸 — 바뀐 것 / 화면 변화 / **앱에서 할 일**. 앱 담당자는 세 번째 칸만 읽는다.
+- CI `check:release`: `packages/`·`templates/`·`plugin/` 이 바뀐 PR 은 버전이 main 과 달라야 하고 CHANGELOG 에 그 버전 항목이 있어야 한다. merge 되면 `v<버전>` 태그가 자동으로 찍힌다.
+- 컴포넌트 변경은 레퍼런스 앱 3개에서 라이트·다크·1024 스크린샷으로 확인한 뒤 merge 한다(한 컴포넌트가 세 서비스 모두에서 괜찮은가).
+
+### 15.2 앱 쪽 — 태그 고정, 받을 때 `/se:upgrade`
+- 앱의 `@se/*` 참조는 태그다: `github:bbora-min/se-web-toolkit#v0.5.0&path:packages/ui`. `/se:new` 가 CLI 와 같은 버전으로 고정하고, `/se:adopt` 2단계는 최신 태그를 고른다.
+- `/se:upgrade`: CHANGELOG 의 "앱에서 할 일" 을 먼저 보여 줌 → 참조를 새 태그로 → `typecheck`·`lint` → 전/후 스크린샷 픽셀 diff 로 **달라진 화면 목록** → 그 화면만 `/se:review` → 전/후 이미지가 붙은 PR. 사람은 PR 만 본다.
+- `/se:audit` 가 "이 앱은 v0.5.0, 최신 v0.7.0, 밀린 '앱에서 할 일' 2건" 을 보여 준다.
+- 플러그인(스킬·훅)은 `claude plugin update` 로 따로 받되 같은 버전으로 맞춘다 — 규칙과 컴포넌트가 일치해야 한다.
+
+### 15.3 호환 정책
+- 깨지는 변경은 한 minor 동안 옛 방식을 남기고 콘솔 경고(deprecation). 앱은 두 버전 안에 옮긴다.
+- 토큰 이름·컴포넌트 prop 은 계약이다. 바꿀 땐 codemod 를 같은 PR 에 넣는 것이 조건(P3 `@se/codemods`).
+- 지원 범위는 최신 major 와 직전 major. 그보다 오래된 앱은 `/se:audit` 가 "업그레이드 필요" 로 표시한다.
+
+### 15.4 아직 안 한 것
+- 레퍼런스 앱 스크린샷의 CI 기준 이미지 비교("화면이 바뀌었는데 patch" 를 기계로 잡기).
+- 툴킷 릴리스 때 각 앱 리포에 업그레이드 PR 을 자동으로 여는 것 — 두 번째 앱이 생기면.
+- npm 배포(그때 태그 대신 semver 범위).

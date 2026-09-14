@@ -1,3 +1,4 @@
+process.env.SE_GIT_REF = 'v9.9.9'
 import { describe, expect, it } from 'vitest'
 import { existsSync, mkdtempSync, readFileSync, readdirSync, symlinkSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
@@ -18,8 +19,8 @@ describe('create-se-app', () => {
     expect(identity.mark.text).toBe('ID')
     const pkg = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8'))
     expect(pkg.name).toBe('incident-desk')
-    expect(pkg.dependencies['@se/ui']).toBe('github:bbora-min/se-web-toolkit#path:packages/ui') // 워크스페이스 밖 → git
-    expect(pkg.devDependencies['@se/eslint-plugin']).toBe('github:bbora-min/se-web-toolkit#path:packages/eslint-plugin')
+    expect(pkg.dependencies['@se/ui']).toBe('github:bbora-min/se-web-toolkit#v9.9.9&path:packages/ui') // 워크스페이스 밖 → git, 태그 고정 (SE_GIT_REF 로 강제)
+    expect(pkg.devDependencies['@se/eslint-plugin']).toBe('github:bbora-min/se-web-toolkit#v9.9.9&path:packages/eslint-plugin')
     expect(readFileSync(join(dir, 'index.html'), 'utf8')).toContain('<title>Incident Desk</title>')
     expect(readFileSync(join(dir, 'vite.config.ts'), 'utf8')).toContain('port: 5199')
     expect(readFileSync(join(dir, 'playwright.config.ts'), 'utf8')).toContain('localhost:5199')

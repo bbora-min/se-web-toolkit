@@ -15,7 +15,7 @@
 | `examples/dataset-explorer` | **Dataset Explorer** — 조회. 검색 히어로·상세(DetailPage) | ✓ |
 | `examples/release-desk` | **Release Desk** — 업무 처리. 단계 레일·위자드(FormWizard)·설정(Settings) | ✓ |
 | `identities/` | 서비스 아이덴티티 레지스트리 (hue·시그니처 충돌 검사) | ✓ |
-| `plugin/` | Claude Code 플러그인 — 스킬 11개(자동 2 + 명령 9), 에이전트 3, 훅 2 | ✓ |
+| `plugin/` | Claude Code 플러그인 — 스킬 12개(자동 2 + 명령 10), 에이전트 3, 훅 2 | ✓ |
 | `templates/app-vite-react` + `packages/create-se-app` | 새 서비스 템플릿(워크스페이스에서 컴파일됨)과 CLI — `pnpm dlx`로 어느 폴더에서든 | ✓ |
 
 ## 팀에서 쓰기 — 내 프로젝트 폴더에서
@@ -33,7 +33,18 @@ mkdir todo-web && cd todo-web && claude
 cd my-existing-app && claude
 /se:adopt                   # 감사 → 아이덴티티 → 기반 → 쉘 → 페이지 → 강제, 단계마다 PR
 ```
-`@se/ui` 등은 npm 배포 전까지 git 서브디렉터리(`github:bbora-min/se-web-toolkit#path:packages/ui`)로 설치된다. 툴킷 저장소를 클론할 필요는 없다.
+`@se/ui` 등은 npm 배포 전까지 git 태그(`github:bbora-min/se-web-toolkit#v0.5.0&path:packages/ui`)로 설치된다. 툴킷 저장소를 클론할 필요는 없다.
+
+### 업데이트 받기 — 툴킷이 바뀌어도 앱은 그대로다
+앱은 태그에 고정돼 있어 툴킷 merge 만으로는 아무것도 안 바뀐다. 받고 싶을 때:
+```
+claude plugin update se@se-web-toolkit   # 스킬·규칙
+/se:upgrade                              # @se/* 태그 올림 → typecheck·lint → 전/후 스크린샷 diff → 달라진 화면만 리뷰 → PR
+```
+무엇이 바뀌었고 앱에서 뭘 해야 하는지는 [CHANGELOG.md](CHANGELOG.md) 의 "앱에서 할 일" 칸에 있다. `/se:audit` 가 앱이 몇 버전 밀렸는지 보여 준다.
+
+### 툴킷을 고쳐서 내보내기
+브랜치에서 수정 → 레퍼런스 앱 3개 스크린샷(라이트·다크·1024) → `/code-review` → `pnpm release:bump <x.y.z>` 로 버전을 한 번에 올리고 CHANGELOG 세 칸(바뀐 것 / 화면 변화 / 앱에서 할 일)을 채움 → PR. CI `check:release` 가 코드 변경에 버전·CHANGELOG 가 없으면 실패시키고, merge 되면 `v<버전>` 태그가 자동으로 찍힌다.
 
 ## 툴킷 개발
 `./scripts/setup.sh --dev` 가 Node 22 · pnpm · 설치 · 검사 · 플러그인 등록(로컬 체크아웃) · 레퍼런스 앱 3개 실행을 한 번에 한다 (sudo 없음, 멱등).

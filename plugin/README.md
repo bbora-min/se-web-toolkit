@@ -18,6 +18,7 @@
 | 명령 | `/se:audit` | 준수율 리포트 (환경·규칙·화면·디자인 점수·도입 진행률) |
 | 명령 | `/se:adopt [0-5]` | 내 기존 프로젝트(예: todo-web)에 점진 도입, 단계 = PR |
 | 명령 | `/se:deploy` | Dockerfile·nginx·CI 점검, 빌드 |
+| 명령 | `/se:upgrade` | 앱의 `@se/*` 를 새 태그로 — CHANGELOG '앱에서 할 일' → 갱신 → 검사 → 전/후 스크린샷 diff → 리뷰 → PR |
 | 에이전트 | `se-design-critic` | 스크린샷 채점, 읽기 전용 |
 | 에이전트 | `se-reviewer` | 코드 규칙·동작 리뷰, 읽기 전용 |
 | 에이전트 | `se-migrator` | 기존 파일을 @se/ui로 치환 |
@@ -27,4 +28,4 @@
 문서 동기화: `pnpm gen:skill-docs` (CI에서 `--check`).
 
 ## 릴리스 규칙
-`plugin/` 을 바꾸면 `plugin/.claude-plugin/plugin.json` 과 `.claude-plugin/marketplace.json` 의 `version` 을 **같이 올린다**. 같으면 `claude plugin update` 가 "이미 최신"이라며 새 스킬을 받지 않는다 (CI `check:plugin-version`). 사용자는 `claude plugin update se@se-web-toolkit` 또는 `scripts/setup.sh`.
+`plugin/` 이나 `packages/` 를 바꾸면 `pnpm release:bump <x.y.z>` 로 루트·패키지·plugin.json·marketplace.json 버전을 **한 번에** 올리고 `CHANGELOG.md` 세 칸을 채운다 (CI `check:release` 가 강제, merge 되면 `v<버전>` 태그 자동). 버전이 같으면 `claude plugin update` 가 "이미 최신"이라며 새 스킬을 받지 않는다. 사용자는 `claude plugin update se@se-web-toolkit` + `/se:upgrade`.

@@ -8,6 +8,7 @@
  * 옵션: --name --mark --hue --signature --neutral --density --tone --port --dir --subtitle
  * 모노레포 안이면 workspace:* 로 링크, 밖이면 git 서브디렉터리 의존성으로 설치한다.
  */
+import { execSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -19,8 +20,28 @@ const TEMPLATE = [resolve(here, '..', 'templates', 'app-vite-react'), resolve(he
 const TEMPLATE_ID = 'app-vite-react'
 const TEMPLATE_NAME = 'SE App'
 const TEMPLATE_PORT = 5170
-/** 워크스페이스 밖에서는 npm 배포 전까지 git 서브디렉터리로 설치한다 (pnpm 지원). 태그를 박으려면 #v0.1.0&path:… */
-const GIT_DEP = (pkg) => `github:bbora-min/se-web-toolkit#path:packages/${pkg}`
+/**
+ * 워크스페이스 밖에서는 npm 배포 전까지 git 서브디렉터리로 설치한다 (pnpm 만 지원).
+ * 이 CLI 와 같은 버전의 태그(v0.5.0 …)에 고정한다 — 툴킷이 갱신돼도 앱은 /se:upgrade 로 받을 때까지 그대로다
+ */
+const VERSION = JSON.parse(readFileSync(resolve(here, '..', 'package.json'), 'utf8')).version
+/** 태그가 아직 없으면(릴리스 job 전, 또는 오프라인) main 을 가리킨다 — /se:upgrade 가 나중에 태그로 고정한다 */
+function gitRef() {
+  if (process.env.SE_GIT_REF) return process.env.SE_GIT_REF
+  try {
+    const out = execSync(`git ls-remote --refs --tags https://github.com/bbora-min/se-web-toolkit v${VERSION}`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 15_000 }).trim()
+    if (out) return `v${VERSION}`
+    console.warn(`  ! 태그 v${VERSION} 이 아직 없어 main 을 가리킵니다 (/se:upgrade 로 나중에 고정)`)
+  } catch {
+    console.warn('  ! 태그를 확인할 수 없어(오프라인?) main 을 가리킵니다')
+  }
+  return null
+}
+let REF
+const GIT_DEP = (pkg) => {
+  if (REF === undefined) REF = gitRef()
+  return REF ? `github:bbora-min/se-web-toolkit#${REF}&path:packages/${pkg}` : `github:bbora-min/se-web-toolkit#path:packages/${pkg}`
+}
 const SE_PACKAGES = { '@se/ui': 'ui', '@se/tokens': 'tokens', '@se/charts': 'charts', '@se/eslint-plugin': 'eslint-plugin' }
 
 function parseArgs(argv) {
@@ -148,7 +169,7 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
 
   log(`✓ ${name} 생성 → ${dir}`)
   log(`  아이덴티티: hue ${hue}°${args.hue === undefined ? '(의미 색·형제와 가장 먼 값)' : ''} · ${signature} · ${identity.neutralBias} · ${identity.density} · ${identity.tone}${sameSig ? `\n  ! ${sameSig.message} (--signature)` : ''}`)
-  if (!inWorkspace) log(`  @se/* 는 git 에서 설치됩니다 (github:bbora-min/se-web-toolkit#path:packages/*) — 첫 pnpm install 에 1–2분`)
+  if (!inWorkspace) log(`  @se/* 는 git 에서 설치됩니다 (${GIT_DEP('*')}) — 첫 pnpm install 에 1–2분`)
   log(`\n다음:\n  ${inWorkspace ? `pnpm install   # 워크스페이스에 링크\n  pnpm --filter ${id} dev` : `cd ${dir}\n  pnpm install && pnpm dev`}   # http://localhost:${port}\n  Claude Code에서 /se:identity → /se:spec → /se:page 로 첫 화면을 만드십시오.`)
   return { dir, identity, port, inWorkspace }
 }

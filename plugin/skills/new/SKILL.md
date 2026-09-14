@@ -19,7 +19,7 @@ argument-hint: "<kebab-id> [--name '표시 이름']"
    pnpm dlx "github:bbora-min/se-web-toolkit#path:packages/create-se-app" <id> --name "…" --hue … --signature … --tone … --density … --subtitle "…" [--dir .]
    ```
    (툴킷 모노레포 안이라면 `node packages/create-se-app/bin/create-se-app.mjs …` — `examples/<id>`에 생기고 레지스트리에 등록된다.)
-   `@se/*`는 git에서 설치된다(`github:bbora-min/se-web-toolkit#path:packages/*`) — 첫 설치 1–2분. pnpm이 없으면 `corepack enable pnpm`
+   `@se/*`는 git 태그에서 설치된다(`github:bbora-min/se-web-toolkit#v<CLI 버전>&path:packages/*` — 이후 갱신은 `/se:upgrade`) — 첫 설치 1–2분. pnpm이 없으면 `corepack enable pnpm`
 3. `cd <dir>` → `pnpm install` → `pnpm typecheck && pnpm lint` → `pnpm dev`. 사용자에게 URL을 준다. 이 프로젝트에서 새 Claude 세션을 열면 SessionStart 훅이 아이덴티티를 알려준다
 4. `docs/spec.md`가 비어 있음을 알리고 `/se:spec`으로 이어간다. 첫 화면(`/items`)은 출발점일 뿐이라 실제 도메인으로 바꿔야 한다고 말한다
 

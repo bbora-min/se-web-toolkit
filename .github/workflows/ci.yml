@@ -2,11 +2,13 @@ name: ci
 on:
   push: { branches: [main] }
   pull_request:
+permissions: { contents: write }   # tag job
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }          # check:release 가 main 과 비교한다
       - uses: pnpm/action-setup@v4   # 버전은 package.json 의 packageManager
       - uses: actions/setup-node@v4
         with: { node-version-file: .nvmrc, cache: pnpm }
@@ -16,5 +18,22 @@ jobs:
       - run: pnpm -r test
       - run: pnpm check-identity
       - run: pnpm check:skill-docs        # 스킬 문서가 코드와 어긋나면 실패
-      - run: pnpm check:plugin-version    # plugin.json = marketplace.json
+      - run: pnpm check:release           # 버전 한 값 · 코드 변경 시 버전·CHANGELOG 필수
       - run: pnpm -r --filter './examples/*' --filter './templates/*' build
+
+  tag:
+    # main 에 merge 되면 루트 package.json 의 버전으로 태그 — 앱은 이 태그(github:…#v0.5.0&path:…)를 가리킨다
+    needs: check
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - run: |
+          tag="v$(node -p "require('./package.json').version")"
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            if git diff --quiet "$tag" HEAD -- packages templates plugin; then echo "$tag 이미 있음 (출하물 동일)"; exit 0; fi
+            echo "✗ $tag 이 이미 있는데 packages/templates/plugin 이 다릅니다 — 버전을 올리는 PR 이 필요합니다"; exit 1
+          fi
+          git config user.name github-actions && git config user.email github-actions@github.com
+          git tag -a "$tag" -m "SE Web Toolkit $tag" && git push origin "$tag" && echo "✓ $tag"

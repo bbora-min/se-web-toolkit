@@ -8,7 +8,7 @@ description: 프로젝트가 디자인 시스템을 얼마나 따르는지 리�
 숫자로 말한다. `docs/audit.md`를 만든다(있으면 갱신해 추이가 보이게).
 
 ## 절차
-1. **환경**: `node -v`(22.x인가), `@se/ui`·`@se/tokens` 버전, `se.identity.json` 유효성(`createTheme`으로 파싱), 레지스트리 등록 여부
+1. **환경**: `node -v`(22.x인가), `@se/ui`·`@se/tokens` 버전(`package.json` 참조의 `#v…` 태그 — `#path:` 만 있으면 "main 추적" 으로 표시), 최신 태그(`git ls-remote --refs --tags --sort=-v:refname https://github.com/bbora-min/se-web-toolkit "v*" | head -1`)와 비교해 **밀린 버전 수와 그 사이 CHANGELOG 의 "앱에서 할 일"** 을 요약, 플러그인 버전(`claude plugin list`), `se.identity.json` 유효성(`createTheme`으로 파싱), 레지스트리 등록 여부
 2. **규칙**: `npx eslint . -f json`으로 규칙별 위반 수. `se/no-raw-color`·`no-raw-control`·`import-from-ui` 위반이 0이 아니면 파일 목록
 3. **인벤토리**: `src/pages/**` 화면 수, 각 화면의 패턴(주석의 "패턴" 단어로), `DataTable` 3상태 유무, 시그니처 사용 여부, `e2e/screens.spec.ts` 등록 여부
 4. **디자인 점수**: `docs/design-review.md`의 최근 점수. 없으면 "미평가" — `/se:review`를 권한다

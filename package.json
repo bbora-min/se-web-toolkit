@@ -1,7 +1,7 @@
 {
   "name": "se-web-toolkit",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.5.0",
   "description": "SE 내부 엔지니어링 도구용 디자인 시스템 + Claude Code 플러그인",
   "packageManager": "pnpm@9.15.4",
   "engines": {
@@ -17,12 +17,15 @@
     "check-identity": "node scripts/check-identity.mjs",
     "gen:skill-docs": "tsx scripts/gen-skill-docs.ts",
     "check:skill-docs": "tsx scripts/gen-skill-docs.ts --check",
-    "check:plugin-version": "node scripts/check-plugin-version.mjs"
+    "check:release": "node scripts/check-release.mjs",
+    "release:bump": "node scripts/release-bump.mjs",
+    "gen:design-pdf": "node scripts/gen-design-pdf.mjs"
   },
   "devDependencies": {
     "@se/eslint-plugin": "workspace:*",
     "@typescript-eslint/parser": "^8.20.0",
     "eslint": "^9.18.0",
+    "marked": "^15",
     "react-docgen-typescript": "^2.2.2",
     "tsx": "^4.19.2"
   },

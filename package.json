@@ -21,7 +21,9 @@
     "release:bump": "node scripts/release-bump.mjs",
     "gen:design-pdf": "node scripts/gen-design-pdf.mjs",
     "storybook": "pnpm --filter se-storybook dev",
-    "build:storybook": "pnpm --filter se-storybook build"
+    "build:storybook": "pnpm --filter se-storybook build",
+    "visual": "pnpm -r --filter './examples/*' run e2e:visual",
+    "visual:update": "pnpm -r --filter './examples/*' run e2e:visual:update"
   },
   "devDependencies": {
     "@se/eslint-plugin": "workspace:*",
@@ -29,7 +31,8 @@
     "eslint": "^9.18.0",
     "marked": "^15",
     "react-docgen-typescript": "^2.2.2",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "@playwright/test": "^1.47.2"
   },
   "type": "module",
   "pnpm": {

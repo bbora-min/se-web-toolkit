@@ -1,0 +1,23 @@
+name: visual-baseline
+# 기준 스크린샷을 CI 러너에서 다시 찍어 브랜치에 커밋한다 — 화면 변화가 의도한 것일 때 실행 (Actions › visual-baseline › Run workflow › 브랜치 선택)
+on:
+  workflow_dispatch:
+permissions: { contents: write }
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm visual:update
+      - run: |
+          git config user.name github-actions && git config user.email github-actions@github.com
+          git add examples/*/e2e/__snapshots__
+          git diff --cached --quiet && { echo "기준 변화 없음"; exit 0; }
+          git commit -m "chore: 스크린샷 기준 갱신 (CI 러너)" && git push

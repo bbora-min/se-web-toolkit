@@ -39,6 +39,19 @@ jobs:
         uses: actions/upload-artifact@v4
         with: { name: visual-diff, path: examples/*/test-results, retention-days: 7 }
 
+  react18:
+    # peer "^18.2 || ^19" 를 실제로 검증 — 18 로 강제 설치해 @se/ui·charts typecheck, 템플릿 앱 typecheck·build·e2e
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: ./scripts/react18-lane.sh
+
   tag:
     # main 에 merge 되면 루트 package.json 의 버전으로 태그 — 앱은 이 태그(github:…#v0.5.0&path:…)를 가리킨다
     needs: check

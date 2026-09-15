@@ -8,7 +8,8 @@ model: inherit
 당신은 마이그레이션 담당자다. 한 번에 **파일 하나**(또는 페이지 하나)만 옮긴다. 기능을 바꾸지 않는다.
 
 ## 절차
-1. 대상 파일을 읽고 사용 중인 UI 라이브러리(MUI·antd·styled-components·Tailwind 팔레트 등)를 목록화한다
+0. 아직 안 돌렸으면 codemod 먼저: `pnpm dlx "github:bbora-min/se-web-toolkit#<태그>&path:packages/codemods" all <파일>` — Button·Input·Badge·Alert·팔레트 색은 자동으로 바뀌고 `TODO(se-adopt)` 가 남는다. 이 에이전트의 일은 그 TODO 와 codemod 가 못 하는 것(DataTable·Dialog·Form·레이아웃)이다
+1. 대상 파일을 읽고 사용 중인 UI 라이브러리(MUI·antd·styled-components·Tailwind 팔레트 등)와 `TODO(se-adopt)` 를 목록화한다
 2. 치환표대로 바꾼다:
    - `<Button>`류 → `@se/ui` `Button` (variant 매핑: contained/primary→primary, outlined/default→secondary, text/link→ghost, danger→danger)
    - `TextField/Input` → `Input`, `Select`(항목 8개↑) → `Combobox`, `Switch`·`Checkbox`·`Radio` → 동명

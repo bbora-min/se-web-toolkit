@@ -193,7 +193,7 @@ Recharts 래퍼. 색은 전부 CSS 변수(의미 색은 상태에만, 카테고�
 - 첫 적용에서 실제로 잡은 것: 승인 탭 배너와 헤더에 primary가 동시에 보이던 화면, raw `<button>` 사용자 메뉴.
 
 ### 6.5 `@se/codemods`
-jscodeshift 변환(MUI/antd/styled hex → se). 80% 자동, 나머지는 `se-migrator`.
+jscodeshift 변환 4종 — `mui`(Button·TextField·Chip·Alert·Dialog 계열 …) · `antd`(Button·Input·Tag·Alert·message→toast …) · `raw-controls`(`<button>`·`<input>`·`<textarea>`·정적 `<select>`) · `tailwind-palette`(`bg-blue-600 text-white` → `bg-info text-on-info`, 회색 → 표면/잉크/라인). 80 % 자동, 못 정하는 것은 `TODO(se-adopt)` 주석으로 남기고 `se-migrator` 가 이어받는다. `/se:adopt` 4단계가 페이지마다 먼저 돌린다(`pnpm dlx …#<태그>&path:packages/codemods all <경로> --dry`).
 
 ---
 
@@ -345,7 +345,7 @@ se-web-toolkit/
 | P1 기반+품질 **(완료)** | tokens(4계층, createTheme), 컴포넌트 50개(98 export), 시그니처 3종, **레퍼런스 앱 3개**(모니터링·조회·업무 처리), 템플릿+CLI, `se-ui`·`se-design` 스킬, 명령 9개, 훅 2, eslint-plugin, charts | 세 시나리오 원본 확보. 디자인 리뷰 56 → 70/80 |
 | P2 검증+도입 | **새 세션에서 `/se:new`로 4번째 서비스를 스킬만으로 생성해 품질 검증**, `/se:review` 루프 실사용, `/se:adopt`로 기존 서비스 1개, codemods, 나머지 시그니처 2종 | 기존 서비스 1개 5단계 완료. 스킬이 만든 화면이 70/80 이상 |
 | P2.5 운영 **(완료)** | 버전 한 값·CHANGELOG·태그 자동·CI `check:release`, 앱은 태그 고정, `/se:upgrade`, `/se:audit` 버전 비교 (§15) | 툴킷 변경이 앱에 닿는 경로가 한 가지 |
-| P3 배포 | **Storybook·아이덴티티 갤러리 (완료, 0.7.0)** · **스크린샷 기준 비교 CI (완료)** · **React 18 CI 레인 (완료)** · `@se/*` npm 배포(→ 모노레포 밖 `npx create-se-app`) · codemods · 자동 업그레이드 PR · 기여 가이드 | 웹 비전공 구성원이 혼자 서비스 1개 출시 |
+| P3 배포 | **Storybook·아이덴티티 갤러리 (완료, 0.7.0)** · **스크린샷 기준 비교 CI (완료)** · **React 18 CI 레인 (완료)** · **codemods (완료, 0.8.0)** · `@se/*` npm 배포(→ 모노레포 밖 `npx create-se-app`) · 자동 업그레이드 PR · 기여 가이드 | 웹 비전공 구성원이 혼자 서비스 1개 출시 |
 
 성공 지표: 셋업→첫 화면 배포 시간 / `/se:audit` 준수율·디자인 점수 / 서비스 간 hue·시그니처 중복 0 / 신규 구성원 첫 PR까지 시간.
 
@@ -395,7 +395,7 @@ se-web-toolkit/
 
 ### 15.3 호환 정책
 - 깨지는 변경은 한 minor 동안 옛 방식을 남기고 콘솔 경고(deprecation). 앱은 두 버전 안에 옮긴다.
-- 토큰 이름·컴포넌트 prop 은 계약이다. 바꿀 땐 codemod 를 같은 PR 에 넣는 것이 조건(P3 `@se/codemods`).
+- 토큰 이름·컴포넌트 prop 은 계약이다. 바꿀 땐 codemod 를 같은 PR 에 넣는 것이 조건(`@se/codemods` 에 변환 하나 추가).
 - 지원 범위는 최신 major 와 직전 major. 그보다 오래된 앱은 `/se:audit` 가 "업그레이드 필요" 로 표시한다.
 
 ### 15.4 아직 안 한 것

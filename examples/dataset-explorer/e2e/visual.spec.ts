@@ -17,8 +17,10 @@ for (const s of SCREENS) {
     await page.clock.setFixedTime(FIXED_NOW)
     await page.goto(s.path)
     await page.waitForLoadState('networkidle')
+    // MSW 워커가 느리게 뜨는 러너에서 로딩 화면을 찍지 않도록 — 스켈레톤이 사라질 때까지 (최대 20초)
+    await page.waitForFunction(() => document.querySelectorAll('.animate-pulse').length === 0, undefined, { timeout: 20_000 })
     if (s.path.includes('__state=error')) await expect(page.getByRole('button', { name: '다시 시도' }).first()).toBeVisible({ timeout: 3_000 })
     await page.waitForTimeout(700) // 숫자 카운트업(400ms)·전환이 끝난 뒤
-    await expect(page).toHaveScreenshot(`${s.name}.png`, { fullPage: true })
+    await expect(page).toHaveScreenshot(`${s.name}.png`, { fullPage: true, timeout: 15_000 })
   })
 }

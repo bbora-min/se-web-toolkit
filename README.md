@@ -11,6 +11,7 @@
 | `packages/ui` | `@se/ui` — shadcn/Radix 관례의 React 컴포넌트 50개, AppShell, 시그니처 5종(`/__signatures` 갤러리) | ✓ |
 | `packages/charts` | `@se/charts` — Recharts 래퍼 (ChartCard·Bar·Line·MeterList) | ✓ |
 | `packages/eslint-plugin` | `@se/eslint-plugin` — 규칙 5개, recommended/library 설정 | ✓ |
+| `packages/upgrade` | `@se/upgrade` — 앱의 `@se/*` 참조를 새 태그로: CHANGELOG '앱에서 할 일' → 참조 교체 → install·typecheck·lint. `/se:upgrade` 와 `upgrade-apps` 워크플로가 쓴다 | ✓ |
 | `packages/codemods` | `@se/codemods` — MUI·antd·raw 컨트롤·Tailwind 팔레트 → `@se/ui`·토큰 (jscodeshift, `/se:adopt` 4단계가 먼저 돌림) | ✓ |
 | `examples/reference-app` | **Job Monitor** — 모니터링. 개요(Dashboard)·잡 목록(ListDetail, 서버 모드)·로그 뷰어 | ✓ |
 | `examples/dataset-explorer` | **Dataset Explorer** — 조회. 검색 히어로·상세(DetailPage) | ✓ |
@@ -46,7 +47,7 @@ claude plugin update se@se-web-toolkit   # 스킬·규칙
 무엇이 바뀌었고 앱에서 뭘 해야 하는지는 [CHANGELOG.md](CHANGELOG.md) 의 "앱에서 할 일" 칸에 있다. `/se:audit` 가 앱이 몇 버전 밀렸는지 보여 준다.
 
 ### 툴킷을 고쳐서 내보내기
-브랜치에서 수정 → 레퍼런스 앱 3개 스크린샷(라이트·다크·1024) → `/code-review` → `pnpm release:bump <x.y.z>` 로 버전을 한 번에 올리고 CHANGELOG 세 칸(바뀐 것 / 화면 변화 / 앱에서 할 일)을 채움 → PR. CI `check:release` 가 코드 변경에 버전·CHANGELOG 가 없으면 실패시키고, `visual` job 이 레퍼런스 앱 화면을 기준 스크린샷과 비교하고(의도한 변화면 Actions › visual-baseline 으로 기준 갱신), `react18` job 이 React 18 로 강제 설치해 typecheck·build·e2e 를 돌린다. merge 되면 `v<버전>` 태그가 자동으로 찍힌다.
+브랜치에서 수정 → 레퍼런스 앱 3개 스크린샷(라이트·다크·1024) → `/code-review` → `pnpm release:bump <x.y.z>` 로 버전을 한 번에 올리고 CHANGELOG 세 칸(바뀐 것 / 화면 변화 / 앱에서 할 일)을 채움 → PR. CI `check:release` 가 코드 변경에 버전·CHANGELOG 가 없으면 실패시키고, `visual` job 이 레퍼런스 앱 화면을 기준 스크린샷과 비교하고(의도한 변화면 Actions › visual-baseline 으로 기준 갱신), `react18` job 이 React 18 로 강제 설치해 typecheck·build·e2e 를 돌린다. merge 되면 `v<버전>` 태그가 자동으로 찍히고, 설정을 켜 두면 태그마다 앱 리포에 업그레이드 PR(`upgrade-apps`: Variables `AUTO_UPGRADE_PRS=true` + Secrets `APPS_TOKEN` + 레지스트리 `repo`)과 npm 배포(`publish`: `NPM_PUBLISH=true` + `NPM_TOKEN`)가 따라온다.
 
 ## 툴킷 개발
 `./scripts/setup.sh --dev` 가 Node 22 · pnpm · 설치 · 검사 · 플러그인 등록 · 레퍼런스 앱 3개 실행(5173–5175)을 한 번에 한다 (sudo 없음, 멱등). `--full` 은 전체 검사까지. 플러그인 상세는 [plugin/README.md](plugin/README.md), 시험 절차와 결과는 [docs/VALIDATION.md](docs/VALIDATION.md).

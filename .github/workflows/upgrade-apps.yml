@@ -1,0 +1,64 @@
+name: upgrade-apps
+# 툴킷 태그가 찍히면 레지스트리에 repo 가 적힌 앱마다 업그레이드 PR 을 연다 (기계 부분: 참조 교체·install·typecheck·lint).
+# 켜는 법: 저장소 Variables AUTO_UPGRADE_PRS=true, Secrets APPS_TOKEN(앱 리포 contents·pull-requests 쓰기 권한 PAT),
+#          identities/registry.json 항목에 "repo": "org/app-repo" (+ 앱이 하위 폴더면 "appDir": "frontend")
+on:
+  push: { tags: ['v*'] }
+  workflow_dispatch:
+    inputs: { tag: { description: '목표 태그 (예: v0.9.0)', required: false } }
+permissions: { contents: read }
+jobs:
+  plan:
+    if: vars.AUTO_UPGRADE_PRS == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.list.outputs.apps }}
+      tag: ${{ steps.list.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        run: |
+          tag="${{ github.event.inputs.tag || github.ref_name }}"
+          apps=$(node -e "const r=require('./identities/registry.json');console.log(JSON.stringify(r.services.filter(s=>s.repo).map(s=>({id:s.id,repo:s.repo,appDir:s.appDir||'.'}))))")
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"; echo "apps=$apps" >> "$GITHUB_OUTPUT"; echo "$tag → $apps"
+  upgrade:
+    needs: plan
+    if: needs.plan.outputs.apps != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.plan.outputs.apps) }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: toolkit }
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.app.repo }}
+          token: ${{ secrets.APPS_TOKEN }}
+          path: app
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - id: up
+        run: |
+          set +e
+          node toolkit/packages/upgrade/bin/se-upgrade.mjs --dir "app/${{ matrix.app.appDir }}" --to "${{ needs.plan.outputs.tag }}" --json > result.json; code=$?
+          set -e
+          cat result.json | tail -1 > r.json
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "from=$(node -p "require('./r.json').from")" >> "$GITHUB_OUTPUT"
+          node -e "const r=require('./r.json');const t=(r.todos||[]).map(x=>'### '+x.ver+'\n'+x.body).join('\n\n')||'없음';const s=(r.steps||[]).map(x=>(x.ok?'✅':'❌')+' '+x.name+(x.ok?'':'\n\`\`\`\n'+(x.out||'')+'\n\`\`\`')).join('\n');require('fs').writeFileSync('body.md',\`## SE Web Toolkit \${r.from} → \${r.to}\n\n**앱에서 할 일**\n\${t}\n\n**기계 검사**\n\${s}\n\n다음: 이 브랜치에서 \\\`/se:upgrade\\\` 를 돌리면 전/후 스크린샷 diff 와 달라진 화면 리뷰가 붙는다. 플러그인은 \\\`claude plugin update se@se-web-toolkit\\\`.\n\n🤖 upgrade-apps 워크플로가 열었습니다\`)"
+      - name: PR
+        if: steps.up.outputs.from != needs.plan.outputs.tag
+        env: { GH_TOKEN: '${{ secrets.APPS_TOKEN }}' }
+        run: |
+          cd app
+          git config user.name github-actions && git config user.email github-actions@github.com
+          b="se-upgrade/${{ needs.plan.outputs.tag }}"
+          git checkout -b "$b"
+          git add -A && git commit -m "chore: SE Web Toolkit ${{ steps.up.outputs.from }} → ${{ needs.plan.outputs.tag }}" || { echo "변경 없음"; exit 0; }
+          git push -u origin "$b" --force
+          title="chore: SE Web Toolkit ${{ steps.up.outputs.from }} → ${{ needs.plan.outputs.tag }}${{ steps.up.outputs.code != '0' && ' (검사 실패 — 확인 필요)' || '' }}"
+          gh pr create --title "$title" --body-file ../body.md --head "$b" || gh pr edit "$b" --body-file ../body.md

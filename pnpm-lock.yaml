@@ -448,6 +448,12 @@ importers:
         specifier: ^5.7.2
         version: 5.9.3
 
+  packages/upgrade:
+    devDependencies:
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.7(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.32.0)(msw@2.15.0(@types/node@22.20.1)(typescript@5.9.3))(tsx@4.23.13)
+
   templates/app-vite-react:
     dependencies:
       '@hookform/resolvers':

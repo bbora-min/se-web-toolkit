@@ -3,6 +3,19 @@
 툴킷(패키지 `@se/*` + 플러그인)은 **한 버전**으로 움직인다. 항목마다 세 칸: **바뀐 것** / **화면 변화**(코드는 그대로인데 보이는 게 달라지는 것) / **앱에서 할 일**(코드를 고쳐야 하는 것). 앱 담당자는 세 번째 칸만 읽어도 된다.
 버전 의미: patch = 화면 변화 없음 · minor = 추가 또는 화면 변화, 코드 수정 불필요 · major = 앱 코드를 고쳐야 함. 깨지는 변경은 한 minor 동안 옛 방식을 남기고 경고한다.
 
+## 0.8.0 — 2026-09-14
+
+**바뀐 것**
+- **`@se/codemods`**: jscodeshift 변환 4종 — `mui`(Button variant 매핑·TextField→Input·Chip→Badge·Alert·Dialog 계열 …) · `antd`(Button type/danger/size·Input·TextArea·Tag→Badge·Alert·Switch·Checkbox·`message.*`→`toast.*`) · `raw-controls`(`<button>`→Button, `<input>`→Input/Checkbox, `<textarea>`→Textarea, 정적 `<select>`→Select options, `<table>` 은 TODO) · `tailwind-palette`(`bg-blue-600 text-white`→`bg-info text-on-info`, 남색·보라→accent, 회색→표면/잉크/라인, `-50/-100`→`-soft`). 못 정한 것은 `TODO(se-adopt)` 주석. CLI `se-codemods <all|변환> <경로> [--dry]`, `pnpm dlx "github:…#v0.8.0&path:packages/codemods"`
+- `/se:adopt` 4단계와 `se-migrator` 에이전트가 페이지마다 codemod 를 먼저 돌린 뒤 남은 TODO 를 손으로 옮긴다
+- CI: 시각 회귀(`visual`, 레퍼런스 앱 화면 48 기준)·React 18 레인(`react18`) job — 0.7.0 이후 추가
+
+**화면 변화**
+- 없음
+
+**앱에서 할 일**
+- 없음. 도입 중인 프로젝트는 4단계에서 `--dry` 로 먼저 보고 적용
+
 ## 0.7.0 — 2026-09-14
 
 **바뀐 것**

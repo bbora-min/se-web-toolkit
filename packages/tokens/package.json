@@ -1,6 +1,6 @@
 {
   "name": "@se/tokens",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "SE 디자인 토큰 — 브랜드 코어(고정) + 서비스 아이덴티티(createTheme)",
   "type": "module",
   "exports": {

@@ -1,0 +1,21 @@
+{
+  "name": "@se/codemods",
+  "version": "0.8.0",
+  "description": "기존 React 코드를 @se/ui·토큰으로 옮기는 jscodeshift 변환 — 80 % 자동, 나머지는 TODO(se-adopt) 로 남긴다",
+  "type": "module",
+  "bin": { "se-codemods": "./bin/se-codemods.mjs" },
+  "main": "./src/index.js",
+  "exports": { ".": "./src/index.js" },
+  "files": ["src", "bin"],
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "node --check bin/se-codemods.mjs && node -e \"import('./src/index.js')\""
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "jscodeshift": "^17.3.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
+  }
+}

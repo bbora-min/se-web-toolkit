@@ -11,6 +11,7 @@
 | `packages/ui` | `@se/ui` — shadcn/Radix 관례의 React 컴포넌트 50개, AppShell, 시그니처 5종(`/__signatures` 갤러리) | ✓ |
 | `packages/charts` | `@se/charts` — Recharts 래퍼 (ChartCard·Bar·Line·MeterList) | ✓ |
 | `packages/eslint-plugin` | `@se/eslint-plugin` — 규칙 5개, recommended/library 설정 | ✓ |
+| `packages/codemods` | `@se/codemods` — MUI·antd·raw 컨트롤·Tailwind 팔레트 → `@se/ui`·토큰 (jscodeshift, `/se:adopt` 4단계가 먼저 돌림) | ✓ |
 | `examples/reference-app` | **Job Monitor** — 모니터링. 개요(Dashboard)·잡 목록(ListDetail, 서버 모드)·로그 뷰어 | ✓ |
 | `examples/dataset-explorer` | **Dataset Explorer** — 조회. 검색 히어로·상세(DetailPage) | ✓ |
 | `examples/release-desk` | **Release Desk** — 업무 처리. 단계 레일·위자드(FormWizard)·설정(Settings) | ✓ |

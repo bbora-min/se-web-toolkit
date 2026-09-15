@@ -3,6 +3,20 @@
 툴킷(패키지 `@se/*` + 플러그인)은 **한 버전**으로 움직인다. 항목마다 세 칸: **바뀐 것** / **화면 변화**(코드는 그대로인데 보이는 게 달라지는 것) / **앱에서 할 일**(코드를 고쳐야 하는 것). 앱 담당자는 세 번째 칸만 읽어도 된다.
 버전 의미: patch = 화면 변화 없음 · minor = 추가 또는 화면 변화, 코드 수정 불필요 · major = 앱 코드를 고쳐야 함. 깨지는 변경은 한 minor 동안 옛 방식을 남기고 경고한다.
 
+## 0.9.0 — 2026-09-15
+
+**바뀐 것**
+- **`@se/upgrade`** CLI(`se-upgrade [--dir] [--to vX] [--dry] [--json]`): 현재 태그 ↔ 목표 태그 사이 CHANGELOG "앱에서 할 일" 출력 → `@se/*` 참조를 태그로 교체(main 추적도 고정) → install → typecheck → lint. `/se:upgrade` 스킬이 이걸 쓴다
+- **자동 업그레이드 PR** `upgrade-apps` 워크플로: 태그마다 레지스트리에 `repo` 가 적힌 앱에 `se-upgrade/<태그>` PR(본문에 할 일·검사 결과). Variables `AUTO_UPGRADE_PRS=true` + Secrets `APPS_TOKEN` 으로 켬
+- **npm 배포** `publish` 워크플로: 태그마다 `@se/*` 를 레지스트리에(`NPM_PUBLISH=true` + `NPM_TOKEN`, 사내면 `NPM_REGISTRY`). 패키지에 `publishConfig`·`repository` 추가
+- P3 완료 — DESIGN §13·§15 갱신
+
+**화면 변화**
+- 없음
+
+**앱에서 할 일**
+- 없음. 자동 PR 을 받고 싶으면 툴킷 `identities/registry.json` 의 내 서비스 항목에 `"repo"`(와 하위 폴더면 `"appDir"`)를 적어 달라고 요청
+
 ## 0.8.0 — 2026-09-14
 
 **바뀐 것**

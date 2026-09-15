@@ -1,0 +1,28 @@
+{
+  "name": "@se/upgrade",
+  "version": "0.9.0",
+  "description": "앱의 @se/* 참조를 새 툴킷 태그로 올린다 — CHANGELOG '앱에서 할 일' 출력 → 참조 교체 → install → typecheck·lint. /se:upgrade 와 자동 업그레이드 PR 워크플로가 쓴다",
+  "type": "module",
+  "bin": {
+    "se-upgrade": "./bin/se-upgrade.mjs"
+  },
+  "files": [
+    "bin"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "node --check bin/se-upgrade.mjs"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bbora-min/se-web-toolkit.git",
+    "directory": "packages/upgrade"
+  },
+  "license": "UNLICENSED"
+}

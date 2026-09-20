@@ -7,7 +7,8 @@
 
 **바뀐 것**
 - **트리아지(3단) 골격** — Release Desk "내 승인 대기"가 `/releases?mine=1`(표) 에서 **`/approvals/:id?`** 로: 목록 | 본문 | 속성. 선택은 URL, `j`/`k`(↑↓) 이동·`Enter` 상세, 승인(primary, 바로)·반려(사유 다이얼로그), 결정하면 다음 항목으로. 필수 체크리스트가 남으면 승인 비활성 + 이유 한 줄. 화면 높이에 고정, 칸마다 스크롤, 폭 1440
-- `@se/ui` **`SplitPane`** — 가로 분할(왼쪽·가운데·오른쪽), 손잡이 끌기·키보드(←→), `storageKey` 로 폭 기억
+- `@se/ui` **`SplitPane`** — 가로 분할(왼쪽·가운데·오른쪽), 손잡이 끌기·키보드(←→), `storageKey` 로 폭 기억, 1024 이하 오른쪽 접힘. **`ShellFill`** — 쉘 패딩·최대 폭을 무르는 전폭 컨테이너(`fixed` 면 화면 높이) — 관측 벽·트리아지가 쉘 내부 값을 적지 않는다
+- Release Desk `lib/workflow` 에 `isMyTurn`·`requiredMissing`·`decisionBlocker` — 상세·보드·트리아지·다이얼로그·쉘 카운트가 같은 규칙. `DecisionDialog onDecided`(취소와 구분)·`defaultDecision`
 - 시각 회귀에 `approvals`·`approvals-empty`. 쉘 네비·팔레트·사용자 메뉴의 "내 승인 대기"가 `/approvals` 로
 - 스킬: `se-ui` 선택표에 **트리아지** 행, `references/patterns/triage.md`, `ApprovalsPage.tsx` 동봉. Storybook `패턴/SplitPane`
 

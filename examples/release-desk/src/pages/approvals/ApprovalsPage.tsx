@@ -15,10 +15,10 @@
 import * as React from 'react'
 import { ArrowUpRight, CheckCircle2, MessageSquare, ThumbsDown, ThumbsUp } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router'
-import { Avatar, Badge, Button, EmptyState, ErrorState, Kbd, Skeleton, SplitPane, cn, formatAbsolute, formatRelative, toast, useContentWidth } from '@se/ui'
+import { Avatar, Badge, Button, EmptyState, ErrorState, Kbd, ShellFill, Skeleton, SplitPane, cn, formatAbsolute, formatRelative, toast, useContentWidth } from '@se/ui'
 import { useDecide, useReleases } from '../../api/releases'
 import { STAGES, type Release } from '../../api/types'
-import { ME } from '../../lib/workflow'
+import { ME, decisionBlocker, isMyTurn } from '../../lib/workflow'
 import { ApproverStack, RiskLabel, StageBadge, TypeBadge } from '../releases/bits'
 import { DecisionDialog } from '../releases/DecisionDialog'
 
@@ -30,21 +30,24 @@ export function ApprovalsPage() {
   const navigate = useNavigate()
   const list = useReleases({ mine: true })
   useContentWidth(1440)
-  // 내 차례인 것만, 배포 창 임박 순
-  const items = React.useMemo(() => [...(list.data?.items ?? [])].sort((a, b) => a.windowFrom.localeCompare(b.windowFrom)), [list.data])
+  // 내 차례인 것만(승인 단계 + 내가 대기 중 — lib/workflow), 배포 창 임박 순
+  const items = React.useMemo(() => (list.data?.items ?? []).filter((r) => isMyTurn(r)).sort((a, b) => a.windowFrom.localeCompare(b.windowFrom)), [list.data])
   const selected = items.find((r) => r.id === id) ?? items[0] ?? null
   const [reject, setReject] = React.useState<Release | null>(null)
 
-  // URL 에 선택이 없으면 첫 항목으로(교체) — 새로고침·공유해도 같은 화면
+  // URL 의 선택이 없거나 목록에 없으면(이미 처리됨) 첫 항목으로 교체 — URL·강조·본문이 늘 같은 것을 가리킨다
   React.useEffect(() => {
-    if (!id && items[0]) navigate(`/approvals/${items[0].id}`, { replace: true })
-  }, [id, items, navigate])
+    if (!list.data) return
+    if (items[0] && (!id || !items.some((r) => r.id === id))) navigate(`/approvals/${items[0].id}`, { replace: true })
+    else if (!items[0] && id) navigate('/approvals', { replace: true })
+  }, [id, items, list.data, navigate])
 
-  // j/k — 입력 중이 아닐 때만
+  // j/k — 입력·버튼·링크·다이얼로그 위에서는 손대지 않는다. Enter 는 아무것도 포커스되지 않았을 때만 상세로
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return
       const t = e.target as HTMLElement | null
-      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable || t.closest('[role="dialog"]'))) return
+      if (t && t !== document.body && (t.closest('input, textarea, select, [contenteditable], [role="dialog"], [role="menu"]') || (e.key === 'Enter' && t.closest('button, a, [role]')))) return
       if (!selected || !items.length) return
       const i = items.findIndex((r) => r.id === selected.id)
       if (e.key === 'j' || e.key === 'ArrowDown') navigate(`/approvals/${items[Math.min(items.length - 1, i + 1)]!.id}`)
@@ -65,8 +68,8 @@ export function ApprovalsPage() {
   }
 
   return (
-    // 화면 높이에 고정 — 쉘의 패딩을 무르고 3단이 각자 스크롤한다
-    <div className="-mx-6 -mb-16 flex h-[calc(100vh-3.5rem)] min-h-0 flex-col border-t border-line xl:-mx-8">
+    // 화면 높이에 고정 — ShellFill 이 쉘 패딩을 무르고, 3단이 각자 스크롤한다
+    <ShellFill fixed className="border-t border-line">
       <h1 className="sr-only">내 승인 대기</h1>
       <SplitPane
         storageKey="approvals"
@@ -83,8 +86,9 @@ export function ApprovalsPage() {
           <Body key={selected.id} r={selected} onReject={() => setReject(selected)} onDecided={() => goNext(selected.id)} />
         )}
       </SplitPane>
-      <DecisionDialog release={reject} onClose={() => { const d = reject; setReject(null); if (d) goNext(d.id) }} />
-    </div>
+      {/* 닫기(취소)는 자리에 남고, 결정이 저장됐을 때만 다음으로 */}
+      <DecisionDialog release={reject} defaultDecision="rejected" onClose={() => setReject(null)} onDecided={() => { if (reject) goNext(reject.id) }} />
+    </ShellFill>
   )
 }
 
@@ -139,7 +143,7 @@ function Queue({ items, loading, error, selectedId, onRetry }: { items: Release[
 function Body({ r, onReject, onDecided }: { r: Release; onReject: () => void; onDecided: () => void }) {
   const decide = useDecide(r.id)
   const done = r.checklist.filter((c) => c.done).length
-  const requiredMissing = r.checklist.filter((c) => c.required && !c.done).length
+  const blocker = decisionBlocker(r)
   const approve = async () => {
     try {
       await decide.mutateAsync({ decision: 'approved' })
@@ -160,13 +164,11 @@ function Body({ r, onReject, onDecided }: { r: Release; onReject: () => void; on
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <Button variant="ghost" size="sm" asChild><Link to={`/releases/${r.id}`}>상세 <ArrowUpRight /></Link></Button>
           <Button variant="secondary" size="sm" onClick={onReject}><ThumbsDown /> 반려…</Button>
-          <Button variant="primary" size="sm" onClick={() => void approve()} loading={decide.isPending} disabled={requiredMissing > 0}><ThumbsUp /> 승인</Button>
+          <Button variant="primary" size="sm" onClick={() => void approve()} loading={decide.isPending} disabled={Boolean(blocker)}><ThumbsUp /> 승인</Button>
         </div>
       </div>
       <div className="flex max-w-[72ch] flex-col gap-7 px-6 py-6">
-        {requiredMissing > 0 ? (
-          <p className="rounded-md border border-warning/30 bg-warning-soft px-4 py-3 text-sm text-ink">필수 체크리스트 {requiredMissing}건이 남아 승인할 수 없습니다. 담당자({r.owner})에게 완료를 요청하십시오.</p>
-        ) : null}
+        {blocker ? <p className="rounded-md border border-warning/30 bg-warning-soft px-4 py-3 text-sm text-ink">{blocker}</p> : null}
         <section className="flex flex-col gap-2">
           <h2 className="text-sm font-semibold text-ink">변경 내용</h2>
           <ul className="flex flex-col gap-1.5 text-sm text-ink/85">

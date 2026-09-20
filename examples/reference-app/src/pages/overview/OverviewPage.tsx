@@ -17,7 +17,7 @@
 import * as React from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
-import { Badge, Button, ErrorState, Select, Skeleton, StatusBadge, StatusStrip, Tile, TileGrid, formatDuration, formatRelative, useContentWidth } from '@se/ui'
+import { Badge, Button, ErrorState, Select, ShellFill, Skeleton, StatusBadge, StatusStrip, Tile, TileGrid, formatDuration, formatRelative, useContentWidth } from '@se/ui'
 import { BarChart, ChartLegend, LineChart, MeterList, type Series } from '@se/charts'
 import { useClusterSummary, useOverview } from '../../api/jobs'
 
@@ -54,8 +54,8 @@ export function OverviewPage() {
   const rangeLabel = range === '24h' ? '24시간' : '7일'
 
   return (
-    // 벽은 canvas 위에 — 원장 페이지(surface)와 바탕부터 다르다. 쉘의 패딩을 무르고 전폭으로
-    <div className="-mx-6 -mb-16 flex flex-1 flex-col gap-3 border-t border-line bg-canvas px-6 pb-8 pt-3 xl:-mx-8 xl:px-8">
+    // 벽은 canvas 위에 — 원장 페이지(surface)와 바탕부터 다르다. ShellFill 이 쉘 패딩을 무른다
+    <ShellFill className="gap-3 border-t border-line bg-canvas px-6 pb-8 pt-3 xl:px-8">
       <h1 className="sr-only">개요</h1>
 
       {/* 툴바 — 제목 대신. 기간 하나가 벽 전체를 바꾼다 */}
@@ -188,7 +188,7 @@ export function OverviewPage() {
         </Tile>
       </TileGrid>
       )}
-    </div>
+    </ShellFill>
   )
 }
 

@@ -11,6 +11,7 @@ import identity from '../../se.identity.json'
 const ID = parseIdentity(identity)
 import { useReleases } from '../api/releases'
 import { StageBadge } from '../pages/releases/bits'
+import { isMyTurn } from '../lib/workflow'
 
 const NAV = [
   { to: '/releases', label: '릴리스', icon: <Rocket /> },
@@ -25,7 +26,7 @@ export function Shell() {
   const { setMode, setDensity, density } = useTheme()
   const list = useReleases({})
   useIdentityFavicon(identity as Parameters<typeof useIdentityFavicon>[0])
-  const pendingForMe = list.data?.items.filter((r) => r.approvers.some((a) => a.name === 'bora' && a.decision === 'pending')).length ?? 0
+  const pendingForMe = list.data?.items.filter((r) => isMyTurn(r)).length ?? 0
 
   const command: CommandGroup[] = React.useMemo(
     () => [

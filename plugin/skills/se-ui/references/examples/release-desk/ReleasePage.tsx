@@ -12,7 +12,7 @@ import {
 } from '@se/ui'
 import { useAdvance, useChecklist, useRelease } from '../../api/releases'
 import { STAGES, type Release } from '../../api/types'
-import { ME, ORDER, advanceBlocker } from '../../lib/workflow'
+import { ME, ORDER, advanceBlocker, isMyTurn, requiredMissing as missingOf } from '../../lib/workflow'
 import { formatAbsolute, formatRelative } from '@se/ui'
 import { ApproverStack, RiskLabel, StageBadge, TypeBadge } from './bits'
 import { DecisionDialog } from './DecisionDialog'
@@ -29,9 +29,9 @@ export function ReleasePage() {
   const [decide, setDecide] = React.useState(false)
   const [confirmAdvance, setConfirmAdvance] = React.useState(false)
 
-  const myTurn = r?.stage === 'approval' && r.approvers.some((a) => a.name === 'bora' && a.decision === 'pending')
+  const myTurn = r ? isMyTurn(r) : false
   const isOwner = r?.owner === ME
-  const requiredMissing = r?.checklist.filter((c) => c.required && !c.done).length ?? 0
+  const requiredMissing = r ? missingOf(r) : 0
   const stageIdx = r ? ORDER.indexOf(r.stage) : 0
   const nextLabel = r && r.stage !== 'done' ? STAGES[stageIdx + 1]?.label : null
   // 보드의 끌기·메뉴와 같은 규칙(lib/workflow.ts)

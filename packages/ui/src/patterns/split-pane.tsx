@@ -28,7 +28,9 @@ function readWidths(key: string | undefined): { l?: number; r?: number } {
   if (!key) return {}
   try {
     const v = localStorage.getItem(`se-split:${key}`)
-    return v ? (JSON.parse(v) as { l?: number; r?: number }) : {}
+    const o = v ? (JSON.parse(v) as Record<string, unknown>) : {}
+    const num = (x: unknown) => (typeof x === 'number' && Number.isFinite(x) && x > 0 ? x : undefined)
+    return { l: num(o.l), r: num(o.r) }
   } catch {
     return {}
   }
@@ -39,6 +41,23 @@ export function SplitPane({ left, right, leftWidth = 320, rightWidth = 280, minL
   const [l, setL] = React.useState(saved.l ?? leftWidth)
   const [r, setR] = React.useState(saved.r ?? rightWidth)
   const ref = React.useRef<HTMLDivElement>(null)
+  /** 이 칸이 가질 수 있는 최대 폭 — 반대편 칸과 가운데 최소 폭을 남긴다 */
+  const maxFor = React.useCallback(
+    (side: 'l' | 'r', lNow: number, rNow: number) => {
+      const total = ref.current?.getBoundingClientRect().width ?? Infinity
+      const other = side === 'l' ? (right ? rNow : 0) : left ? lNow : 0
+      return Math.max(side === 'l' ? minLeft : minRight, total - other - minCenter - 12)
+    },
+    [left, right, minLeft, minRight, minCenter],
+  )
+  // 저장된 폭이 지금 화면보다 크면(다른 모니터) 줄인다 — 마운트 때 한 번
+  const clampOnce = React.useRef(false)
+  React.useLayoutEffect(() => {
+    if (clampOnce.current) return
+    clampOnce.current = true
+    setL((v) => Math.min(v, maxFor('l', v, r)))
+    setR((v) => Math.min(v, maxFor('r', l, v)))
+  }, [maxFor, l, r])
   React.useEffect(() => {
     if (!storageKey) return
     try {
@@ -54,30 +73,35 @@ export function SplitPane({ left, right, leftWidth = 320, rightWidth = 280, minL
     if (!el) return
     const startX = e.clientX
     const start = side === 'l' ? l : r
-    const total = el.getBoundingClientRect().width
+    const max = maxFor(side, l, r)
     const handle = e.currentTarget
     handle.setPointerCapture(e.pointerId)
     const move = (ev: PointerEvent) => {
       const delta = side === 'l' ? ev.clientX - startX : startX - ev.clientX
-      const other = side === 'l' ? (right ? r : 0) : left ? l : 0
-      const max = total - other - minCenter - 12
       const next = Math.max(side === 'l' ? minLeft : minRight, Math.min(max, start + delta))
       ;(side === 'l' ? setL : setR)(Math.round(next))
     }
-    const up = () => {
-      handle.releasePointerCapture(e.pointerId)
+    const done = () => {
+      try { handle.releasePointerCapture(e.pointerId) } catch { /* 이미 해제됨 */ }
       handle.removeEventListener('pointermove', move)
-      handle.removeEventListener('pointerup', up)
+      handle.removeEventListener('pointerup', done)
+      handle.removeEventListener('pointercancel', done)
+      handle.removeEventListener('lostpointercapture', done)
     }
     handle.addEventListener('pointermove', move)
-    handle.addEventListener('pointerup', up)
+    handle.addEventListener('pointerup', done)
+    handle.addEventListener('pointercancel', done)
+    handle.addEventListener('lostpointercapture', done)
+    void el
   }
   const onKey = (side: 'l' | 'r') => (e: React.KeyboardEvent) => {
     const step = e.shiftKey ? 40 : 8
     const set = side === 'l' ? setL : setR
     const min = side === 'l' ? minLeft : minRight
-    if (e.key === 'ArrowLeft') set((v) => Math.max(min, v - (side === 'l' ? step : -step)))
-    else if (e.key === 'ArrowRight') set((v) => Math.max(min, v + (side === 'l' ? step : -step)))
+    const max = maxFor(side, l, r)
+    const clamp = (v: number) => Math.max(min, Math.min(max, v))
+    if (e.key === 'ArrowLeft') set((v) => clamp(v - (side === 'l' ? step : -step)))
+    else if (e.key === 'ArrowRight') set((v) => clamp(v + (side === 'l' ? step : -step)))
     else return
     e.preventDefault()
   }

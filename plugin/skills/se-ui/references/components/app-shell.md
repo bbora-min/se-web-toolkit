@@ -1,6 +1,6 @@
-# AppShell · NavItem · NavSection · PageHeader · SectionHeader · PageBody · ThemeToggle
+# AppShell · NavItem · NavSection · ShellFill · PageHeader · SectionHeader · PageBody · ThemeToggle
 
-`import { AppShell, NavItem, NavSection, PageHeader, SectionHeader, PageBody, ThemeToggle } from '@se/ui'` — 패턴 · `packages/ui/src/patterns/app-shell.tsx`
+`import { AppShell, NavItem, NavSection, ShellFill, PageHeader, SectionHeader, PageBody, ThemeToggle } from '@se/ui'` — 패턴 · `packages/ui/src/patterns/app-shell.tsx`
 
 ## AppShell
 
@@ -37,6 +37,15 @@
 | prop | 타입 | 기본 | 설명 |
 |---|---|---|---|
 | `title` | `string` |  |  |
+
+## ShellFill
+
+쉘 콘텐츠 영역의 패딩·최대 폭을 무르고 전폭으로 — 관측 벽·트리아지·콘솔처럼 "페이지"가 아닌 골격.
+배치별 패딩 값은 여기 한 곳에만 있다. 페이지가 `-mx-6` 같은 쉘 내부 값을 적지 않는다.
+
+| prop | 타입 | 기본 | 설명 |
+|---|---|---|---|
+| `fixed` | `boolean` |  | true 면 남은 화면 높이에 고정(트리아지·콘솔 — 칸마다 스크롤). false 면 폭만 전폭(관측 벽) |
 
 ## PageHeader
 

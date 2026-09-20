@@ -18,7 +18,7 @@ import { ArrowRight, Copy, Eye, MoreHorizontal, ThumbsUp } from 'lucide-react'
 import { Avatar, Badge, Board, BoardCard, BoardColumn, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Skeleton, Tooltip, TooltipContent, TooltipTrigger, formatAbsolute, toast } from '@se/ui'
 import { useAdvanceRelease } from '../../api/releases'
 import { STAGES, type Release, type StageId } from '../../api/types'
-import { ME, advanceBlocker, nextStage } from '../../lib/workflow'
+import { advanceBlocker, isMyTurn, nextStage } from '../../lib/workflow'
 import { ApproverStack, RiskLabel, TypeBadge } from './bits'
 
 /** 보드에 보이는 열 — 초안은 작성자만 보는 상태라 뺀다 */
@@ -105,7 +105,7 @@ export function ReleasesBoard({ items, loading, focus, onOpen, onDecide }: Relea
 
 function ReleaseCard({ release: r, onOpen, onDecide, onAdvance }: { release: Release; onOpen: () => void; onDecide: () => void; onAdvance: () => void }) {
   const blocker = advanceBlocker(r)
-  const myTurn = r.stage === 'approval' && r.approvers.some((a) => a.name === ME && a.decision === 'pending')
+  const myTurn = isMyTurn(r)
   const next = nextStage(r.stage)
   return (
     <BoardCard id={r.id} onOpen={onOpen} draggable={!blocker} aria-label={`${r.version} ${r.title}`}>

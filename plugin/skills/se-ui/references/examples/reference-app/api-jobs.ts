@@ -46,6 +46,16 @@ export function useJobs(filters: JobFilters) {
   })
 }
 
+/** 잡 하나 — 콘솔 화면. 실행 중이면 5초마다 */
+export function useJob(id: string | undefined) {
+  return useQuery({
+    queryKey: ['jobs', 'one', id],
+    queryFn: () => api<Job>(`/jobs/${id}`),
+    enabled: Boolean(id),
+    refetchInterval: (q) => (q.state.data?.state === 'running' ? 5_000 : false),
+  })
+}
+
 export function useJobLogs(id: string | undefined, live: boolean) {
   return useQuery({
     queryKey: ['jobs', 'logs', id],

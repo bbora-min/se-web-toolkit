@@ -9,6 +9,8 @@ const SCREENS = [
   { name: 'jobs', path: '/jobs' },
   { name: 'jobs-empty', path: '/jobs?__state=empty' },
   { name: 'jobs-error', path: '/jobs?__state=error' },
+  { name: 'job-console', path: '/jobs/demo-failed/logs' },
+  { name: 'job-console-live', path: '/jobs/demo-running/logs' },
   { name: 'identity', path: '/__identity' },
   { name: 'signatures', path: '/__signatures' },
 ]

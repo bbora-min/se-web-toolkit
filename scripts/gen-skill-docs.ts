@@ -100,6 +100,7 @@ for (const src of SOURCES) {
 const EXAMPLES: Array<[string, string]> = [
   ['examples/reference-app/src/pages/jobs/JobsPage.tsx', 'reference-app/JobsPage.tsx'],
   ['examples/reference-app/src/pages/jobs/JobDetailSheet.tsx', 'reference-app/JobDetailSheet.tsx'],
+  ['examples/reference-app/src/pages/jobs/JobConsolePage.tsx', 'reference-app/JobConsolePage.tsx'],
   ['examples/reference-app/src/pages/overview/OverviewPage.tsx', 'reference-app/OverviewPage.tsx'],
   ['examples/reference-app/src/app/Shell.tsx', 'reference-app/Shell.tsx'],
   ['examples/reference-app/src/pages/signatures/SignaturesPage.tsx', 'reference-app/SignaturesPage.tsx'],

@@ -3,6 +3,7 @@ import type { ClusterSummary, Job, Overview } from '../api/types'
 import { makeJobs, makeLogs } from './data'
 
 let jobs: Job[] = makeJobs()
+const resolveJob = (id: string) => (id === 'demo-failed' ? jobs.find((x) => x.state === 'failed') : id === 'demo-running' ? jobs.find((x) => x.state === 'running') : jobs.find((x) => x.id === id))
 
 /** 결정적 시계열 — 현재값으로 끝나는 24포인트 */
 function series(end: number, spread: number, seed: number): number[] {
@@ -142,9 +143,17 @@ export const handlers = [
       pipelines: [...new Set(jobs.map((j) => j.pipeline))].sort(),
     })
   }),
+  /** 잡 하나. `demo-failed`·`demo-running` 은 시연·스크린샷용 별칭 — 시드 데이터의 첫 실패·첫 실행 중 잡 */
+  http.get('/api/jobs/:id', async ({ params, request }) => {
+    const forced = await devState(new URL(request.url))
+    if (forced && forced.status !== 200) return forced
+    const j = resolveJob(String(params.id))
+    if (!j) return HttpResponse.json({ message: '잡을 찾을 수 없습니다' }, { status: 404 })
+    return HttpResponse.json(j)
+  }),
   http.get('/api/jobs/:id/logs', async ({ params }) => {
     await delay(150)
-    const j = jobs.find((x) => x.id === params.id)
+    const j = resolveJob(String(params.id))
     if (!j) return HttpResponse.json({ message: '잡을 찾을 수 없습니다' }, { status: 404 })
     return HttpResponse.json({ lines: makeLogs(j), live: j.state === 'running' })
   }),

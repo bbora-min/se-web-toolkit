@@ -175,7 +175,7 @@ API는 shadcn/Radix 관례를 그대로 따른다(Claude가 아는 이름 → �
 |---|---|
 | T0 프리미티브 | Button, Input, Textarea, Select, Combobox, Checkbox, Switch, RadioGroup, Badge, Tooltip, Popover, Dialog, Sheet, Tabs, Table, Card, Toast, DropdownMenu, Command, Skeleton, Alert, Separator |
 | T1 내부도구 복합 | **DataTable**(TanStack: 서버 페이지네이션·정렬·컬럼 토글·행 선택·CSV), FilterBar, StatusBadge, DescriptionList, JsonViewer, LogViewer(가상 스크롤·ANSI), StatCard, TimeRangePicker, CodeBlock, EmptyState, ErrorState, ConfirmDialog, Form(react-hook-form + zod) |
-| T2 레이아웃/패턴 | AppShell(`layout` = sidebar · topnav · panes), ListDetailPage, DashboardPage, DetailPage, FormWizardPage, SettingsPage, **HubPage**(0.11.0, `examples/se-home` — 패턴은 컴포넌트가 아니라 복사할 원본), **관측 벽**(0.12.0, `TileGrid`·`Tile` + Job Monitor 개요) — 보드·문서 골격은 0.13.0+ |
+| T2 레이아웃/패턴 | AppShell(`layout` = sidebar · topnav · panes), ListDetailPage, DashboardPage, DetailPage, FormWizardPage, SettingsPage, **HubPage**(0.11.0, `examples/se-home` — 패턴은 컴포넌트가 아니라 복사할 원본), **관측 벽**(0.12.0, `TileGrid`·`Tile` + Job Monitor 개요), **보드**(0.13.0, `Board`·`BoardColumn`·`BoardCard` + Release Desk `?view=board`) — 문서 골격은 0.14.0 |
 | signatures/ | StatusStrip, SearchHero, StageRail, TimelineRibbon, MetricMarquee (아이덴티티 시그니처 후보) |
 
 각 패턴은 `examples/`에 로딩·빈·에러 상태를 포함한 완전 예제를 갖는다.

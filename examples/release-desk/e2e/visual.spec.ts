@@ -6,6 +6,7 @@ import { expect, test } from '@playwright/test'
  */
 const SCREENS = [
   { name: 'releases', path: '/releases' },
+  { name: 'releases-board', path: '/releases?view=board' },
   { name: 'releases-empty', path: '/releases?__state=empty' },
   { name: 'releases-error', path: '/releases?__state=error' },
   { name: 'new-release', path: '/releases/new' },

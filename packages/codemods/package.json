@@ -1,6 +1,6 @@
 {
   "name": "@se/codemods",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "기존 React 코드를 @se/ui·토큰으로 옮기는 jscodeshift 변환 — 80 % 자동, 나머지는 TODO(se-adopt) 로 남긴다",
   "type": "module",
   "bin": {

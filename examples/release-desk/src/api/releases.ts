@@ -55,6 +55,11 @@ export function useAdvance(id: string) {
   const inv = useInvalidate()
   return useMutation({ mutationFn: () => api<Release>(`/releases/${id}/advance`, { method: 'POST' }), onSuccess: inv })
 }
+/** 보드에서 — 어느 카드든 다음 단계로. 규칙(승인 단계·체크리스트)은 화면이 먼저 본다 */
+export function useAdvanceRelease() {
+  const inv = useInvalidate()
+  return useMutation({ mutationFn: (id: string) => api<Release>(`/releases/${id}/advance`, { method: 'POST' }), onSuccess: inv })
+}
 export function useChecklist(id: string) {
   const inv = useInvalidate()
   return useMutation({ mutationFn: (d: { itemId: string; done: boolean }) => api<Release>(`/releases/${id}/checklist`, { method: 'POST', body: JSON.stringify(d) }), onSuccess: inv })

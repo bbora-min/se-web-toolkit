@@ -3,6 +3,20 @@
 툴킷(패키지 `@se/*` + 플러그인)은 **한 버전**으로 움직인다. 항목마다 세 칸: **바뀐 것** / **화면 변화**(코드는 그대로인데 보이는 게 달라지는 것) / **앱에서 할 일**(코드를 고쳐야 하는 것). 앱 담당자는 세 번째 칸만 읽어도 된다.
 버전 의미: patch = 화면 변화 없음 · minor = 추가 또는 화면 변화, 코드 수정 불필요 · major = 앱 코드를 고쳐야 함. 깨지는 변경은 한 minor 동안 옛 방식을 남기고 경고한다.
 
+## 0.13.0 — 2026-09-20
+
+**바뀐 것**
+- **보드(Kanban) 골격** — Release Desk 릴리스 목록에 **표 ↔ 보드 전환**(`?view=board`, 헤더의 세그먼트). 보드는 열 = 단계(초안 제외 5열), 카드 = 릴리스(버전·유형·제목 → 막힘 → 서비스·승인자·위험 → 담당·배포 창). 카드를 **바로 다음 열로 끌면 단계가 진행**되고, 상세 화면과 같은 규칙(승인 단계는 승인자만, 필수 체크리스트 미완 불가)이 `canMove` 로 막는다 — 못 옮기는 열은 흐려지고 놓으면 이유를 toast. 카드 메뉴의 "다음 단계로"가 같은 일(키보드·터치). 보드에서 단계 레일을 누르면 필터가 아니라 그 열로 스크롤·강조
+- `@se/ui` **`Board` · `BoardColumn` · `BoardCard`**(HTML5 drag & drop, 의존성 없음. `onMove`·`canMove`, 열 `count`·`blocked`·`highlighted`, 카드 `onOpen`·`draggable`)
+- Release Desk API `useAdvanceRelease()`(id 인자). 시각 회귀에 `releases-board` 화면
+- 스킬: `se-ui` 선택표에 **보드** 행, `references/patterns/board.md`, `ReleasesBoard.tsx` 동봉. Storybook `패턴/Board`
+
+**화면 변화**
+- Release Desk `/releases` 헤더에 [표 | 보드] 세그먼트(기준 스크린샷 갱신). 표 자체와 다른 화면·앱은 그대로
+
+**앱에서 할 일**
+- 없음 — `/se:upgrade` 만. 단계가 있는 목록에 보드를 붙이려면 `ReleasesBoard.tsx` 를 복사하고 `canMove` 에 그 워크플로의 규칙을
+
 ## 0.12.0 — 2026-09-20
 
 **바뀐 것**

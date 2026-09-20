@@ -84,7 +84,7 @@ export function useBulkJobs() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (d: { ids: string[]; action: 'retry' | 'cancel' }) => api<{ affected: number }>('/jobs/bulk', { method: 'POST', body: JSON.stringify(d) }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
+    onSuccess: () => { void qc.invalidateQueries({ queryKey: jobKeys.all }); void qc.invalidateQueries({ queryKey: ['pipelines'] }) },
   })
 }
 
@@ -100,7 +100,7 @@ export function useRetryJob() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api<Job>(`/jobs/${id}/retry`, { method: 'POST' }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
+    onSuccess: () => { void qc.invalidateQueries({ queryKey: jobKeys.all }); void qc.invalidateQueries({ queryKey: ['pipelines'] }) },
   })
 }
 
@@ -108,7 +108,7 @@ export function useCancelJob() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api<Job>(`/jobs/${id}/cancel`, { method: 'POST' }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
+    onSuccess: () => { void qc.invalidateQueries({ queryKey: jobKeys.all }); void qc.invalidateQueries({ queryKey: ['pipelines'] }) },
   })
 }
 

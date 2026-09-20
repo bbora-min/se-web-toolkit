@@ -16,7 +16,7 @@
 import * as React from 'react'
 import { ArrowLeft, RotateCcw, SquareTerminal } from 'lucide-react'
 import { Link, Navigate, useParams } from 'react-router'
-import { Badge, Button, DescriptionList, ErrorState, Kbd, ShellFill, Skeleton, SplitPane, StatusBadge, formatAbsolute, formatDuration, formatRelative, toast, useContentWidth } from '@se/ui'
+import { Badge, Button, DescriptionList, EmptyState, ErrorState, Kbd, ShellFill, Skeleton, SplitPane, StatusBadge, formatAbsolute, formatDuration, formatRelative, toast, useContentWidth } from '@se/ui'
 import { Canvas, type CanvasEdge, type CanvasNode } from '@se/canvas'
 import { usePipeline, usePipelines, useRetryJob } from '../../api/jobs'
 import type { Pipeline, PipelineTask } from '../../api/types'
@@ -27,7 +27,17 @@ export function PipelinePage() {
   if (!name) {
     const first = list.data?.items[0]?.name
     if (first) return <Navigate to={`/pipelines/${first}`} replace />
-    return <div className="pt-6">{list.isError ? <ErrorState title="파이프라인 목록을 불러오지 못했습니다" description={list.error.message} action={<Button onClick={() => list.refetch()}>다시 시도</Button>} /> : <Skeleton className="h-8 w-64" />}</div>
+    return (
+      <div className="pt-6">
+        {list.isError ? (
+          <ErrorState title="파이프라인 목록을 불러오지 못했습니다" description={list.error.message} action={<Button onClick={() => list.refetch()}>다시 시도</Button>} />
+        ) : list.data ? (
+          <EmptyState title="파이프라인이 없습니다" description="실행된 잡이 있는 파이프라인이 여기에 나타납니다." action={<Button asChild><Link to="/jobs">잡 목록</Link></Button>} />
+        ) : (
+          <Skeleton className="h-8 w-64" />
+        )}
+      </div>
+    )
   }
   return <PipelineCanvas key={name} name={name} />
 }
@@ -148,7 +158,7 @@ function Inspector({ p, task, onClear }: { p: Pipeline; task: PipelineTask | nul
         ]}
       />
       <div className="flex flex-col gap-2">
-        <Button variant="secondary" size="sm" asChild><Link to={`/jobs/${p.lastRun.jobId}/logs?q=${encodeURIComponent(task.name)}`}><SquareTerminal /> 콘솔에서 로그 보기</Link></Button>
+        <Button variant="secondary" size="sm" asChild><Link to={`/jobs/${p.lastRun.jobId}/logs`}><SquareTerminal /> 콘솔에서 로그 보기</Link></Button>
         {task.state === 'failed' ? (
           <Button variant="primary" size="sm" onClick={() => retry.mutate(p.lastRun.jobId, { onSuccess: () => toast.success('이 태스크부터 재시도를 큐에 넣었습니다', { description: task.name }) })} loading={retry.isPending}><RotateCcw /> 여기서부터 재시도</Button>
         ) : null}

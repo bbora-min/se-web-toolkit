@@ -7,7 +7,7 @@
 
 **바뀐 것**
 - **캔버스 골격** — 새 패키지 **`@se/canvas`**(React Flow 래퍼, 의존성 `@xyflow/react`): `Canvas`(노드·간선·선택, 토큰 크롬, 실행 중 간선은 흐름, 실패 간선은 danger), `TaskNode`(이름 · 상태 배지 · 메타, 상태가 테두리), `dagLayout`(층 배치, dagre 없음). 앱에서 `@xyflow/react` 직접 import 는 린트가 막는다(`import-from-ui`)
-- Job Monitor 의 빈 메뉴였던 **파이프라인 `/pipelines/:name?`**: 파이프라인 6개의 태스크 DAG, 마지막 실행 기준 상태색, 오른쪽 인스펙터(선택 태스크의 사실·상류·하류·"콘솔에서 로그 보기"·실패면 "여기서부터 재시도", 선택 없으면 요약). API `usePipelines`·`usePipeline`(`GET /api/pipelines`, `/api/pipelines/:name`). 잡 콘솔이 `?q=` 로 초기 줄 필터를 받는다
+- Job Monitor 의 빈 메뉴였던 **파이프라인 `/pipelines/:name?`**: 파이프라인 6개의 태스크 DAG, 마지막 실행 기준 상태색, 오른쪽 인스펙터(선택 태스크의 사실·상류·하류·"콘솔에서 로그 보기"·실패면 "여기서부터 재시도", 선택 없으면 요약). API `usePipelines`·`usePipeline`(`GET /api/pipelines`, `/api/pipelines/:name`). 잡 콘솔이 `?q=` 로 초기 줄 필터를 받는다. 재시도·취소가 파이프라인 쿼리도 갱신한다
 - 시각 회귀 `pipeline`. `se-ui` 선택표에 **캔버스** 행 + `patterns/canvas.md`, `PipelinePage.tsx` 동봉. Storybook `패턴/Canvas`. React 18 레인이 `@se/canvas` 도 typecheck
 
 **화면 변화**

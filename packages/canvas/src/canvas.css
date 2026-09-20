@@ -7,4 +7,3 @@
 .se-canvas .react-flow__edge-path { stroke: var(--se-line-strong); }
 .se-canvas .react-flow__node { font-family: inherit; }
 .se-canvas .react-flow__handle { border-width: 1px; }
-.se-canvas .react-flow__attribution { display: none; }

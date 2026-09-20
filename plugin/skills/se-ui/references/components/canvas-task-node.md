@@ -3,7 +3,7 @@
 `import { TaskNode } from '@se/canvas'` — 캔버스 · `packages/canvas/src/task-node.tsx`
 
 태스크 노드 — 카드 한 장. 이름(mono) · 상태 배지 · 메타 한 줄. 상태가 테두리 색이 된다(Airflow 관례).
-선택은 액센트 링. 핸들은 좌(입력)·우(출력).
+선택은 액센트 링. 핸들은 캔버스 방향을 따른다(LR: 좌 입력 · 우 출력, TB: 위 · 아래).
 
 | prop | 타입 | 기본 | 설명 |
 |---|---|---|---|
@@ -20,8 +20,8 @@
 | `parentId` | `string` |  | Parent node id, used for creating sub-flows. |
 | `selectable` | `boolean` |  |  |
 | `selected` | `boolean` |  |  |
-| `sourcePosition` | `enum` |  | Only relevant for default, source, target nodeType. Controls source position. @example 'right', 'left', 'top', 'bottom' |
-| `targetPosition` | `enum` |  | Only relevant for default, source, target nodeType. Controls target position. @example 'right', 'left', 'top', 'bottom' |
+| `sourcePosition` | `enum` | `Position.Right` | Only relevant for default, source, target nodeType. Controls source position. @example 'right', 'left', 'top', 'bottom' |
+| `targetPosition` | `enum` | `Position.Left` | Only relevant for default, source, target nodeType. Controls target position. @example 'right', 'left', 'top', 'bottom' |
 | `type` | `string` |  | Type of node defined in nodeTypes |
 | `width` | `number` |  |  |
 | `zIndex` | `number` |  |  |

@@ -153,7 +153,7 @@ export const handlers = [
   http.get('/api/pipelines', async ({ request }) => {
     const forced = await devState(new URL(request.url))
     if (forced && forced.status !== 200) return forced
-    const items = Object.keys(TASKS).map((name) => ({ name, lastState: pipeline(name)?.lastRun.state ?? 'pending' }))
+    const items = Object.keys(TASKS).flatMap((name) => { const p = pipeline(name); return p ? [{ name, lastState: p.lastRun.state }] : [] })
     return HttpResponse.json({ items })
   }),
   http.get('/api/pipelines/:name', async ({ params, request }) => {

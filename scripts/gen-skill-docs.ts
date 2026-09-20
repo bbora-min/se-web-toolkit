@@ -26,7 +26,9 @@ function exportedNames(indexFile: string): Set<string> {
   const names = new Set<string>()
   for (const m of text.matchAll(/export\s*\{([^}]*)\}/g)) {
     for (const part of m[1]!.split(',')) {
-      const name = part.replace(/\btype\b/, '').trim().split(/\s+as\s+/).pop()?.trim()
+      const raw = part.trim()
+      if (!raw || /^type\b/.test(raw)) continue // `type X` 는 값이 아니다 — 컴포넌트 문서에 넣지 않는다
+      const name = raw.split(/\s+as\s+/).pop()?.trim()
       if (name) names.add(name)
     }
   }

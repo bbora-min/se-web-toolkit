@@ -1,6 +1,6 @@
-# ChartCard · ChartLegend · BarChart · LineChart · MeterList · SeriesColor
+# ChartCard · ChartLegend · BarChart · LineChart · MeterList
 
-`import { ChartCard, ChartLegend, BarChart, LineChart, MeterList, SeriesColor } from '@se/charts'` — 차트 · `packages/charts/src/index.ts`
+`import { ChartCard, ChartLegend, BarChart, LineChart, MeterList } from '@se/charts'` — 차트 · `packages/charts/src/index.ts`
 
 ## ChartCard
 
@@ -67,10 +67,3 @@
 |---|---|---|---|
 | `items` **필수** | `MeterItem[]` |  |  |
 | `className` | `string` |  |  |
-
-## SeriesColor
-
-차트 색은 전부 CSS 변수 — 라이트/다크·아이덴티티를 자동으로 따른다.
-의미 색(success/warning/danger/info)은 "상태"를 그릴 때만, 카테고리는 chart-1..8을 순서대로.
-
-_props 없음 (HTML 속성 그대로)_

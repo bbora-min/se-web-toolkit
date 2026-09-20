@@ -19,8 +19,9 @@ export interface Placed {
 export function dagLayout<N extends LayoutNode>(nodes: N[], edges: LayoutEdge[], opts: { gapX?: number; gapY?: number; direction?: 'LR' | 'TB' } = {}): Placed[] {
   const { gapX = 260, gapY = 92, direction = 'LR' } = opts
   const ids = nodes.map((n) => n.id)
+  const idSet = new Set(ids)
   const inbound = new Map<string, string[]>(ids.map((id) => [id, []]))
-  for (const e of edges) if (inbound.has(e.to) && ids.includes(e.from)) inbound.get(e.to)!.push(e.from)
+  for (const e of edges) if (inbound.has(e.to) && idSet.has(e.from)) inbound.get(e.to)!.push(e.from)
   const level = new Map<string, number>()
   const visiting = new Set<string>()
   const depth = (id: string): number => {

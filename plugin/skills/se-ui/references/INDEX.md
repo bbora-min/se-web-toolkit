@@ -1,6 +1,6 @@
 # 컴포넌트 레퍼런스 (자동 생성 — 수정하지 말 것, `pnpm gen:skill-docs`)
 
-파일 49개 · 내보내는 컴포넌트 111개
+파일 50개 · 내보내는 컴포넌트 117개
 
 - [Alert](components/alert.md) — 컴포넌트 · 페이지 안의 안내 배너. 토스트는 "방금 일어난 일", 배너는 "지금 상태"
 - [Avatar](components/avatar.md) — 컴포넌트 · 이니셜 아바타. 사진 없는 내부 도구에 딱 필요한 만큼
@@ -39,6 +39,7 @@
 - [TooltipProvider · Tooltip · TooltipTrigger · TooltipContent](components/tooltip.md) — 컴포넌트
 - [AppShell · NavItem · NavSection · PageHeader · SectionHeader · PageBody · ThemeToggle](components/app-shell.md) — 패턴
 - [BoardColumn · BoardCard · Board](components/board.md) — 패턴 · 열 하나. 끄는 카드를 받을 수 있으면 놓을 자리가 액센트로, 받을 수 없으면 흐려진다
+- [DocLayout · DocHeader · Prose · Callout · TreeNav · TableOfContents](components/doc.md) — 패턴 · 3단 문서 레이아웃. 양옆은 헤더 아래에 붙어(sticky) 본문만 흐른다. 1024 이하에서 목차는 본문 위로 접힌다
 - [IdentitySheet](components/identity-sheet.md) — 패턴 · 아이덴티티 시트 — 서비스의 "얼굴"을 한 장으로.
 - [TileGrid · Tile](components/tile-grid.md) — 패턴 · 12칸 격자. 자식은 `Tile`(또는 span 을 스스로 정한 블록)
 - [MetricMarquee](components/metric-marquee.md) — 시그니처 · 시그니처 · 지표 마키 — 숫자가 목적인 서비스(비용·사용량·품질 지표)의 얼굴.

@@ -8,6 +8,8 @@ const SCREENS = [
   { name: 'datasets', path: '/datasets' },
   { name: 'datasets-empty', path: '/datasets?__state=empty' },
   { name: 'datasets-error', path: '/datasets?__state=error' },
+  { name: 'domain', path: '/domains/fct' },
+  { name: 'domain-error', path: '/domains/fct?__state=error' },
   { name: 'identity', path: '/__identity' },
 ]
 const FIXED_NOW = new Date('2026-09-14T09:00:00+09:00')

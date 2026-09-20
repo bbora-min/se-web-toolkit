@@ -107,6 +107,8 @@ const EXAMPLES: Array<[string, string]> = [
   ['examples/reference-app/src/api/jobs.ts', 'reference-app/api-jobs.ts'],
   ['examples/dataset-explorer/src/pages/datasets/DatasetsPage.tsx', 'dataset-explorer/DatasetsPage.tsx'],
   ['examples/dataset-explorer/src/pages/datasets/DatasetPage.tsx', 'dataset-explorer/DatasetPage.tsx'],
+  ['examples/dataset-explorer/src/pages/domains/DomainPage.tsx', 'dataset-explorer/DomainPage.tsx'],
+  ['examples/dataset-explorer/src/mocks/domains.ts', 'dataset-explorer/mocks-domains.ts'],
   ['examples/release-desk/src/pages/releases/ReleasesPage.tsx', 'release-desk/ReleasesPage.tsx'],
   ['examples/release-desk/src/pages/releases/ReleasePage.tsx', 'release-desk/ReleasePage.tsx'],
   ['examples/release-desk/src/pages/releases/NewReleasePage.tsx', 'release-desk/NewReleasePage.tsx'],

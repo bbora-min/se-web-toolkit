@@ -37,6 +37,10 @@ export function Shell() {
         })),
       },
       {
+        heading: '도메인 가이드',
+        items: (list.data?.domains ?? []).map((d) => ({ id: `dom-${d}`, label: d, keywords: ['domain', 'guide', '가이드'], icon: <LayoutGrid />, hint: '문서', onSelect: () => navigate(`/domains/${d}`) })),
+      },
+      {
         heading: '빠른 필터',
         items: [
           { id: 'mine', label: '내 데이터셋', icon: <Star />, onSelect: () => navigate('/datasets?quick=mine') },

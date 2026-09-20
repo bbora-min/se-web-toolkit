@@ -1,5 +1,6 @@
 import { delay, http, HttpResponse } from 'msw'
 import { makeDatasets } from './data'
+import { domainDoc, domainSummaries } from './domains'
 
 const datasets = makeDatasets()
 
@@ -41,6 +42,20 @@ export const handlers = [
         certified: datasets.filter((d) => d.tags.includes('certified')).length,
       },
     })
+  }),
+  http.get('/api/domains', async ({ request }) => {
+    const forced = await devState(new URL(request.url))
+    if (forced && forced.status !== 200) return forced
+    return HttpResponse.json({ items: domainSummaries(datasets) })
+  }),
+  http.get('/api/domains/:id', async ({ params, request }) => {
+    const url = new URL(request.url)
+    const forced = await devState(url)
+    if (forced && forced.status !== 200) return forced
+    const doc = domainDoc(String(params.id), datasets)
+    if (!doc) return HttpResponse.json({ message: '그런 도메인이 없어요' }, { status: 404 })
+    if (url.searchParams.get('__state') === 'empty') return HttpResponse.json({ ...doc, sections: [] })
+    return HttpResponse.json(doc)
   }),
   http.get('/api/datasets/:id', async ({ params, request }) => {
     const forced = await devState(new URL(request.url))

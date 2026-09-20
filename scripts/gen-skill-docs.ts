@@ -135,10 +135,10 @@ function bundle(src: string, to: string, header = '', transform: (s: string) => 
 const EX_OUT = join(OUT, '..', 'examples')
 for (const [src, dst] of EXAMPLES) bundle(src, join(EX_OUT, dst), `// 원본: ${src} (자동 복사 — 수정하지 말 것, pnpm gen:skill-docs)\n`)
 // 아이덴티티 레지스트리 — 툴킷 밖 프로젝트의 /se:identity 가 형제 hue 를 알아야 30° 규칙을 지킨다
-// 툴킷 안에서만 뜻이 있는 path·note 는 빼고, 형제 판단에 필요한 것(id·name·hue·signature·shell·neutralBias)만
+// 툴킷 안에서만 뜻이 있는 path·note 는 빼고, 형제 판단에 필요한 것(id·name·monogram·hue·signature·shell·neutralBias)만
 bundle('identities/registry.json', join(root, 'plugin/skills/identity/references/registry.json'), '', (raw) => {
   const reg = JSON.parse(raw) as { services: Array<Record<string, unknown>> }
-  const services = reg.services.map(({ id, name, hue, signature, shell, neutralBias }) => ({ id, name, hue, signature, shell, neutralBias }))
+  const services = reg.services.map(({ id, name, monogram, hue, signature, shell, neutralBias }) => ({ id, name, monogram, hue, signature, shell, neutralBias }))
   return JSON.stringify({ $comment: 'SE 서비스 아이덴티티 레지스트리 사본 (툴킷 main 에서 자동 동봉 — 수정하지 말 것). 새 서비스는 기존 항목과 hue 30° 이상, 같은 시그니처는 피하고, 같은 쉘 배치(shell)는 둘까지.', services }, null, 2) + '\n'
 })
 

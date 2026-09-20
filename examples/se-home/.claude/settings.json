@@ -1,6 +1,15 @@
 {
   "permissions": {
-    "allow": ["Bash(pnpm typecheck)", "Bash(pnpm lint)", "Bash(pnpm lint:*)", "Bash(pnpm test)", "Bash(pnpm e2e)", "Bash(pnpm build)", "Bash(npx eslint:*)"]
+    "allow": [
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm e2e:visual)",
+      "Bash(pnpm build)",
+      "Bash(npx eslint:*)"
+    ]
   },
-  "enabledPlugins": { "se@se-web-toolkit": true }
+  "enabledPlugins": {
+    "se@se-web-toolkit": true
+  }
 }

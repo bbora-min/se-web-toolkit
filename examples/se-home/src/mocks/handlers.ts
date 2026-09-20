@@ -1,5 +1,5 @@
 import { delay, http, HttpResponse } from 'msw'
-import type { Home, HomeEvent, RecentItem, Service } from '../api/types'
+import type { Home, HomeEvent, QuickLink, RecentItem, Service } from '../api/types'
 
 /** 시각은 전부 "지금" 기준 상대값 — e2e 가 시계를 고정하면 스크린샷이 매번 같다 */
 const ago = (min: number) => new Date(Date.now() - min * 60_000).toISOString()
@@ -35,6 +35,9 @@ const events: HomeEvent[] = [
   { id: 'e8', serviceId: 'ai-voc', at: ago(60 * 8), label: '급증 주제 감지 · 결제 오류', tone: 'info' },
 ]
 
+/** 형제 서비스의 주소 + 경로 — 실제 백엔드가 하는 일 */
+const url = (id: string, path = '') => (services.find((s) => s.id === id)?.url ?? '') + path
+
 function home(): Home {
   return {
     me: { name: 'bora' },
@@ -42,12 +45,17 @@ function home(): Home {
     services,
     recent,
     events,
-    oncall: { name: 'minseo', team: 'sre', until: later(60 * 6), next: { name: 'taeho', from: later(60 * 6) } },
+    oncall: { name: 'minseo', team: 'sre', until: later(60 * 6), next: { name: 'taeho', from: later(60 * 6) }, scheduleUrl: url('incident-desk', '/oncall') },
     notices: [
       { id: 'n1', kind: 'freeze', title: '배포 프리즈 · 9월 18일(금) 18:00 – 21일(월) 09:00', detail: '주말 온콜 최소화. 이 기간의 배포 창은 승인되지 않아요.', at: ago(60 * 30) },
       { id: 'n2', kind: 'notice', title: '툴킷 0.10.0 — 쉘 배치 슬롯', detail: '새 서비스는 형제와 다른 배치(topnav·panes)를 고를 수 있어요.', at: ago(60 * 4) },
     ],
-    quick: { failedJobs: 163, pendingApprovals: 5, deploysToday: 2 },
+    quick: [
+      { id: 'failed-jobs', label: '실패 중인 잡', href: url('job-monitor', '/jobs?state=failed'), count: 163, tone: 'danger' },
+      { id: 'my-approvals', label: '내 승인 대기', href: url('release-desk', '/approvals'), count: 5 },
+      { id: 'deploys-today', label: '오늘 배포', href: url('release-desk', '/calendar'), count: 2 },
+      { id: 'oncall', label: '온콜 · minseo', href: url('incident-desk', '/oncall') },
+    ] satisfies QuickLink[],
   }
 }
 
@@ -56,7 +64,7 @@ async function devState(url: URL) {
   if (s === 'slow') await delay(60_000)
   else await delay(200)
   if (s === 'error') return HttpResponse.json({ message: '레지스트리(registry-01)에 연결할 수 없어요' }, { status: 502 })
-  if (s === 'empty') return HttpResponse.json({ ...home(), services: [], recent: [], events: [], notices: [], quick: { failedJobs: 0, pendingApprovals: 0, deploysToday: 0 } })
+  if (s === 'empty') return HttpResponse.json({ ...home(), services: [], recent: [], events: [], notices: [], quick: [] })
   return null
 }
 

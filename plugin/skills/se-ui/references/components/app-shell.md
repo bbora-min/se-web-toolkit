@@ -1,6 +1,6 @@
-# AppShell · NavItem · NavSection · PageHeader · PageBody · ThemeToggle
+# AppShell · NavItem · NavSection · PageHeader · SectionHeader · PageBody · ThemeToggle
 
-`import { AppShell, NavItem, NavSection, PageHeader, PageBody, ThemeToggle } from '@se/ui'` — 패턴 · `packages/ui/src/patterns/app-shell.tsx`
+`import { AppShell, NavItem, NavSection, PageHeader, SectionHeader, PageBody, ThemeToggle } from '@se/ui'` — 패턴 · `packages/ui/src/patterns/app-shell.tsx`
 
 ## AppShell
 
@@ -48,6 +48,17 @@
 | `actions` | `ReactNode` |  |  |
 | `className` | `string` |  |  |
 | `description` | `string` |  |  |
+
+## SectionHeader
+
+섹션 머리: 제목 + 한 줄 설명 + 우측 액션(링크). 페이지 안의 블록 제목 — h2
+
+| prop | 타입 | 기본 | 설명 |
+|---|---|---|---|
+| `title` **필수** | `string` |  |  |
+| `actions` | `ReactNode` |  |  |
+| `className` | `string` |  |  |
+| `note` | `string` |  |  |
 
 ## PageBody
 

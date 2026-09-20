@@ -15,7 +15,7 @@
 | `detail` | `ReactNode` |  |  |
 | `headline` | `ReactNode` |  | 왼쪽 제목 — "지난 24시간 · 배포 6 · 장애 1" |
 | `lanes` | `string[]` |  | 줄 순서. 없으면 events 에 나온 순서 |
-| `laneWidth` | `number` | `56` | 줄 이름 칸의 폭(px). 기본 56 — 서비스 이름처럼 긴 줄 이름이면 96–120 |
+| `laneWidth` | `number` | `56` | 줄 이름 칸의 폭(px). 기본 56(0.10.x 의 3.5rem=49px 보다 7px 넓다) — 서비스 이름처럼 긴 줄 이름이면 96–120 |
 | `now` | `string` |  | "지금" 선. 범위 안에 있을 때만 그린다. 기본: 현재 시각 |
 | `onSelect` | `((id: string) => void)` |  |  |
 | `selected` | `string \| null` |  |  |

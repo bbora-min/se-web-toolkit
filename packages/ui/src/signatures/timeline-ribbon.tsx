@@ -32,7 +32,7 @@ export interface TimelineRibbonProps {
   events: RibbonEvent[]
   /** 줄 순서. 없으면 events 에 나온 순서 */
   lanes?: string[]
-  /** 줄 이름 칸의 폭(px). 기본 56 — 서비스 이름처럼 긴 줄 이름이면 96–120 */
+  /** 줄 이름 칸의 폭(px). 기본 56(0.10.x 의 3.5rem=49px 보다 7px 넓다) — 서비스 이름처럼 긴 줄 이름이면 96–120 */
   laneWidth?: number
   /** 왼쪽 제목 — "지난 24시간 · 배포 6 · 장애 1" */
   headline?: React.ReactNode
@@ -41,6 +41,9 @@ export interface TimelineRibbonProps {
   onSelect?: (id: string) => void
   className?: string
 }
+
+/** 줄 이름 칸과 트랙 사이(px). 축·지금 선의 들여쓰기와 같은 값이어야 점과 선이 겹친다 — rem 이면 루트 14px 에서 어긋난다 */
+const LANE_GAP = 12
 
 const TONE: Record<RibbonTone, { dot: string; bar: string }> = {
   accent: { dot: 'bg-accent', bar: 'bg-accent/25 border-accent' },
@@ -106,7 +109,7 @@ export function TimelineRibbon({ from, to, now, events, lanes, laneWidth = 56, h
         {laneNames.map((lane) => {
           const items = visible.filter((e) => (e.lane ?? '이벤트') === lane)
           return (
-            <div key={lane} className="flex items-center gap-3">
+            <div key={lane} className="flex items-center" style={{ columnGap: LANE_GAP }}>
               <span className="shrink-0 truncate py-1 text-xs text-muted" style={{ width: laneWidth }} title={lane}>{lane}</span>
               <div className="relative h-7 min-w-0 flex-1 border-b border-dashed border-line" role="list" aria-label={lane}>
                 {items.map((e) => {
@@ -150,7 +153,7 @@ export function TimelineRibbon({ from, to, now, events, lanes, laneWidth = 56, h
         })}
 
         {/* 눈금 — 라벨 열만큼 들여쓴 같은 좌표계 */}
-        <div className="relative mt-1 h-5 text-[11px] text-muted tnum" style={{ marginLeft: laneWidth + 12 }} aria-hidden>
+        <div className="relative mt-1 h-5 text-[11px] text-muted tnum" style={{ marginLeft: laneWidth + LANE_GAP }} aria-hidden>
           {tk.map((x) => (
             <span key={x} className="absolute top-0 -translate-x-1/2" style={{ left: `${((x - f) / span) * 100}%` }}>
               {tickLabel(x, span)}
@@ -158,7 +161,7 @@ export function TimelineRibbon({ from, to, now, events, lanes, laneWidth = 56, h
           ))}
         </div>
         {showNow ? (
-          <div className="pointer-events-none absolute bottom-8 left-5 right-5 top-3" style={{ marginLeft: laneWidth + 12 }} aria-hidden>
+          <div className="pointer-events-none absolute bottom-8 left-5 right-5 top-3" style={{ marginLeft: laneWidth + LANE_GAP }} aria-hidden>
             <span className="absolute inset-y-0 w-px bg-accent" style={{ left: nowLeft }} />
             <span className="absolute -top-2.5 -translate-x-1/2 rounded-sm bg-accent px-1 text-[10px] font-medium leading-4 text-on-accent" style={{ left: nowLeft }}>지금</span>
           </div>

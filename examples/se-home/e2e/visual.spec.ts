@@ -20,7 +20,7 @@ for (const s of SCREENS) {
     await page.waitForLoadState('networkidle')
     await page.waitForFunction(() => document.querySelectorAll('.animate-pulse').length === 0, undefined, { timeout: 20_000 })
     if (s.path.includes('__state=error')) await expect(page.getByRole('button', { name: '다시 시도' }).first()).toBeVisible({ timeout: 3_000 })
-    await page.waitForTimeout(700)
+    await page.waitForTimeout(300) // 웹폰트 스왑·리본 렌더가 끝난 뒤 (카운트업 애니메이션은 없다)
     await expect(page).toHaveScreenshot(`${s.name}.png`, { fullPage: true, timeout: 15_000 })
   })
 }

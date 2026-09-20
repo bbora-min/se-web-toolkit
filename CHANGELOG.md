@@ -7,12 +7,13 @@
 
 **바뀐 것**
 - **허브(Hub) 골격** — 4번째 레퍼런스 앱 `examples/se-home` **SE Home**(hue 350° · `topnav` 쉘 · timeline-ribbon · friendly). 형제 전부의 입구: 인사 + 상태 한 줄 → 큰 검색(⌘K 팔레트) + 빠른 진입 칩 → 가족의 24시간 리본(줄 = 서비스) → 서비스 카드 3열(+ 새 서비스) → 최근 본 것 · 오늘(온콜·공지). `/services` 는 같은 데이터를 표(원장)로. 5177 포트, 시각 회귀 5화면
-- `@se/ui` **`ServiceMark`** — 형제 서비스의 마크를 hue 로 그린다(허브 카드·팔레트·아이덴티티 시트의 가족 카드가 공유). **`useShellSearch()`** — 페이지 안에서 쉘의 ⌘K 팔레트를 연다(허브의 큰 검색). `TimelineRibbon laneWidth`(줄 이름 칸 폭 — 서비스 이름처럼 긴 줄), 쉘 검색 버튼 플레이스홀더 말줄임
+- `@se/ui` **`ServiceMark`** — 형제 서비스의 마크를 hue 로 그린다(허브 카드·팔레트·아이덴티티 시트의 가족 카드가 공유). **`useShellSearch()`** — 페이지 안에서 쉘의 ⌘K 팔레트를 연다(허브의 큰 검색). **`Chip`**(빠른 진입·프리셋 알약, `asChild`·`count`·`active`), **`SectionHeader`**(페이지 안 블록 제목 — h2·설명·액션), `TimelineRibbon laneWidth`(줄 이름 칸 폭 — 서비스 이름처럼 긴 줄), 쉘 검색 버튼 플레이스홀더 말줄임. `@se/tokens` 가 `accentScale` 을 내보내고(ServiceMark 가 라이트·다크 값을 토큰과 같은 공식으로), 레지스트리에 `monogram`(`registryMonogram()`, `create-se-app` 이 적는다)
 - 스킬: `se-ui` 선택표에 **허브** 행(`references/examples/se-home/HomePage.tsx` · `Shell.tsx`), `references/patterns/hub.md`. 목·쉘 원본 동봉
 - 레지스트리에 `se-home` 등록 — 쉘 배치가 처음으로 갈린다(sidebar 4 · topnav 1)
 
 **화면 변화**
-- `/__identity` 가족 카드의 색 칩이 모노그램 마크(`ServiceMark`)로 — 레퍼런스 앱 3개 기준 스크린샷 갱신. 그 외 없음
+- `/__identity` 가족 카드의 색 칩이 모노그램 마크(`ServiceMark`, 레지스트리 `monogram`)로, 가족에 SE Home 추가 — 레퍼런스 앱 3개 기준 스크린샷 갱신
+- `TimelineRibbon` 줄 이름 칸 기본 폭 49 → 56px(`/__signatures` 갤러리 7px 이동), 축·지금 선 들여쓰기를 px 로 고정(루트 14px 에서 1.5px 어긋나던 것)
 
 **앱에서 할 일**
 - 없음 — `/se:upgrade` 만. 팀 포털이 필요하면 `examples/se-home` 을 `/se:new --shell topnav --signature timeline-ribbon` 으로 시작해 레지스트리(`/api/home`)를 실제 백엔드에 연결

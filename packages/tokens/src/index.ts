@@ -13,10 +13,11 @@ export {
   MAX_SAME_SHELL,
   type Shell,
   checkRegistry,
+  registryMonogram,
   type RegistryEntry,
   type RegistryIssue,
   DISPLAY_FONTS,
   type Identity,
   type IdentityInput,
 } from './identity'
-export { contrast, describe } from './color'
+export { contrast, describe, accentScale, type Mode } from './color'

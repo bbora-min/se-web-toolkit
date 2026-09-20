@@ -4,6 +4,7 @@
     {
       "id": "job-monitor",
       "name": "Job Monitor",
+      "monogram": "JM",
       "hue": 195,
       "signature": "status-strip",
       "shell": "sidebar",
@@ -12,6 +13,7 @@
     {
       "id": "dataset-explorer",
       "name": "Dataset Explorer",
+      "monogram": "DE",
       "hue": 310,
       "signature": "search-hero",
       "shell": "sidebar",
@@ -20,6 +22,7 @@
     {
       "id": "release-desk",
       "name": "Release Desk",
+      "monogram": "RD",
       "hue": 235,
       "signature": "stage-rail",
       "shell": "sidebar",
@@ -28,6 +31,7 @@
     {
       "id": "ai-voc",
       "name": "AI VOC",
+      "monogram": "AV",
       "hue": 278,
       "signature": "status-strip",
       "shell": "sidebar",
@@ -36,6 +40,7 @@
     {
       "id": "se-home",
       "name": "SE Home",
+      "monogram": "SE",
       "hue": 350,
       "signature": "timeline-ribbon",
       "shell": "topnav",

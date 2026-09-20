@@ -50,6 +50,17 @@ export interface Oncall {
   team: string
   until: string
   next: { name: string; from: string }
+  /** 교대표 링크 — 온콜 서비스의 주소는 백엔드가 안다 */
+  scheduleUrl?: string
+}
+
+/** 빠른 진입 칩 — 주소는 백엔드가 `services[].url` 로 만든다. 화면에 호스트를 적지 않는다 */
+export interface QuickLink {
+  id: string
+  label: string
+  href: string
+  count?: number
+  tone?: 'danger'
 }
 
 export interface Notice {
@@ -68,6 +79,5 @@ export interface Home {
   events: HomeEvent[]
   oncall: Oncall
   notices: Notice[]
-  /** 빠른 진입 칩의 숫자 */
-  quick: { failedJobs: number; pendingApprovals: number; deploysToday: number }
+  quick: QuickLink[]
 }

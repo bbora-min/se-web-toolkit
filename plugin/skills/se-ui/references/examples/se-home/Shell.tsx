@@ -7,6 +7,7 @@ import { AppShell, Avatar, Badge, NavItem, NavSection, ServiceMark, useIdentityF
 import { parseIdentity } from '@se/tokens'
 import identity from '../../se.identity.json'
 import { useHome } from '../api/home'
+import { HEALTH } from '../lib/health'
 
 /** 스키마 기본값(shell 등)이 채워진 아이덴티티 */
 const ID = parseIdentity(identity)
@@ -22,6 +23,8 @@ export function Shell() {
   const qc = useQueryClient()
   const { setMode } = useTheme()
   const home = useHome()
+  const services = home.data?.services
+  const recent = home.data?.recent
   useIdentityFavicon(identity as Parameters<typeof useIdentityFavicon>[0])
 
   const command: CommandGroup[] = React.useMemo(
@@ -29,18 +32,18 @@ export function Shell() {
       { heading: '이동', items: NAV.map((n) => ({ id: n.to, label: n.label, icon: n.icon, hint: n.to, onSelect: () => navigate(n.to) })) },
       {
         heading: '서비스',
-        items: (home.data?.services ?? []).map((s) => ({
+        items: (services ?? []).map((s) => ({
           id: s.id,
           label: s.name,
           keywords: [s.id, s.team, s.owner, s.description],
           icon: <ServiceMark hue={s.hue} size="xs">{s.monogram}</ServiceMark>,
-          hint: <Badge tone={s.health === 'ok' ? 'success' : s.health === 'degraded' ? 'warning' : 'danger'}>{s.health === 'ok' ? '정상' : s.health === 'degraded' ? '저하' : '장애'}</Badge>,
+          hint: <Badge tone={HEALTH[s.health].tone}>{HEALTH[s.health].label}</Badge>,
           onSelect: () => window.location.assign(s.url),
         })),
       },
       {
         heading: '최근 본 것',
-        items: (home.data?.recent ?? []).map((r) => ({ id: r.id, label: r.label, keywords: [r.kind, r.serviceId], icon: <Clock />, hint: r.kind, onSelect: () => window.location.assign(r.url) })),
+        items: (recent ?? []).map((r) => ({ id: r.id, label: r.label, keywords: [r.kind, r.serviceId], icon: <Clock />, hint: r.kind, onSelect: () => window.location.assign(r.url) })),
       },
       {
         heading: '액션',
@@ -53,7 +56,7 @@ export function Shell() {
         ],
       },
     ],
-    [home.data, navigate, qc, setMode],
+    [services, recent, navigate, qc, setMode], // 30초 갱신마다 generatedAt 만 바뀌어도 팔레트를 다시 만들지 않는다
   )
 
   return (

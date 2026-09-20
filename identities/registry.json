@@ -1,9 +1,10 @@
 {
-  "$comment": "SE 서비스 아이덴티티 레지스트리. 신규 서비스는 기존 항목과 hue 30° 이상 떨어져야 하고, 같은 시그니처는 피하고, 같은 쉘 배치(shell: sidebar|topnav|panes)는 둘까지만. pnpm check-identity 로 검사. 툴킷 밖 서비스는 path 없이 hue·signature·shell 을 등록한다 (/se:identity 가 형제 목록으로 읽는다). 자동 업그레이드 PR 을 받으려면 항목에 \"repo\": \"org/app-repo\" (앱이 하위 폴더면 \"appDir\": \"frontend\") 를 적는다 — .github/workflows/upgrade-apps.yml.",
+  "$comment": "SE 서비스 아이덴티티 레지스트리. 신규 서비스는 기존 항목과 hue 30° 이상 떨어져야 하고, 같은 시그니처는 피하고, 같은 쉘 배치(shell: sidebar|topnav|panes)는 둘까지만. pnpm check-identity 로 검사. 툴킷 밖 서비스는 path 없이 monogram·hue·signature·shell 을 등록한다 (/se:identity 가 형제 목록으로 읽는다). 자동 업그레이드 PR 을 받으려면 항목에 \"repo\": \"org/app-repo\" (앱이 하위 폴더면 \"appDir\": \"frontend\") 를 적는다 — .github/workflows/upgrade-apps.yml.",
   "services": [
     {
       "id": "job-monitor",
       "name": "Job Monitor",
+      "monogram": "JM",
       "hue": 195,
       "signature": "status-strip",
       "shell": "sidebar",
@@ -13,6 +14,7 @@
     {
       "id": "dataset-explorer",
       "name": "Dataset Explorer",
+      "monogram": "DE",
       "hue": 310,
       "signature": "search-hero",
       "shell": "sidebar",
@@ -22,6 +24,7 @@
     {
       "id": "release-desk",
       "name": "Release Desk",
+      "monogram": "RD",
       "hue": 235,
       "signature": "stage-rail",
       "shell": "sidebar",
@@ -31,6 +34,7 @@
     {
       "id": "ai-voc",
       "name": "AI VOC",
+      "monogram": "AV",
       "hue": 278,
       "signature": "status-strip",
       "shell": "sidebar",
@@ -40,6 +44,7 @@
     {
       "id": "se-home",
       "name": "SE Home",
+      "monogram": "SE",
       "hue": 350,
       "signature": "timeline-ribbon",
       "shell": "topnav",

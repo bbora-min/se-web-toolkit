@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { DEFAULT_SHELL, type Identity, type RegistryEntry, type Shell } from '@se/tokens'
+import { DEFAULT_SHELL, registryMonogram, type Identity, type RegistryEntry, type Shell } from '@se/tokens'
 import { cn } from '../lib/cn'
 import { useTheme } from '../lib/theme'
 import { Badge, StatusBadge } from '../components/badge'
@@ -196,7 +196,7 @@ export function IdentitySheet({ identity: id, signaturePreview, siblings }: Iden
           <div className="flex flex-wrap gap-3">
             {siblings.map((s) => (
               <div key={s.id} className={cn('flex items-center gap-3 rounded-lg border px-3 py-2', s.id === id.id ? 'border-accent bg-accent-soft/50' : 'border-line bg-surface')}>
-                <ServiceMark hue={s.hue}>{s.name.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'SE'}</ServiceMark>
+                <ServiceMark hue={s.hue}>{registryMonogram(s)}</ServiceMark>
                 <div className="flex flex-col leading-tight">
                   <span className="text-sm font-medium text-ink">{s.name}</span>
                   <span className="text-xs text-muted">{s.hue}° · {shellLabel(s.shell)} · {SIGNATURE_LABEL[s.signature] ?? s.signature}</span>

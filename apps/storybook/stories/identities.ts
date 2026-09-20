@@ -1,5 +1,5 @@
 // 스토리북이 보여 주는 아이덴티티 목록 — 레퍼런스 앱 3개는 실제 se.identity.json, 툴킷 밖 서비스는 레지스트리 행으로 최소 구성
-import { createTheme, parseIdentity, themeToCss, type Identity, type IdentityInput } from '@se/tokens'
+import { createTheme, parseIdentity, registryMonogram, themeToCss, type Identity, type IdentityInput } from '@se/tokens'
 import jobMonitor from '../../../examples/reference-app/se.identity.json'
 import datasetExplorer from '../../../examples/dataset-explorer/se.identity.json'
 import releaseDesk from '../../../examples/release-desk/se.identity.json'
@@ -20,7 +20,7 @@ export const IDENTITIES: Identity[] = registry.services.map((s) => {
     ({
       id: s.id,
       name: s.name,
-      mark: { type: 'monogram', text: s.name.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'SE' },
+      mark: { type: 'monogram', text: registryMonogram(s) },
       accent: { hue: s.hue },
       neutralBias: s.neutralBias,
       signature: s.signature,

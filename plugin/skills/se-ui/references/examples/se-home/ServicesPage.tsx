@@ -16,12 +16,9 @@ import { ArrowUpRight } from 'lucide-react'
 import { Avatar, Badge, Button, DataTable, PageBody, PageHeader, ServiceMark, formatAbsolute, formatRelative, type ColumnDef } from '@se/ui'
 import { useHome } from '../../api/home'
 import type { Health, Service } from '../../api/types'
+import { HEALTH } from '../../lib/health'
 
-const HEALTH: Record<Health, { label: string; tone: 'success' | 'warning' | 'danger' }> = {
-  ok: { label: '정상', tone: 'success' },
-  degraded: { label: '저하', tone: 'warning' },
-  down: { label: '장애', tone: 'danger' },
-}
+const EMPTY: Service[] = []
 const SHELL: Record<Service['shell'], string> = { sidebar: '사이드바', topnav: '상단 네비', panes: '패널' }
 
 const columns: ColumnDef<Service, unknown>[] = [
@@ -33,12 +30,12 @@ const columns: ColumnDef<Service, unknown>[] = [
   { accessorKey: 'signature', header: '시그니처', size: 130, cell: ({ getValue }) => <span className="font-mono text-xs">{getValue() as string}</span> },
   { accessorKey: 'owner', header: '담당', size: 190, cell: ({ row }) => <span className="inline-flex items-center gap-2 whitespace-nowrap"><Avatar name={row.original.owner} />{row.original.owner} <span className="text-xs text-muted">{row.original.team}</span></span> },
   { id: 'deploy', header: '마지막 배포', size: 150, cell: ({ row }) => { const d = row.original.lastDeploy; return d ? <span title={formatAbsolute(d.at)}><span className="font-mono text-xs">{d.version}</span> <span className="text-muted">{formatRelative(d.at)}</span></span> : <span className="text-muted">—</span> } },
-  { id: 'open', header: '', size: 60, cell: ({ row }) => <Button asChild variant="ghost" size="icon-sm" aria-label={`${row.original.name} 열기`}><a href={row.original.url}><ArrowUpRight /></a></Button> },
+  { id: 'open', header: '', size: 60, cell: ({ row }) => <Button asChild variant="ghost" size="icon-sm" aria-label={`${row.original.name} 열기`}><a href={row.original.url} onClick={(e) => e.stopPropagation()}><ArrowUpRight /></a></Button> },
 ]
 
 export function ServicesPage() {
   const home = useHome()
-  const services = home.data?.services ?? []
+  const services = home.data?.services ?? EMPTY
   return (
     <PageBody>
       <PageHeader title="서비스" description="레지스트리에 등록된 SE 서비스 전부. 아이덴티티와 지금 상태를 나란히 비교해요." />

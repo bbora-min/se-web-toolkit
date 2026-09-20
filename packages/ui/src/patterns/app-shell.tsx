@@ -24,16 +24,16 @@ export type ShellLayout = Shell
 
 interface ShellCtx {
   layout: ShellLayout
-  /** 커맨드 팔레트(⌘K)를 연다. `command` 가 없으면 아무 일도 안 한다 */
-  openSearch: () => void
+  /** 커맨드 팔레트(⌘K)를 연다. 쉘에 `command` 가 없으면 undefined — 페이지는 그때 검색 UI 를 그리지 않는다 */
+  openSearch?: () => void
 }
-const Ctx = React.createContext<ShellCtx>({ layout: DEFAULT_SHELL, openSearch: () => {} })
+const Ctx = React.createContext<ShellCtx>({ layout: DEFAULT_SHELL })
 /** 지금 쉘의 배치. NavItem·NavSection 이 배치에 맞춰 모양을 바꾼다 */
 export function useShellLayout(): ShellLayout {
   return React.useContext(Ctx).layout
 }
-/** 페이지 안에서 쉘의 검색(⌘K 팔레트)을 연다 — 허브의 큰 검색처럼 "검색이 주 동선"인 화면용 */
-export function useShellSearch(): () => void {
+/** 페이지 안에서 쉘의 검색(⌘K 팔레트)을 연다 — 허브의 큰 검색처럼 "검색이 주 동선"인 화면용. 쉘에 팔레트가 없으면 undefined (그러면 검색 UI 를 그리지 않는다) */
+export function useShellSearch(): (() => void) | undefined {
   return React.useContext(Ctx).openSearch
 }
 
@@ -102,7 +102,8 @@ export function AppShell({
     </button>
   ) : null
   const Layout = LAYOUTS[layout]
-  const ctx = React.useMemo<ShellCtx>(() => ({ layout, openSearch: () => palette.setOpen(true) }), [layout, palette.setOpen])
+  const hasCommand = Boolean(command)
+  const ctx = React.useMemo<ShellCtx>(() => ({ layout, openSearch: hasCommand ? () => palette.setOpen(true) : undefined }), [layout, hasCommand, palette.setOpen])
   return (
     <Ctx.Provider value={ctx}>
       <Layout name={name} mark={mark} subtitle={subtitle} nav={nav} search={search} topEnd={topEnd} credit={credit} maxWidth={maxWidth}>
@@ -337,6 +338,19 @@ export function PageHeader({
       <div className="flex flex-col gap-1.5">
         <h1 className="font-display text-2xl font-semibold leading-tight tracking-[-0.02em] text-ink">{title}</h1>
         {description ? <p className="text-sm text-muted">{description}</p> : null}
+      </div>
+      {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
+    </div>
+  )
+}
+
+/** 섹션 머리: 제목 + 한 줄 설명 + 우측 액션(링크). 페이지 안의 블록 제목 — h2 */
+export function SectionHeader({ title, note, actions, className }: { title: string; note?: string; actions?: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn('flex items-baseline justify-between gap-4', className)}>
+      <div className="flex items-baseline gap-2">
+        <h2 className="text-md font-semibold text-ink">{title}</h2>
+        {note ? <span className="text-xs text-muted">{note}</span> : null}
       </div>
       {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
     </div>

@@ -8,6 +8,7 @@ import { ReleasePage } from '../pages/releases/ReleasePage'
 import { NewReleasePage } from '../pages/releases/NewReleasePage'
 import { SettingsPage } from '../pages/settings/SettingsPage'
 import { ApprovalsPage } from '../pages/approvals/ApprovalsPage'
+import { CalendarPage } from '../pages/calendar/CalendarPage'
 import { IdentityPage } from '../pages/identity/IdentityPage'
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: (n) => !hasForcedState() && n < 1, staleTime: 5_000 } } })
@@ -25,6 +26,7 @@ export function App() {
                 <Route path="/releases/new" element={<NewReleasePage />} />
                 <Route path="/releases/:id" element={<ReleasePage />} />
                 <Route path="/approvals/:id?" element={<ApprovalsPage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 {import.meta.env.DEV ? <Route path="/__identity" element={<IdentityPage />} /> : null}
                 <Route path="*" element={<Navigate to="/releases" replace />} />

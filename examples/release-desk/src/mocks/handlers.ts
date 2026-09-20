@@ -55,6 +55,25 @@ export const handlers = [
     )
     return HttpResponse.json({ items, stages: stageCounts(), freeze: freeze() })
   }),
+  /** 캘린더 — 창은 릴리스에서, 프리즈는 매주 금 18:00 – 월 09:00 */
+  http.get('/api/calendar', async ({ request }) => {
+    const url = new URL(request.url)
+    const forced = await devState(url)
+    if (forced && forced.status !== 200) return forced
+    const month = url.searchParams.get('month') ?? new Date().toISOString().slice(0, 7)
+    const [y, m] = month.split('-').map(Number) as [number, number]
+    const from = new Date(y, m - 1, 1 - 7), to = new Date(y, m, 7)
+    const windows = (forced && forced.status === 200 ? [] : releases)
+      .filter((r) => Date.parse(r.windowTo) >= from.getTime() && Date.parse(r.windowFrom) <= to.getTime())
+      .map((r) => ({ releaseId: r.id, version: r.version, title: r.title, service: r.service, type: r.type, stage: r.stage, risk: r.risk, owner: r.owner, from: r.windowFrom, to: r.windowTo, blocked: r.blocked }))
+    const freezes: Array<{ from: string; to: string; reason: string }> = []
+    for (let d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
+      if (d.getDay() !== 5) continue
+      const fri = new Date(d); fri.setHours(18, 0, 0, 0)
+      freezes.push({ from: fri.toISOString(), to: new Date(fri.getTime() + 63 * 3600_000).toISOString(), reason: '주말 온콜 최소화' })
+    }
+    return HttpResponse.json({ month, windows, freezes })
+  }),
   http.get('/api/releases/:id', async ({ params, request }) => {
     const forced = await devState(new URL(request.url))
     if (forced && forced.status !== 200) return forced

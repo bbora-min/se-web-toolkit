@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
-import type { Release, ReleaseDraft, StageId } from './types'
+import type { CalendarMonth, Release, ReleaseDraft, StageId } from './types'
 
 export interface ReleaseFilters {
   q?: string
@@ -33,6 +33,11 @@ export function useReleases(f: ReleaseFilters) {
     placeholderData: (prev) => prev,
   })
 }
+/** 배포 캘린더 한 달("YYYY-MM") */
+export function useCalendar(month: string) {
+  return useQuery({ queryKey: ['calendar', month], queryFn: () => api<CalendarMonth>(`/calendar?month=${month}`), placeholderData: (prev) => prev })
+}
+
 export function useRelease(id: string | undefined) {
   return useQuery({ queryKey: ['releases', 'detail', id], queryFn: () => api<Release>(`/releases/${id}`), enabled: Boolean(id) })
 }

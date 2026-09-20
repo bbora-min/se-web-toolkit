@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Activity, GitBranch, LayoutDashboard, ListChecks, Monitor, Moon, Palette, RefreshCw, Rows3, Server, Shapes, Sun } from 'lucide-react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router'
+import { NavLink, Outlet, useNavigate } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { AppShell, Avatar, NavItem, NavSection, StatusBadge, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
 import { parseIdentity } from '@se/tokens'
@@ -20,7 +20,6 @@ const NAV = [
 
 export function Shell() {
   const navigate = useNavigate()
-  const { pathname } = useLocation()
   const qc = useQueryClient()
   const { setMode, density, setDensity } = useTheme()
   const jobs = useJobs({})
@@ -65,8 +64,6 @@ export function Shell() {
   return (
     <AppShell
       layout={ID.shell}
-      // 관측 벽(개요)만 넓다 — 원장(잡 목록)은 1120 그대로
-      maxWidth={pathname.startsWith('/overview') ? 1440 : 1120}
       name={identity.name}
       mark={identity.mark.text}
       subtitle="production · ap-northeast-2"

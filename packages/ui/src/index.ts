@@ -32,7 +32,7 @@ export { ConfirmDialog, type ConfirmDialogProps } from './components/confirm-dia
 export { DescriptionList, type DescriptionItem } from './components/description-list'
 export { Toaster, toast } from './components/toast'
 
-export { AppShell, NavItem, NavSection, PageHeader, SectionHeader, PageBody, ThemeToggle, useShellLayout, useShellSearch, type AppShellProps, type ShellLayout } from './patterns/app-shell'
+export { AppShell, NavItem, NavSection, PageHeader, SectionHeader, PageBody, ThemeToggle, useShellLayout, useShellSearch, useContentWidth, type AppShellProps, type ShellLayout } from './patterns/app-shell'
 
 export { StatusStrip, type StatusStripProps, type StripHealth } from './signatures/status-strip'
 export { SearchHero, type SearchHeroProps } from './signatures/search-hero'

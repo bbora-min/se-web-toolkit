@@ -58,7 +58,7 @@ export function Tile({ title, note, legend, actions, span = 12, spanNarrow, tone
           {note ? <p className="truncate text-xs text-muted">{note}</p> : null}
         </div>
         {legend || actions ? (
-          <div className="flex shrink-0 items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3 empty:hidden">
             {legend}
             {actions}
           </div>

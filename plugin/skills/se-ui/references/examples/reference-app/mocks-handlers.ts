@@ -78,7 +78,8 @@ function overview(range: '24h' | '7d'): Overview {
     { name: 'gpu-01', status: 'online' as const, cpu: 77, mem: 83, running: 1 },
   ]
   // 실패 원인 — 에러 문자열의 첫 단어로 묶는다(OOMKilled · Timeout · S3 · Schema …)
-  const failed = jobs.filter((j) => j.state === 'failed')
+  const since = now - n * 3600_000
+  const failed = jobs.filter((j) => j.state === 'failed' && Date.parse(j.startedAt) >= since)
   const byCause = new Map<string, number>()
   for (const j of failed) {
     const cause = (j.error ?? '알 수 없음').split(/[\s:(]/)[0] || '알 수 없음'
@@ -124,7 +125,7 @@ export const handlers = [
     const pageSize = Number(url.searchParams.get('pageSize') ?? 25)
     const base = jobs.filter(
       (j) =>
-        (!q || j.name.toLowerCase().includes(q) || j.owner.includes(q) || j.id.includes(q)) &&
+        (!q || j.name.toLowerCase().includes(q) || j.owner.includes(q) || j.id.includes(q) || (j.error?.toLowerCase().includes(q) ?? false)) &&
         (!pipeline || j.pipeline === pipeline),
     )
     // 탭 카운트는 상태 필터를 뺀 기준

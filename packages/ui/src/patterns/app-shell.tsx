@@ -26,12 +26,23 @@ interface ShellCtx {
   layout: ShellLayout
   /** 커맨드 팔레트(⌘K)를 연다. 쉘에 `command` 가 없으면 undefined — 페이지는 그때 검색 UI 를 그리지 않는다 */
   openSearch?: () => void
+  /** 페이지가 콘텐츠 최대 폭을 잠시 바꾼다(관측 벽·보드). null 이면 쉘 기본값 */
+  setContentWidth: (px: number | null) => void
 }
-const Ctx = React.createContext<ShellCtx>({ layout: DEFAULT_SHELL })
+const Ctx = React.createContext<ShellCtx>({ layout: DEFAULT_SHELL, setContentWidth: () => {} })
 /** 지금 쉘의 배치. NavItem·NavSection 이 배치에 맞춰 모양을 바꾼다 */
 export function useShellLayout(): ShellLayout {
   return React.useContext(Ctx).layout
 }
+/** 이 페이지가 떠 있는 동안 쉘의 콘텐츠 최대 폭을 바꾼다 — 관측 벽(1440)·보드처럼 넓어야 하는 골격용. 벗어나면 원래대로 */
+export function useContentWidth(px: number | null) {
+  const { setContentWidth } = React.useContext(Ctx)
+  React.useLayoutEffect(() => {
+    setContentWidth(px)
+    return () => setContentWidth(null)
+  }, [px, setContentWidth])
+}
+
 /** 페이지 안에서 쉘의 검색(⌘K 팔레트)을 연다 — 허브의 큰 검색처럼 "검색이 주 동선"인 화면용. 쉘에 팔레트가 없으면 undefined (그러면 검색 UI 를 그리지 않는다) */
 export function useShellSearch(): (() => void) | undefined {
   return React.useContext(Ctx).openSearch
@@ -103,10 +114,11 @@ export function AppShell({
   ) : null
   const Layout = LAYOUTS[layout]
   const hasCommand = Boolean(command)
-  const ctx = React.useMemo<ShellCtx>(() => ({ layout, openSearch: hasCommand ? () => palette.setOpen(true) : undefined }), [layout, hasCommand, palette.setOpen])
+  const [contentWidth, setContentWidth] = React.useState<number | null>(null)
+  const ctx = React.useMemo<ShellCtx>(() => ({ layout, openSearch: hasCommand ? () => palette.setOpen(true) : undefined, setContentWidth }), [layout, hasCommand, palette.setOpen])
   return (
     <Ctx.Provider value={ctx}>
-      <Layout name={name} mark={mark} subtitle={subtitle} nav={nav} search={search} topEnd={topEnd} credit={credit} maxWidth={maxWidth}>
+      <Layout name={name} mark={mark} subtitle={subtitle} nav={nav} search={search} topEnd={topEnd} credit={credit} maxWidth={contentWidth ?? maxWidth}>
         {children}
       </Layout>
       {command ? <CommandPalette open={palette.open} onOpenChange={palette.setOpen} groups={command} placeholder={searchPlaceholder} /> : null}
@@ -128,7 +140,7 @@ function SidebarLayout({ name, mark, subtitle, nav, search, topEnd, credit, maxW
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col bg-surface">
-        <div className="mx-auto flex w-full flex-col" style={{ maxWidth }}>
+        <div className="mx-auto flex w-full flex-1 flex-col" style={{ maxWidth }}>
           <header className="flex h-14 items-center gap-3 px-6 xl:px-8">
             {search}
             <div className="ml-auto flex items-center gap-3">{topEnd}</div>

@@ -16,6 +16,8 @@ export function answer(text: string, datasets: Dataset[], now = Date.now()): { t
   if (hits.length) {
     const d = hits[0]!
     const pii = d.columns.filter((c) => c.pii).map((c) => c.name)
+    // 출처 번호와 본문 [n] 이 같은 목록에서 나온다
+    const related = datasets.filter((x) => d.related.includes(x.id)).slice(0, 2)
     const fresh = d.freshness === 'fresh' ? '최신이에요' : d.freshness === 'stale' ? 'SLA 를 넘겨 지연 중이에요' : '오류 상태예요'
     const body = [
       `${d.name} 은 ${d.team} 팀(${d.owner})이 소유하고, SLA 는 ${d.slaHours}시간이에요. 마지막 갱신은 ${rel(d.updatedAt, now)} 있었고 지금 ${fresh} [1].`,
@@ -23,9 +25,8 @@ export function answer(text: string, datasets: Dataset[], now = Date.now()): { t
       q.includes('조인') || q.includes('join')
         ? `조인은 ${d.domain === 'dim' ? '유효 구간을 조건에 넣어야 해요 — id 로만 조인하면 이력 행이 곱해져요.' : '파티션 키 dt 를 먼저 좁히고 하세요.'}\n\n\`\`\`sql\nSELECT *\nFROM ${d.name} t\n${d.domain === 'dim' ? "WHERE t.valid_from <= '2026-09-01'\n  AND (t.valid_to IS NULL OR '2026-09-01' < t.valid_to)" : 'WHERE t.dt = CURRENT_DATE() - 1'}\nLIMIT 100\n\`\`\``
         : `바로 써 보려면:\n\n\`\`\`sql\n${d.sampleQuery}\n\`\`\``,
-      d.related.length ? `함께 보는 테이블: ${d.related.join(', ')} [2].` : '',
+      related.length ? `함께 보는 테이블: ${related.map((x, i) => `${x.name} [${i + 2}]`).join(', ')}.` : '',
     ].filter(Boolean)
-    const related = datasets.filter((x) => d.related.includes(x.id)).slice(0, 2)
     return { text: body.join('\n\n'), citations: [cite(d), ...related.map(cite)] }
   }
   if (q.includes('pii') || q.includes('개인정보')) {

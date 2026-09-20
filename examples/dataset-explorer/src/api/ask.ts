@@ -13,6 +13,6 @@ export function useThread(id: string | undefined) {
 }
 
 /** 질문 하나 → 답 하나. 실제 백엔드는 SSE·chunk 로 스트리밍 — 그때 이 함수가 `fetch` 스트림을 이어 붙인다 */
-export function ask(body: { threadId?: string; text: string }) {
-  return api<{ threadId: string; message: AskMessage }>('/ask', { method: 'POST', body: JSON.stringify(body) })
+export function ask(body: { threadId?: string; text: string }, signal?: AbortSignal) {
+  return api<{ threadId: string; message: AskMessage }>('/ask', { method: 'POST', body: JSON.stringify(body), signal })
 }

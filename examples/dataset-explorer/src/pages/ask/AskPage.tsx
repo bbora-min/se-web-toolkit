@@ -18,30 +18,46 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { Button, Chip, Composer, ErrorState, Message, Prose, ShellFill, Skeleton, SplitPane, Thread, cn, formatAbsolute, formatRelative, toast, useContentWidth } from '@se/ui'
 import { ask, useThread, useThreads } from '../../api/ask'
-import type { AskMessage } from '../../api/types'
+import type { AskMessage, AskThread } from '../../api/types'
 
 const STARTERS = ['fct.orders_daily 는 언제 갱신돼?', 'PII 컬럼이 있는 events 테이블은?', '최근 30일 조회가 가장 많은 데이터셋은?', 'dim.users 를 특정 시점 값으로 조인하려면?']
 
 export function AskPage() {
   const { threadId } = useParams()
-  return <Ask key={threadId ?? 'new'} threadId={threadId} />
-}
-
-function Ask({ threadId }: { threadId: string | undefined }) {
   const navigate = useNavigate()
   const qc = useQueryClient()
   const threads = useThreads()
-  // 새 스레드로 막 넘어온 화면은 서버에서 다시 읽지 않는다 — 이전 화면이 건넨 답을 흘리는 중이라 겹쳐 쓰면 안 된다
-  const fromHandoff = React.useRef(Boolean(threadId && pendingAnswers.has(threadId)))
-  const past = useThread(fromHandoff.current ? undefined : threadId)
+  const past = useThread(threadId)
   useContentWidth(1280)
 
   const [messages, setMessages] = React.useState<AskMessage[]>([])
   const [pending, setPending] = React.useState<{ text: string; error?: string } | null>(null)
   const [streaming, setStreaming] = React.useState<{ full: AskMessage; shown: number } | null>(null)
+  const abort = React.useRef<AbortController | null>(null)
+  /** 지금 화면이 들고 있는 스레드. URL 이 이것과 달라지면(목록 클릭·새 대화) 상태를 비운다 — 우리가 만든 새 스레드로 옮길 땐 미리 맞춰 두어 스트리밍이 이어진다 */
+  const own = React.useRef<string | undefined>(threadId)
+  /** 서버 스레드는 한 번만 화면에 싣는다 — 포커스 복귀 등 재조회가 보내는 중·흘리는 중인 상태를 덮어쓰지 않게 */
+  const seeded = React.useRef(false)
   React.useEffect(() => {
-    if (past.data) setMessages(past.data.messages)
+    if (own.current === threadId) return
+    own.current = threadId
+    seeded.current = false
+    abort.current?.abort()
+    setMessages([])
+    setPending(null)
+    setStreaming(null)
+  }, [threadId])
+  React.useEffect(() => {
+    if (past.data && !seeded.current) {
+      seeded.current = true
+      setMessages(past.data.messages)
+    }
   }, [past.data])
+  /** 화면이 아는 대화를 캐시에도 — 다른 화면에 갔다 돌아와도 방금 받은 답이 그대로 있다 */
+  React.useEffect(() => {
+    if (!threadId || !seeded.current || messages.length === 0) return
+    qc.setQueryData<AskThread>(['ask', 'threads', threadId], (t) => (t ? { ...t, messages } : t))
+  }, [messages, threadId, qc])
 
   /** 목은 답을 한 번에 준다 — 클라이언트에서 글자를 흘려 스트리밍을 흉내 낸다. 실제 백엔드는 SSE·chunk 로 이어 붙인다 */
   const stream = (m: AskMessage) => setStreaming({ full: m, shown: 0 })
@@ -59,7 +75,13 @@ function Ask({ threadId }: { threadId: string | undefined }) {
       setStreaming(null)
     }
   }, [streaming])
+  /** 정지 — 기다리는 중이면 요청을 끊고(질문은 남긴다), 흘리는 중이면 받은 만큼만 남긴다 */
   const stop = () => {
+    if (pending && !pending.error) {
+      abort.current?.abort()
+      setPending(null)
+      return
+    }
     if (!streaming) return
     setMessages((ms) => [...ms, { ...streaming.full, text: streaming.full.text.slice(0, streaming.shown) + ' …', citations: [] }])
     setStreaming(null)
@@ -68,30 +90,35 @@ function Ask({ threadId }: { threadId: string | undefined }) {
     const user: AskMessage = { id: `u-${Date.now()}`, role: 'user', text, at: new Date().toISOString() }
     setMessages((ms) => [...ms, user])
     setPending({ text })
+    const ac = new AbortController()
+    abort.current = ac
     try {
-      const res = await ask({ threadId, text })
+      const res = await ask({ threadId, text }, ac.signal)
+      if (ac.signal.aborted) return
       setPending(null)
       if (!threadId) {
-        void qc.invalidateQueries({ queryKey: ['ask', 'threads'] })
+        // 새 스레드 — 화면은 그대로 두고 URL 만 바꾼다. 서버 조회는 우리가 이미 아는 내용으로 채워 두어 스켈레톤이 뜨지 않는다
+        own.current = res.threadId
+        seeded.current = true
+        qc.setQueryData(['ask', 'threads', res.threadId], { id: res.threadId, title: text.slice(0, 40), updatedAt: user.at, messages: [user] })
+        void qc.invalidateQueries({ queryKey: ['ask', 'threads'], exact: true })
         navigate(`/ask/${res.threadId}`, { replace: true })
-        // 새 스레드로 넘어가면 key 가 바뀌어 다시 마운트되므로, 흐름은 그 화면이 이어받는다
-        pendingAnswers.set(res.threadId, { user, answer: res.message })
-        return
       }
       stream(res.message)
     } catch (e) {
+      if (ac.signal.aborted) return
       setPending({ text, error: (e as Error).message })
     }
   }
-  // 새 스레드가 만들어져 마운트된 직후 — 이전 화면이 받아 둔 답을 흘린다
-  React.useEffect(() => {
-    if (!threadId) return
-    const handoff = pendingAnswers.get(threadId)
-    if (!handoff) return
-    pendingAnswers.delete(threadId)
-    setMessages([handoff.user])
-    stream(handoff.answer)
-  }, [threadId])
+  /** 출처 칩은 앱 안 링크 — 라우터로 이동(수정키·가운데 클릭은 브라우저에 맡긴다). 안정된 참조라 Bubble 의 memo 가 산다 */
+  const openCitation = React.useCallback(
+    (href: string) => (e: React.MouseEvent<HTMLElement>) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
+      e.preventDefault()
+      navigate(href)
+    },
+    [navigate],
+  )
 
   const busy = Boolean(pending && !pending.error) || Boolean(streaming)
 
@@ -144,7 +171,7 @@ function Ask({ threadId }: { threadId: string | undefined }) {
                   </div>
                 </div>
               ) : null}
-              {messages.map((m) => <Bubble key={m.id} m={m} />)}
+              {messages.map((m) => <Bubble key={m.id} m={m} onCitation={openCitation} />)}
               {pending ? (
                 <Message role="assistant" mark="DE" streaming={!pending.error}>
                   {pending.error ? (
@@ -154,7 +181,7 @@ function Ask({ threadId }: { threadId: string | undefined }) {
                   )}
                 </Message>
               ) : null}
-              {streaming ? <Bubble m={{ ...streaming.full, text: streaming.full.text.slice(0, streaming.shown), citations: [] }} streaming /> : null}
+              {streaming ? <Bubble m={{ ...streaming.full, text: streaming.full.text.slice(0, streaming.shown), citations: [] }} streaming onCitation={openCitation} /> : null}
             </Thread>
             <Composer onSubmit={(t) => void send(t)} streaming={busy} onStop={stop} placeholder="데이터셋, 컬럼, 조인, 갱신 주기… 무엇이든" autoFocus={!threadId} />
           </>
@@ -164,17 +191,14 @@ function Ask({ threadId }: { threadId: string | undefined }) {
   )
 }
 
-/** 새 스레드로 옮겨 가는 사이 답을 건네는 자리 — 화면이 key 로 다시 마운트되기 때문 */
-const pendingAnswers = new Map<string, { user: AskMessage; answer: AskMessage }>()
-
-function Bubble({ m, streaming }: { m: AskMessage; streaming?: boolean }) {
+const Bubble = React.memo(function Bubble({ m, streaming, onCitation }: { m: AskMessage; streaming?: boolean; onCitation: (href: string) => (e: React.MouseEvent<HTMLElement>) => void }) {
   if (m.role === 'user') return <Message role="user" meta={<span title={formatAbsolute(m.at)}>{formatRelative(m.at)}</span>}>{m.text}</Message>
   return (
     <Message
       role="assistant"
       mark="DE"
       streaming={streaming}
-      citations={m.citations?.map((c) => ({ id: c.id, label: c.label, href: c.href }))}
+      citations={m.citations?.map((c) => ({ id: c.id, label: c.label, href: c.href, onClick: onCitation(c.href) }))}
       meta={<span title={formatAbsolute(m.at)}>{formatRelative(m.at)}</span>}
       actions={
         <Button variant="ghost" size="sm" className="h-6 px-1.5 text-[11px]" onClick={() => { void navigator.clipboard?.writeText(m.text); toast('답을 복사했어요') }}><Copy /> 복사</Button>
@@ -183,11 +207,15 @@ function Bubble({ m, streaming }: { m: AskMessage; streaming?: boolean }) {
       <Answer text={m.text} />
     </Message>
   )
-}
+})
 
 /** 답 본문 — 문단·번호 목록·```코드``` 블록만. 마크다운 전체를 받지 않는다(색·컨트롤 규칙을 우회하지 않게) */
 function Answer({ text }: { text: string }) {
-  const parts = text.split(/```(?:\w+)?\n([\s\S]*?)```/g)
+  // 흘러오는 중엔 펜스가 아직 안 닫혔을 수 있다 — 닫힌 셈 치고 코드로 보여 준다
+  const parts = React.useMemo(() => {
+    const open = (text.match(/```/g) ?? []).length % 2 === 1
+    return (open ? `${text}\n\`\`\`` : text).split(/```(?:\w+)?\n?([\s\S]*?)```/g)
+  }, [text])
   return (
     <Prose className="max-w-none text-[15px] [&_p]:mb-3 [&_p:last-child]:mb-0 [&_ol]:my-3 [&_pre]:my-3">
       {parts.map((part, i) =>

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { ArrowUp, Square } from 'lucide-react'
 import { cn } from '../lib/cn'
+import { isNearBottom } from '../lib/scroll'
 import { Button } from '../components/button'
 import { Kbd } from '../components/separator'
 
@@ -23,7 +24,7 @@ export function Thread({ follow = true, className, children, ...props }: ThreadP
   const onScroll = () => {
     const el = ref.current
     if (!el) return
-    stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 40
+    stick.current = isNearBottom(el, 40)
   }
   React.useEffect(() => {
     const el = ref.current
@@ -41,14 +42,15 @@ export interface CitationItem {
   id: string
   label: React.ReactNode
   href?: string
-  onClick?: () => void
+  /** 앱 안 링크면 여기서 `preventDefault` + 라우터 이동 (수정키가 없을 때만) */
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
 export interface MessageProps {
   role: 'user' | 'assistant'
   /** 어시스턴트 마크(모노그램·아이콘). 사용자는 아바타 */
   mark?: React.ReactNode
-  /** 답이 아직 오는 중 — 끝에 커서 */
+  /** 답이 아직 오는 중 — 마지막 글 끝에 커서(`.se-caret`, 블록 자식이면 그 안) */
   streaming?: boolean
   /** 답의 출처 — 번호 칩 */
   citations?: CitationItem[]
@@ -76,7 +78,7 @@ export function Message({ role, mark, streaming, citations, actions, meta, class
     <div className={cn('group flex gap-3', className)}>
       <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-md bg-accent font-mono text-[11px] font-semibold text-on-accent" aria-hidden>{mark ?? 'AI'}</span>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <div className={cn('text-[15px] leading-relaxed text-ink', streaming && "after:ml-0.5 after:inline-block after:h-[1em] after:w-[2px] after:translate-y-[2px] after:animate-pulse after:bg-accent after:content-['']")}>{children}</div>
+        <div className={cn('text-[15px] leading-relaxed text-ink', streaming && 'se-caret')}>{children}</div>
         {citations?.length ? (
           <ol className="flex flex-wrap gap-1.5" aria-label="출처">
             {citations.map((c, i) => (
@@ -98,7 +100,7 @@ export function Message({ role, mark, streaming, citations, actions, meta, class
 }
 
 /** 출처 칩 — 번호 + 이름. 눌러서 원본으로 */
-export function Citation({ index, href, onClick, children }: { index: number; href?: string; onClick?: () => void; children: React.ReactNode }) {
+export function Citation({ index, href, onClick, children }: { index: number; href?: string; onClick?: (e: React.MouseEvent<HTMLElement>) => void; children: React.ReactNode }) {
   const cls = 'inline-flex h-6 max-w-[16rem] items-center gap-1.5 rounded-md border border-line bg-surface px-2 text-[12px] text-ink/85 transition-colors hover:border-line-strong hover:text-ink'
   const inner = (
     <>
@@ -132,16 +134,20 @@ export interface ComposerProps {
   className?: string
 }
 
+/** textarea 의 leading-6 · py-1 과 같은 값 — 줄 수를 높이로 바꿀 때 쓴다 */
+const LINE = 24
+const PAD = 8
+
 /** 입력 상자 — 한 줄에서 시작해 자란다. Enter 보내기, Shift+Enter 줄바꿈 */
 export function Composer({ onSubmit, streaming, onStop, placeholder = '무엇이든 물어보세요', disabled, hint, maxRows = 8, autoFocus, className }: ComposerProps) {
   const [text, setText] = React.useState('')
   const ref = React.useRef<HTMLTextAreaElement>(null)
+  const maxHeight = LINE * maxRows + PAD
   const fit = () => {
     const el = ref.current
     if (!el) return
     el.style.height = 'auto'
-    const line = 24
-    el.style.height = `${Math.min(el.scrollHeight, line * maxRows + 20)}px`
+    el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
   }
   React.useEffect(fit, [text, maxRows])
   const send = () => {
@@ -158,7 +164,8 @@ export function Composer({ onSubmit, streaming, onStop, placeholder = '무엇이
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+            // IME 조합 중 Enter 는 글자 확정 — Safari 는 compositionend 뒤에 keyCode 229 로 온다
+            if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229) {
               e.preventDefault()
               send()
             }
@@ -168,7 +175,8 @@ export function Composer({ onSubmit, streaming, onStop, placeholder = '무엇이
           disabled={disabled}
           autoFocus={autoFocus}
           aria-label="메시지"
-          className="max-h-[14rem] min-h-6 flex-1 resize-none bg-transparent px-2 py-1 text-[15px] leading-6 text-ink outline-none placeholder:text-muted disabled:opacity-50"
+          style={{ maxHeight }}
+          className="min-h-6 flex-1 resize-none bg-transparent px-2 py-1 text-[15px] leading-6 text-ink outline-none placeholder:text-muted disabled:opacity-50"
         />
         {streaming ? (
           <Button type="button" variant="secondary" size="icon" aria-label="정지" onClick={onStop} className="shrink-0"><Square className="size-3.5" /></Button>

@@ -22,7 +22,7 @@
 | `className` | `string` |  |  |
 | `mark` | `ReactNode` |  | 어시스턴트 마크(모노그램·아이콘). 사용자는 아바타 |
 | `meta` | `ReactNode` |  | 상대 시각 등 |
-| `streaming` | `boolean` |  | 답이 아직 오는 중 — 끝에 커서 |
+| `streaming` | `boolean` |  | 답이 아직 오는 중 — 마지막 글 끝에 커서(`.se-caret`, 블록 자식이면 그 안) |
 
 ## Citation
 
@@ -32,7 +32,7 @@
 |---|---|---|---|
 | `index` **필수** | `number` |  |  |
 | `href` | `string` |  |  |
-| `onClick` | `(() => void)` |  |  |
+| `onClick` | `((e: MouseEvent<HTMLElement, MouseEvent>) => void)` |  |  |
 
 ## Composer
 

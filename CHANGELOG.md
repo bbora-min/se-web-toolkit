@@ -16,7 +16,7 @@
 - `/__identity` 시트에 쉘 배치 줄·행이 생긴다(레퍼런스 앱 3개 기준 스크린샷 갱신). 그 외 화면은 그대로 — 기존 앱은 전부 `sidebar` 이고 `layout` 기본값이라 픽셀 변화 없음
 
 **앱에서 할 일**
-- 없음 — `/se:upgrade` 만. 배치를 바꾸려면 `se.identity.json` 의 `shell` 과 `Shell.tsx` 의 `<AppShell layout={identity.shell}>` 을 함께(`panes` 는 `NavItem label=` 추가). 다음 `/se:identity` 가 형제와 겹치지 않는 배치를 제안한다
+- 없음 — `/se:upgrade` 만. 배치를 바꾸려면 `se.identity.json` 의 `shell` 과 `Shell.tsx` 의 `<AppShell layout={parseIdentity(identity).shell}>` 을 함께(`panes` 는 `NavItem label=` 추가). 다음 `/se:identity` 가 형제와 겹치지 않는 배치를 제안한다
 
 ## 0.9.0 — 2026-09-15
 

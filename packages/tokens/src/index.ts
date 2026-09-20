@@ -9,6 +9,7 @@ export {
   SIGNATURES,
   IMPLEMENTED_SIGNATURES,
   SHELLS,
+  DEFAULT_SHELL,
   MAX_SAME_SHELL,
   type Shell,
   checkRegistry,

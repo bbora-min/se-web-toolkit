@@ -1,7 +1,7 @@
 // 아이덴티티 레지스트리 검사 — hue 거리·시그니처 중복·각 se.identity.json 유효성
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { createTheme, checkRegistry } from '../packages/tokens/dist/index.js'
+import { createTheme, checkRegistry, parseIdentity, DEFAULT_SHELL } from '../packages/tokens/dist/index.js'
 
 const root = resolve(import.meta.dirname, '..')
 const registry = JSON.parse(readFileSync(resolve(root, 'identities/registry.json'), 'utf8'))
@@ -25,13 +25,13 @@ for (const s of services) {
   }
   const file = resolve(root, s.path, 'se.identity.json')
   try {
-    const id = JSON.parse(readFileSync(file, 'utf8'))
+    const id = parseIdentity(JSON.parse(readFileSync(file, 'utf8')))
     createTheme(id)
     if (id.id !== s.id) fail(`${s.id}: se.identity.json의 id(${id.id})가 레지스트리와 다름`)
     if (id.accent.hue !== s.hue) fail(`${s.id}: hue가 레지스트리(${s.hue})와 다름 (${id.accent.hue})`)
     if (id.signature !== s.signature) fail(`${s.id}: signature가 레지스트리와 다름`)
-    if ((id.shell ?? 'sidebar') !== (s.shell ?? 'sidebar')) fail(`${s.id}: shell이 레지스트리(${s.shell ?? 'sidebar'})와 다름 (${id.shell ?? 'sidebar'})`)
-    console.log('✓', s.id, `hue ${s.hue}°`, s.shell ?? 'sidebar', s.signature)
+    if (id.shell !== (s.shell ?? DEFAULT_SHELL)) fail(`${s.id}: shell이 레지스트리(${s.shell ?? DEFAULT_SHELL})와 다름 (${id.shell})`)
+    console.log('✓', s.id, `hue ${s.hue}°`, id.shell, s.signature)
   } catch (e) {
     fail(`${s.id}: ${e.message}`)
   }

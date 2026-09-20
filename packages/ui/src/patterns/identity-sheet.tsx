@@ -1,5 +1,5 @@
 import * as React from 'react'
-import type { Identity } from '@se/tokens'
+import { DEFAULT_SHELL, type Identity, type RegistryEntry, type Shell } from '@se/tokens'
 import { cn } from '../lib/cn'
 import { useTheme } from '../lib/theme'
 import { Badge, StatusBadge } from '../components/badge'
@@ -12,7 +12,7 @@ export interface IdentitySheetProps {
   /** 이 서비스의 시그니처를 실제 컴포넌트로 렌더한 것 */
   signaturePreview?: React.ReactNode
   /** 레지스트리의 형제들 — 가족 초상화 */
-  siblings?: Array<{ id: string; name: string; hue: number; signature: string; shell?: string }>
+  siblings?: RegistryEntry[]
 }
 
 const SIGNATURE_LABEL: Record<string, string> = {
@@ -22,7 +22,8 @@ const SIGNATURE_LABEL: Record<string, string> = {
   'timeline-ribbon': '타임라인 리본',
   'metric-marquee': '지표 마키',
 }
-const SHELL_LABEL: Record<string, string> = { sidebar: '사이드바', topnav: '상단 네비', panes: '아이콘 레일 + 패널' }
+const SHELL_LABEL: Record<Shell, string> = { sidebar: '사이드바', topnav: '상단 네비', panes: '아이콘 레일 + 패널' }
+const shellLabel = (s?: string) => SHELL_LABEL[(s ?? DEFAULT_SHELL) as Shell] ?? s
 const TONE: Record<Identity['tone'], { label: string; empty: string; ok: string; err: string }> = {
   terse: { label: '간결', empty: '표시할 항목이 없습니다', ok: '재시도를 큐에 넣었습니다', err: '스케줄러에 연결할 수 없습니다' },
   friendly: { label: '친절', empty: '아직 여기엔 아무것도 없어요', ok: '재시도를 걸어 뒀어요', err: '스케줄러에 연결할 수 없어요. 잠시 후 다시 해볼게요' },
@@ -68,7 +69,7 @@ export function IdentitySheet({ identity: id, signaturePreview, siblings }: Iden
           <div className="flex flex-col gap-2">
             <h1 className="font-display text-3xl font-semibold leading-none tracking-[-0.025em] text-ink">{id.name}</h1>
             <p className="text-md text-muted">
-              SE 가족의 일원. <span className="text-ink">{id.accent.hue}°</span> · {NEUTRAL[id.neutralBias]} · {SHELL_LABEL[id.shell] ?? id.shell} 쉘 · {SIGNATURE_LABEL[id.signature] ?? id.signature} · {tone.label}한 톤
+              SE 가족의 일원. <span className="text-ink">{id.accent.hue}°</span> · {NEUTRAL[id.neutralBias]} · {shellLabel(id.shell)} 쉘 · {SIGNATURE_LABEL[id.signature] ?? id.signature} · {tone.label}한 톤
             </p>
           </div>
         </div>
@@ -96,7 +97,7 @@ export function IdentitySheet({ identity: id, signaturePreview, siblings }: Iden
             <dt className="text-muted">액센트</dt><dd className="font-mono">hue {id.accent.hue}° · {vars.accent}</dd>
             <dt className="text-muted">뉴트럴</dt><dd>{NEUTRAL[id.neutralBias]}</dd>
             <dt className="text-muted">마크</dt><dd>{id.mark.type === 'monogram' ? `모노그램 ${id.mark.text}` : `아이콘 ${id.mark.icon}`}</dd>
-            <dt className="text-muted">쉘 배치</dt><dd>{SHELL_LABEL[id.shell] ?? id.shell}</dd>
+            <dt className="text-muted">쉘 배치</dt><dd>{shellLabel(id.shell)}</dd>
             <dt className="text-muted">시그니처</dt><dd>{SIGNATURE_LABEL[id.signature] ?? id.signature}</dd>
             <dt className="text-muted">밀도</dt>
             <dd className="flex items-center gap-2">
@@ -198,7 +199,7 @@ export function IdentitySheet({ identity: id, signaturePreview, siblings }: Iden
                 <span className="size-6 rounded-md" style={{ background: `oklch(0.5 0.12 ${s.hue})` }} aria-hidden />
                 <div className="flex flex-col leading-tight">
                   <span className="text-sm font-medium text-ink">{s.name}</span>
-                  <span className="text-xs text-muted">{s.hue}° · {SHELL_LABEL[s.shell ?? 'sidebar']} · {SIGNATURE_LABEL[s.signature] ?? s.signature}</span>
+                  <span className="text-xs text-muted">{s.hue}° · {shellLabel(s.shell)} · {SIGNATURE_LABEL[s.signature] ?? s.signature}</span>
                 </div>
               </div>
             ))}

@@ -12,7 +12,7 @@ import { execSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { checkRegistry, createTheme, hueDistance, IMPLEMENTED_SIGNATURES, SHELLS, SIGNATURES, statusHues } from '@se/tokens'
+import { checkRegistry, createTheme, DEFAULT_SHELL, hueDistance, IMPLEMENTED_SIGNATURES, SHELLS, SIGNATURES, statusHues } from '@se/tokens'
 
 const here = dirname(fileURLToPath(import.meta.url))
 // 동봉본(prepare 가 복사) 우선 — 모노레포 밖(pnpm dlx·git 설치)에서도 동작. 없으면 모노레포 원본
@@ -120,7 +120,7 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
   const signature = args.signature ?? 'status-strip'
   if (!SIGNATURES.includes(signature)) throw new Error(`signature는 ${SIGNATURES.join(' | ')} 중 하나`)
   if (!IMPLEMENTED_SIGNATURES.includes(signature)) throw new Error(`${signature}는 아직 @se/ui에 구현되지 않았습니다. 지금 쓸 수 있는 것: ${IMPLEMENTED_SIGNATURES.join(' | ')}`)
-  const shell = args.shell ?? 'sidebar'
+  const shell = args.shell ?? DEFAULT_SHELL
   if (!SHELLS.includes(shell)) throw new Error(`shell은 ${SHELLS.join(' | ')} 중 하나`)
   const name = args.name ?? id.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')
   const identity = {
@@ -137,10 +137,10 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
     tone: args.tone ?? 'terse',
   }
   createTheme(identity) // 대비·의미 색 규칙 — 실패하면 여기서 던진다
-  const issues = checkRegistry([...registry.services, { id, name, hue, signature, shell }]).filter((i) => i.a === id || i.b === id)
+  const issues = checkRegistry([...registry.services, { id, name, hue, signature, shell }]).filter((i) => i.ids?.includes(id) ?? (i.a === id || i.b === id))
   const clash = issues.find((i) => i.level === 'error')
   if (clash) throw new Error(`${clash.message}. 예: --hue ${suggestHue(siblingHues)}`)
-  const sameSig = issues.find((i) => i.level === 'warn')
+  const warns = issues.filter((i) => i.level === 'warn').map((i) => `\n  ! ${i.message} (${i.ids ? '--shell' : '--signature'})`).join('')
   const port = Number(args.port ?? TEMPLATE_PORT + 3 + registry.services.length)
   const subtitle = args.subtitle ?? 'internal tool'
 
@@ -171,7 +171,7 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
   }
 
   log(`✓ ${name} 생성 → ${dir}`)
-  log(`  아이덴티티: hue ${hue}°${args.hue === undefined ? '(의미 색·형제와 가장 먼 값)' : ''} · ${signature} · ${shell} 쉘 · ${identity.neutralBias} · ${identity.density} · ${identity.tone}${sameSig ? `\n  ! ${sameSig.message} (--signature)` : ''}`)
+  log(`  아이덴티티: hue ${hue}°${args.hue === undefined ? '(의미 색·형제와 가장 먼 값)' : ''} · ${signature} · ${shell} 쉘 · ${identity.neutralBias} · ${identity.density} · ${identity.tone}${warns}`)
   if (!inWorkspace) log(`  @se/* 는 git 에서 설치됩니다 (${GIT_DEP('*')}) — 첫 pnpm install 에 1–2분`)
   log(`\n다음:\n  ${inWorkspace ? `pnpm install   # 워크스페이스에 링크\n  pnpm --filter ${id} dev` : `cd ${dir}\n  pnpm install && pnpm dev`}   # http://localhost:${port}\n  Claude Code에서 /se:identity → /se:spec → /se:page 로 첫 화면을 만드십시오.`)
   return { dir, identity, port, inWorkspace }

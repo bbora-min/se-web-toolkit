@@ -1,11 +1,12 @@
 {
-  "$comment": "SE 서비스 아이덴티티 레지스트리 사본 (툴킷 main 에서 자동 동봉 — 수정하지 말 것). 새 서비스는 기존 항목과 hue 30° 이상, 같은 시그니처는 피한다.",
+  "$comment": "SE 서비스 아이덴티티 레지스트리 사본 (툴킷 main 에서 자동 동봉 — 수정하지 말 것). 새 서비스는 기존 항목과 hue 30° 이상, 같은 시그니처는 피하고, 같은 쉘 배치(shell)는 둘까지.",
   "services": [
     {
       "id": "job-monitor",
       "name": "Job Monitor",
       "hue": 195,
       "signature": "status-strip",
+      "shell": "sidebar",
       "neutralBias": "cool"
     },
     {
@@ -13,6 +14,7 @@
       "name": "Dataset Explorer",
       "hue": 310,
       "signature": "search-hero",
+      "shell": "sidebar",
       "neutralBias": "warm"
     },
     {
@@ -20,6 +22,7 @@
       "name": "Release Desk",
       "hue": 235,
       "signature": "stage-rail",
+      "shell": "sidebar",
       "neutralBias": "neutral"
     },
     {
@@ -27,6 +30,7 @@
       "name": "AI VOC",
       "hue": 278,
       "signature": "status-strip",
+      "shell": "sidebar",
       "neutralBias": "cool"
     }
   ]

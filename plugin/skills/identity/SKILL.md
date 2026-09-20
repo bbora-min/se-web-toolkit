@@ -13,7 +13,7 @@ description: 서비스 아이덴티티(se.identity.json)를 정하거나 다듬�
 3. **2–3안**을 표로: 각 안은 hue(이름과 °)·뉴트럴·쉘 배치·시그니처·밀도·톤이 서로 다르다. 각 안이 "가장 중요한 화면"에서 어떻게 보일지 한 문장
    - hue 후보는 규칙을 통과하는 것만: 의미 색(danger 30°·warning 70°·success 155°·info 260°)과 18°, 형제와 30° 이상. 통과 여부는 `node -e "import('@se/tokens').then(m=>m.createTheme({...}))"`로 확인한다
 4. 선택 → `se.identity.json` 갱신. dev 서버가 떠 있으면 즉시 반영된다(HMR). `/__identity`에서 확인하라고 안내
-5. 모노레포면 `identities/registry.json`에 반영하고 `pnpm check-identity`. 툴킷 밖이면 결정 요약(id·name·hue·signature·neutralBias)을 사용자에게 보여 주고 툴킷 리포 `identities/registry.json` 에 등록해 달라고 안내한다(path 없이)
+5. 모노레포면 `identities/registry.json`에 반영하고 `pnpm check-identity`. 툴킷 밖이면 결정 요약(id·name·hue·signature·shell·neutralBias)을 사용자에게 보여 주고 툴킷 리포 `identities/registry.json` 에 등록해 달라고 안내한다(path 없이)
 
 ## 판단 기준
 - 액센트는 "이 서비스는 누구인가"다. 소극적으로 고르지 않는다 — 시그니처 블록·활성 탭·primary에 확신 있게 쓰인다

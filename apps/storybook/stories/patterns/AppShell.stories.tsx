@@ -8,12 +8,11 @@ import { byId, markText } from '../identities'
  * `sidebar`(목록·대시보드) · `topnav`(허브·콘솔) · `panes`(트리아지·로그). 같은 배치는 형제 둘까지 — 셋이면 색만 다른 형제가 된다.
  * 라우터 링크는 `NavItem asChild` 로 감싼다. 내부 도구면 `credit={false}`.
  */
-const meta = { title: '패턴/AppShell', component: AppShell, parameters: { layout: 'fullscreen' } } satisfies Meta<typeof AppShell>
+const meta = { title: '패턴/AppShell', component: AppShell, parameters: { layout: 'fullscreen' }, args: { name: 'SE', mark: 'SE', nav: null, children: null } } satisfies Meta<typeof AppShell>
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const 기본: Story = {
-  args: { name: 'SE', mark: 'SE', nav: null, children: null },
   render: (_, ctx) => {
     const id = byId(String(ctx.globals.identity))
     const mark = markText(id)
@@ -48,7 +47,6 @@ export const 기본: Story = {
 
 /** 상단 네비 — 사이드바가 없어 콘텐츠가 넓다. 활성 항목은 액센트 밑줄. 허브·콘솔 골격이 쓴다 */
 export const 상단_네비: Story = {
-  args: { name: 'SE', mark: 'SE', nav: null, children: null },
   render: (_, ctx) => {
     const id = byId(String(ctx.globals.identity))
     return (
@@ -86,7 +84,6 @@ export const 상단_네비: Story = {
 
 /** 아이콘 레일 + 전폭 — 콘텐츠에 패딩·최대 폭이 없다. 화면이 스스로 패널을 나눈다(트리아지·로그) */
 export const 패널: Story = {
-  args: { name: 'SE', mark: 'SE', nav: null, children: null },
   render: (_, ctx) => {
     const id = byId(String(ctx.globals.identity))
     return (

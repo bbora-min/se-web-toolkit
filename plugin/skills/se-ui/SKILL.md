@@ -44,7 +44,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 6. 스크린샷 1회로 확인 (1440·1024 폭, 라이트·다크)
 
 ## 쉘과 시그니처
-- 모든 페이지는 `AppShell` 안. 배치는 `layout={identity.shell}` — `sidebar`(좌측 네비, 기본) · `topnav`(상단 네비, 사이드바 없음) · `panes`(아이콘 레일 + 전폭, `NavItem label=` 필수). 로크업(마크+이름)·검색(⌘K)·테마 토글의 자리는 배치가 정하므로 건드리지 않는다. `PageHeader`·`PageBody`는 원장·폼 골격의 것 — 관측 벽·트리아지처럼 제목 없는 골격은 안 쓴다
+- 모든 페이지는 `AppShell` 안. 배치는 `layout={parseIdentity(identity).shell}`(`@se/tokens`, JSON 을 그대로 넘기면 string 이라 타입이 안 맞는다) — `sidebar`(좌측 네비, 기본) · `topnav`(상단 네비, 사이드바 없음) · `panes`(아이콘 레일 + 전폭, `NavItem label=` 필수). 로크업(마크+이름)·검색(⌘K)·테마 토글의 자리는 배치가 정하므로 건드리지 않는다. `PageHeader`·`PageBody`는 원장·폼 골격의 것 — 관측 벽·트리아지처럼 제목 없는 골격은 안 쓴다
 - 시그니처는 `se.identity.json`의 `signature`가 정한다. 페이지 맨 위 한 자리: `StatusStrip`(모니터링 — 지금 괜찮은가) · `SearchHero`(조회 — 무엇을 찾나) · `StageRail`(워크플로 — 어디까지 왔나) · `TimelineRibbon`(활동·이력 — 최근 무슨 일이) · `MetricMarquee`(비용·사용량·품질 — 얼마인가). `StatusStrip`은 목록 페이지에서 `variant="compact"`(한 줄), 개요 페이지에서 full. 나머지는 변형 없이 그대로. 다섯을 한눈에: `references/examples/reference-app/SignaturesPage.tsx`
 - 커맨드 팔레트: `AppShell`의 `command` prop에 그룹만 넘긴다 (이동·항목 점프·액션). 새 페이지를 만들면 여기에도 등록한다
 

@@ -22,6 +22,7 @@ export const IDENTITIES: Identity[] = registry.services.map((s) => {
       accent: { hue: s.hue },
       neutralBias: s.neutralBias,
       signature: s.signature,
+      shell: s.shell,
     } as IdentityInput)
   return parseIdentity(raw)
 })

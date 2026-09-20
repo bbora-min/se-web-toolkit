@@ -1,8 +1,12 @@
 import * as React from 'react'
 import { List, Monitor, Moon, Palette, Sun } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
-import { AppShell, Avatar, NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup, type ShellLayout } from '@se/ui'
+import { AppShell, Avatar, NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
+import { parseIdentity } from '@se/tokens'
 import identity from '../../se.identity.json'
+
+/** 스키마 기본값(shell 등)이 채워진 아이덴티티 */
+const ID = parseIdentity(identity)
 
 /** 네비 — /se:page 가 화면을 만들면 여기와 App.tsx의 Route에 추가한다 */
 const NAV = [{ to: '/items', label: '항목', icon: <List /> }]
@@ -31,7 +35,7 @@ export function Shell() {
 
   return (
     <AppShell
-      layout={identity.shell as ShellLayout}
+      layout={ID.shell}
       name={identity.name}
       mark={identity.mark.type === 'monogram' ? identity.mark.text : identity.name.slice(0, 1)}
       subtitle={SUBTITLE}
@@ -47,7 +51,7 @@ export function Shell() {
         <>
           <NavSection>
             {NAV.map((n) => (
-              <NavItem key={n.to} asChild>
+              <NavItem key={n.to} asChild label={n.label}>
                 <NavLink to={n.to}>
                   {n.icon}
                   <span className="flex-1 truncate">{n.label}</span>

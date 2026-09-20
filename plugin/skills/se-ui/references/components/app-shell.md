@@ -10,16 +10,16 @@
 | `name` **필수** | `string` |  | 서비스 이름 — se.identity.json의 name |
 | `nav` **필수** | `ReactNode` |  |  |
 | `command` | `CommandGroup[]` |  | 커맨드 팔레트 그룹. 주면 상단 검색 버튼 + ⌘K가 켜진다 |
-| `credit` | `ReactNode` | `SE · Web Toolkit` | 사이드바 하단 크레딧. 기본 "SE · Web Toolkit", `false`/`null` 이면 숨김, 노드면 그것으로 (버전·환경 등) |
-| `layout` | `enum` | `sidebar` | 쉘 배치 — se.identity.json 의 shell. 기본 sidebar |
-| `maxWidth` | `number` | `1120` | 콘텐츠 최대 폭(px). 표가 화면 끝까지 늘어나지 않게. panes 는 무시(전폭) |
+| `credit` | `ReactNode` | `SE · Web Toolkit` | 크레딧 — sidebar 는 사이드바 하단, topnav 는 푸터, panes 는 헤더 우측. 기본 "SE · Web Toolkit", `false`/`null` 이면 숨김, 노드면 그것으로 (버전·환경 등) |
+| `layout` | `enum` |  | 쉘 배치 — se.identity.json 의 shell. 기본 sidebar |
+| `maxWidth` | `number` | `1120` | 콘텐츠 최대 폭(px). 표가 화면 끝까지 늘어나지 않게. panes 는 전폭이라 무시 |
 | `searchPlaceholder` | `string` | `검색` |  |
 | `subtitle` | `string` |  | 로크업 아래 한 줄 (환경·팀 등). topnav·panes 에서는 이름 옆 muted 로 |
 | `topEnd` | `ReactNode` |  | 상단 바 우측 (갱신 시각·아바타 등) |
 
 ## NavItem
 
-라우터 링크를 쓰려면 `asChild`로 감싼다: `<NavItem asChild><NavLink to=…>…</NavLink></NavItem>`.
+라우터 링크를 쓰려면 `asChild`로 감싼다: `<NavItem asChild><NavLink to=…>{icon}<span>이름</span></NavLink></NavItem>`.
 배치에 따라 모양이 바뀐다 — sidebar: 행, topnav: 밑줄 탭, panes: 아이콘만(이름은 툴팁·스크린리더).
 
 | prop | 타입 | 기본 | 설명 |
@@ -28,7 +28,7 @@
 | `asChild` | `boolean` |  |  |
 | `end` | `ReactNode` |  | 우측 카운트 등 |
 | `icon` | `ReactNode` |  |  |
-| `label` | `string` |  | panes 배치의 아이콘 레일에서 툴팁으로 보여 줄 이름. asChild 로 감쌌을 때 넘긴다 |
+| `label` | `string` |  | panes 배치의 아이콘 레일에서 툴팁으로 보여 줄 이름. asChild 로 감쌌을 때 넘긴다 (없으면 툴팁 없음, 라벨은 스크린리더에만) |
 
 ## NavSection
 

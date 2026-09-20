@@ -20,6 +20,8 @@ export const SIGNATURES = [
  */
 export const SHELLS = ['sidebar', 'topnav', 'panes'] as const
 export type Shell = (typeof SHELLS)[number]
+/** shell 을 안 적은 아이덴티티·레지스트리 행의 배치 */
+export const DEFAULT_SHELL: Shell = 'sidebar'
 
 export const DISPLAY_FONTS = {
   pretendard: '"Pretendard Variable", Pretendard, "Noto Sans KR", system-ui, sans-serif',
@@ -45,7 +47,7 @@ export const identitySchema = z.object({
   neutralBias: z.enum(['cool', 'warm', 'neutral', 'accent']).default('neutral'),
   signature: z.enum(SIGNATURES),
   /** 쉘 배치. 형제와 같은 배치가 셋 이상이면 레지스트리 검사가 경고한다 */
-  shell: z.enum(SHELLS).default('sidebar'),
+  shell: z.enum(SHELLS).default(DEFAULT_SHELL),
   density: z.enum(['compact', 'comfortable']).default('compact'),
   displayFont: z.enum(Object.keys(DISPLAY_FONTS) as [keyof typeof DISPLAY_FONTS, ...(keyof typeof DISPLAY_FONTS)[]]).default('pretendard'),
   chart: z.enum(['accent-sequential', 'categorical']).default('accent-sequential'),
@@ -87,8 +89,11 @@ export interface RegistryEntry {
 }
 export interface RegistryIssue {
   level: 'error' | 'warn'
+  /** 쌍 규칙(hue·시그니처)의 두 서비스. 묶음 규칙(쉘 배치)은 첫·마지막 */
   a: string
   b: string
+  /** 묶음 규칙이면 관련 서비스 전부 — 호출자는 `ids?.includes(id) ?? (a === id || b === id)` 로 거른다 */
+  ids?: string[]
   message: string
 }
 
@@ -98,15 +103,16 @@ export const MAX_SAME_SHELL = 2
 /** 가족 규칙 — hue 30° 미만은 error, 같은 시그니처는 warn, 같은 쉘 배치 셋 이상은 warn. check-identity 스크립트와 create-se-app 이 같이 쓴다 */
 export function checkRegistry(services: RegistryEntry[]): RegistryIssue[] {
   const issues: RegistryIssue[] = []
-  const byShell = new Map<string, RegistryEntry[]>()
-  for (const s of services) {
-    const shell = s.shell ?? 'sidebar'
-    byShell.set(shell, [...(byShell.get(shell) ?? []), s])
-  }
-  for (const [shell, group] of byShell) {
+  for (const shell of SHELLS) {
+    const group = services.filter((s) => (s.shell ?? DEFAULT_SHELL) === shell)
     if (group.length > MAX_SAME_SHELL) {
-      const last = group[group.length - 1]!
-      issues.push({ level: 'warn', a: group[0]!.id, b: last.id, message: `${group.map((g) => g.name).join(' · ')}: 쉘 배치가 전부 ${shell} — 색만 다른 형제가 된다. 새 서비스는 다른 배치(${SHELLS.filter((x) => x !== shell).join(' | ')})를 고려` })
+      issues.push({
+        level: 'warn',
+        a: group[0]!.id,
+        b: group[group.length - 1]!.id,
+        ids: group.map((g) => g.id),
+        message: `${group.map((g) => g.name).join(' · ')}: 쉘 배치가 전부 ${shell} — 색만 다른 형제가 된다. 새 서비스는 다른 배치(${SHELLS.filter((x) => x !== shell).join(' | ')})를 고려`,
+      })
     }
   }
   for (let i = 0; i < services.length; i++) {

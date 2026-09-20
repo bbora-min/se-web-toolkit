@@ -4,7 +4,7 @@
 import se from '@se/eslint-plugin'
 
 export default [
-  { ignores: ['**/dist/**', '**/node_modules/**', '**/public/**', '**/*.config.{js,mjs,ts}', 'plugin/**', 'scripts/**', 'packages/eslint-plugin/**', 'packages/tokens/**', 'packages/codemods/**'] },
+  { ignores: ['**/dist/**', '_site/**', '**/node_modules/**', '**/public/**', '**/*.config.{js,mjs,ts}', 'plugin/**', 'scripts/**', 'packages/eslint-plugin/**', 'packages/tokens/**', 'packages/codemods/**'] },
   { files: ['examples/**/src/**/*.{ts,tsx}', 'templates/**/src/**/*.{ts,tsx}', 'apps/**/stories/**/*.{ts,tsx}'], ...se.configs.recommended },
   { files: ['packages/ui/src/**/*.{ts,tsx}', 'packages/charts/src/**/*.{ts,tsx}', 'packages/canvas/src/**/*.{ts,tsx}'], ...se.configs.library },
 ]

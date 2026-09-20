@@ -15,7 +15,7 @@
  */
 import * as React from 'react'
 import { ArrowLeft, RotateCcw, Search, XCircle } from 'lucide-react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { Badge, Button, ErrorState, FacetGroup, Input, LOG_LEVEL_RE, LogViewer, ShellFill, Skeleton, SplitPane, StatusBadge, Switch, cn, formatAbsolute, formatDuration, formatRelative, stripAnsi, toast, useContentWidth } from '@se/ui'
 import { useCancelJob, useJob, useJobLogs, useJobs, useRetryJob } from '../../api/jobs'
 import type { Job } from '../../api/types'
@@ -51,6 +51,7 @@ export function JobConsolePage() {
 }
 
 function JobConsole({ jobId }: { jobId: string | undefined }) {
+  const [params] = useSearchParams()
   const job = useJob(jobId)
   const j = job.data
   const [live, setLive] = React.useState(true)
@@ -63,7 +64,7 @@ function JobConsole({ jobId }: { jobId: string | undefined }) {
 
   const [levels, setLevels] = React.useState<string[]>([])
   const [stages, setStages] = React.useState<string[]>([])
-  const [q, setQ] = React.useState('')
+  const [q, setQ] = React.useState(params.get('q') ?? '') // ?q= 로 들어오면(파이프라인 인스펙터) 그 태스크 줄만
 
   const parsed = React.useMemo(() => parse(logs.data?.lines ?? []), [logs.data?.lines])
   const filtered = React.useMemo(() => {

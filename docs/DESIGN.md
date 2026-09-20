@@ -175,13 +175,16 @@ API는 shadcn/Radix 관례를 그대로 따른다(Claude가 아는 이름 → �
 |---|---|
 | T0 프리미티브 | Button, Input, Textarea, Select, Combobox, Checkbox, Switch, RadioGroup, Badge, Tooltip, Popover, Dialog, Sheet, Tabs, Table, Card, Toast, DropdownMenu, Command, Skeleton, Alert, Separator |
 | T1 내부도구 복합 | **DataTable**(TanStack: 서버 페이지네이션·정렬·컬럼 토글·행 선택·CSV), FilterBar, StatusBadge, DescriptionList, JsonViewer, LogViewer(가상 스크롤·ANSI), StatCard, TimeRangePicker, CodeBlock, EmptyState, ErrorState, ConfirmDialog, Form(react-hook-form + zod) |
-| T2 레이아웃/패턴 | AppShell(`layout` = sidebar · topnav · panes), ListDetailPage, DashboardPage, DetailPage, FormWizardPage, SettingsPage, **HubPage**(0.11.0, `examples/se-home` — 패턴은 컴포넌트가 아니라 복사할 원본), **관측 벽**(0.12.0, `TileGrid`·`Tile` + Job Monitor 개요), **보드**(0.13.0, `Board`·`BoardColumn`·`BoardCard` + Release Desk `?view=board`), **문서**(0.14.0, `DocLayout`·`DocHeader`·`Prose`·`Callout`·`TreeNav`·`TableOfContents` + Dataset Explorer 도메인 가이드), **트리아지**(0.15.0, `SplitPane` + Release Desk 내 승인 대기), **콘솔**(0.16.0, `FacetGroup` + Job Monitor 잡 콘솔), **일정**(0.17.0, `CalendarGrid` + Release Desk 배포 캘린더) — 캔버스·대화는 다음 |
+| T2 레이아웃/패턴 | AppShell(`layout` = sidebar · topnav · panes), ListDetailPage, DashboardPage, DetailPage, FormWizardPage, SettingsPage, **HubPage**(0.11.0, `examples/se-home` — 패턴은 컴포넌트가 아니라 복사할 원본), **관측 벽**(0.12.0, `TileGrid`·`Tile` + Job Monitor 개요), **보드**(0.13.0, `Board`·`BoardColumn`·`BoardCard` + Release Desk `?view=board`), **문서**(0.14.0, `DocLayout`·`DocHeader`·`Prose`·`Callout`·`TreeNav`·`TableOfContents` + Dataset Explorer 도메인 가이드), **트리아지**(0.15.0, `SplitPane` + Release Desk 내 승인 대기), **콘솔**(0.16.0, `FacetGroup` + Job Monitor 잡 콘솔), **일정**(0.17.0, `CalendarGrid` + Release Desk 배포 캘린더), **캔버스**(0.18.0, `@se/canvas` + Job Monitor 파이프라인) — 대화는 다음 |
 | signatures/ | StatusStrip, SearchHero, StageRail, TimelineRibbon, MetricMarquee (아이덴티티 시그니처 후보) |
 
 각 패턴은 `examples/`에 로딩·빈·에러 상태를 포함한 완전 예제를 갖는다.
 
 ### 6.3 `@se/charts`
 Recharts 래퍼. 색은 전부 CSS 변수(의미 색은 상태에만, 카테고리는 chart-1..8 고정 순서). 축선 없음·가로 점선 격자·얇은 마크·2개 이상 시리즈는 범례 필수. `ChartCard`(제목·설명·범례·링크), `BarChart`(스택), `LineChart`, `MeterList`(순위·비율), `Sparkline`은 `@se/ui`에.
+
+### 6.3b `@se/canvas` (0.18.0)
+React Flow(`@xyflow/react`) 래퍼. `Canvas`(노드·간선·선택, 토큰 크롬·미니맵), `TaskNode`(이름·상태 배지·메타, 상태가 테두리), `dagLayout`(층 배치, dagre 없음). 앱은 `@xyflow/react` 를 직접 import 하지 않는다(린트).
 
 ### 6.4 `@se/eslint-plugin`
 | 규칙 | 수준 | 내용 |

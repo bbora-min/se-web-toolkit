@@ -1,6 +1,6 @@
 // 원본: examples/reference-app/src/mocks/handlers.ts (자동 복사 — 수정하지 말 것, pnpm gen:skill-docs)
 import { delay, http, HttpResponse } from 'msw'
-import type { ClusterSummary, Job, Overview } from '../api/types'
+import type { ClusterSummary, Job, JobState, Overview } from '../api/types'
 import { makeJobs, makeLogs } from './data'
 
 let jobs: Job[] = makeJobs()
@@ -118,7 +118,51 @@ function overview(range: '24h' | '7d'): Overview {
   }
 }
 
+/** 파이프라인 태스크 DAG — 마지막 실행의 상태로 노드 상태를 만든다 */
+const TASKS: Record<string, Array<[string, string[]]>> = {
+  'etl-daily': [['extract', []], ['validate', ['extract']], ['transform-a', ['validate']], ['transform-b', ['validate']], ['load', ['transform-a', 'transform-b']], ['publish', ['load']]],
+  'export-s3': [['read-partitions', []], ['compress', ['read-partitions']], ['upload', ['compress']], ['verify', ['upload']]],
+  'report-hourly': [['collect', []], ['aggregate', ['collect']], ['render', ['aggregate']], ['notify', ['render']]],
+  backfill: [['plan', []], ['replay-1', ['plan']], ['replay-2', ['plan']], ['replay-3', ['plan']], ['merge', ['replay-1', 'replay-2', 'replay-3']]],
+  'model-train': [['features', []], ['split', ['features']], ['train', ['split']], ['evaluate', ['train']], ['register', ['evaluate']]],
+  'index-rebuild': [['snapshot', []], ['build-a', ['snapshot']], ['build-b', ['snapshot']], ['swap', ['build-a', 'build-b']]],
+}
+const SCHEDULE: Record<string, string> = { 'etl-daily': '0 1 * * *', 'export-s3': '30 */2 * * *', 'report-hourly': '5 * * * *', backfill: 'manual', 'model-train': '0 3 * * 1', 'index-rebuild': '0 4 * * *' }
+function pipeline(name: string) {
+  const spec = TASKS[name]
+  if (!spec) return null
+  const runs = jobs.filter((j) => j.pipeline === name).sort((a, b) => b.startedAt.localeCompare(a.startedAt))
+  const last = runs[0]
+  if (!last) return null
+  const n = spec.length
+  // 실패면 뒤에서 두 번째 태스크가 실패, 실행 중이면 중간 태스크가 실행 중
+  const failAt = last.state === 'failed' ? Math.max(1, n - 2) : -1
+  const runAt = last.state === 'running' ? Math.floor(n / 2) : -1
+  const tasks = spec.map(([id, upstream], i) => {
+    let state: JobState = 'succeeded'
+    if (last.state === 'pending') state = 'pending'
+    else if (last.state === 'cancelled') state = i < Math.floor(n / 2) ? 'succeeded' : 'cancelled'
+    else if (failAt >= 0) state = i < failAt ? 'succeeded' : i === failAt ? 'failed' : 'pending'
+    else if (runAt >= 0) state = i < runAt ? 'succeeded' : i === runAt ? 'running' : 'pending'
+    const done = state === 'succeeded' || state === 'failed' || state === 'running'
+    return { id, name: id, state, upstream, durationSec: done ? 40 + ((i * 97 + name.length * 13) % 700) : null, node: done ? last.node : undefined, attempts: state === 'failed' ? last.attempts : 1, error: state === 'failed' ? last.error : undefined }
+  })
+  return { name, schedule: SCHEDULE[name] ?? 'manual', owner: last.owner, lastRun: { jobId: last.id, state: last.state, startedAt: last.startedAt, durationSec: last.durationSec }, tasks }
+}
+
 export const handlers = [
+  http.get('/api/pipelines', async ({ request }) => {
+    const forced = await devState(new URL(request.url))
+    if (forced && forced.status !== 200) return forced
+    const items = Object.keys(TASKS).map((name) => ({ name, lastState: pipeline(name)?.lastRun.state ?? 'pending' }))
+    return HttpResponse.json({ items })
+  }),
+  http.get('/api/pipelines/:name', async ({ params, request }) => {
+    const forced = await devState(new URL(request.url))
+    if (forced && forced.status !== 200) return forced
+    const p = pipeline(String(params.name))
+    return p ? HttpResponse.json(p) : HttpResponse.json({ message: '파이프라인을 찾을 수 없습니다' }, { status: 404 })
+  }),
   http.get('/api/overview', async ({ request }) => {
     const url = new URL(request.url)
     const forced = await devState(url)

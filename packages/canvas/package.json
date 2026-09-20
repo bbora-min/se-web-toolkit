@@ -1,7 +1,7 @@
 {
-  "name": "@se/charts",
+  "name": "@se/canvas",
   "version": "0.18.0",
-  "description": "SE 차트 — Recharts 래퍼. 토큰·아이덴티티 팔레트 자동 적용, 얇은 마크, 조용한 축",
+  "description": "SE 캔버스 — React Flow 래퍼. DAG 자동 배치, 상태색 태스크 노드, 토큰 크롬(컨트롤·미니맵)",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
@@ -13,14 +13,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "recharts": "^2.15.0"
+    "@xyflow/react": "^12.4.0"
   },
   "peerDependencies": {
+    "@se/tokens": ">=0.1.0",
     "@se/ui": ">=0.1.0",
     "react": "^18.2.0 || ^19.0.0",
     "react-dom": "^18.2.0 || ^19.0.0"
   },
   "devDependencies": {
+    "@se/tokens": "workspace:*",
     "@se/ui": "workspace:*",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
@@ -34,7 +36,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/bbora-min/se-web-toolkit.git",
-    "directory": "packages/charts"
+    "directory": "packages/canvas"
   },
   "license": "UNLICENSED"
 }

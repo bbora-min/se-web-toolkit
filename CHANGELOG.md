@@ -3,6 +3,19 @@
 툴킷(패키지 `@se/*` + 플러그인)은 **한 버전**으로 움직인다. 항목마다 세 칸: **바뀐 것** / **화면 변화**(코드는 그대로인데 보이는 게 달라지는 것) / **앱에서 할 일**(코드를 고쳐야 하는 것). 앱 담당자는 세 번째 칸만 읽어도 된다.
 버전 의미: patch = 화면 변화 없음 · minor = 추가 또는 화면 변화, 코드 수정 불필요 · major = 앱 코드를 고쳐야 함. 깨지는 변경은 한 minor 동안 옛 방식을 남기고 경고한다.
 
+## 0.18.0 — 2026-09-20
+
+**바뀐 것**
+- **캔버스 골격** — 새 패키지 **`@se/canvas`**(React Flow 래퍼, 의존성 `@xyflow/react`): `Canvas`(노드·간선·선택, 토큰 크롬, 실행 중 간선은 흐름, 실패 간선은 danger), `TaskNode`(이름 · 상태 배지 · 메타, 상태가 테두리), `dagLayout`(층 배치, dagre 없음). 앱에서 `@xyflow/react` 직접 import 는 린트가 막는다(`import-from-ui`)
+- Job Monitor 의 빈 메뉴였던 **파이프라인 `/pipelines/:name?`**: 파이프라인 6개의 태스크 DAG, 마지막 실행 기준 상태색, 오른쪽 인스펙터(선택 태스크의 사실·상류·하류·"콘솔에서 로그 보기"·실패면 "여기서부터 재시도", 선택 없으면 요약). API `usePipelines`·`usePipeline`(`GET /api/pipelines`, `/api/pipelines/:name`). 잡 콘솔이 `?q=` 로 초기 줄 필터를 받는다
+- 시각 회귀 `pipeline`. `se-ui` 선택표에 **캔버스** 행 + `patterns/canvas.md`, `PipelinePage.tsx` 동봉. Storybook `패턴/Canvas`. React 18 레인이 `@se/canvas` 도 typecheck
+
+**화면 변화**
+- Job Monitor 에 `/pipelines/*` 화면이 생긴다(기준 스크린샷 추가). 다른 화면·앱은 그대로
+
+**앱에서 할 일**
+- 없음 — `/se:upgrade` 만. 의존 맵·토폴로지가 필요하면 `@se/canvas` 를 설치하고 `PipelinePage.tsx` 를 복사한다. 앱 `app.css` 에 `@source '…/@se/canvas/src'` 를 추가해야 노드 클래스가 빌드에 들어간다
+
 ## 0.17.0 — 2026-09-20
 
 **바뀐 것**

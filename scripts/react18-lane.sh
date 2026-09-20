@@ -16,7 +16,7 @@ R=$(cd templates/app-vite-react && node -p "require('react/package.json').versio
 T=$(cd templates/app-vite-react && node -p "require('@types/react/package.json').version")
 echo "react: $R  @types/react: $T"
 [[ "$R" == 18.* && "$T" == 18.* ]] || { echo "✗ React 18 이 설치되지 않았습니다 (overrides 가 안 먹음)"; exit 1; }
-pnpm --filter @se/ui --filter @se/charts typecheck
+pnpm --filter @se/ui --filter @se/charts --filter @se/canvas typecheck
 pnpm --filter app-vite-react typecheck
 pnpm --filter app-vite-react build
 pnpm --filter app-vite-react e2e

@@ -17,6 +17,7 @@ const SOURCES: Array<{ pkg: string; index: string; dir: string; group: string; p
   { pkg: '@se/ui', index: 'packages/ui/src/index.ts', dir: 'packages/ui/src/patterns', group: '패턴', prefix: '' },
   { pkg: '@se/ui', index: 'packages/ui/src/index.ts', dir: 'packages/ui/src/signatures', group: '시그니처', prefix: '' },
   { pkg: '@se/charts', index: 'packages/charts/src/index.ts', dir: 'packages/charts/src', group: '차트', prefix: 'charts-' },
+  { pkg: '@se/canvas', index: 'packages/canvas/src/index.ts', dir: 'packages/canvas/src', group: '캔버스', prefix: 'canvas-' },
 ]
 
 /** 패키지 index.ts가 내보내는 이름만 문서화한다 — 내부 헬퍼(ChartTooltip 등)는 스킬에 노출하지 않는다 */
@@ -101,6 +102,7 @@ const EXAMPLES: Array<[string, string]> = [
   ['examples/reference-app/src/pages/jobs/JobsPage.tsx', 'reference-app/JobsPage.tsx'],
   ['examples/reference-app/src/pages/jobs/JobDetailSheet.tsx', 'reference-app/JobDetailSheet.tsx'],
   ['examples/reference-app/src/pages/jobs/JobConsolePage.tsx', 'reference-app/JobConsolePage.tsx'],
+  ['examples/reference-app/src/pages/pipelines/PipelinePage.tsx', 'reference-app/PipelinePage.tsx'],
   ['examples/reference-app/src/pages/overview/OverviewPage.tsx', 'reference-app/OverviewPage.tsx'],
   ['examples/reference-app/src/app/Shell.tsx', 'reference-app/Shell.tsx'],
   ['examples/reference-app/src/pages/signatures/SignaturesPage.tsx', 'reference-app/SignaturesPage.tsx'],

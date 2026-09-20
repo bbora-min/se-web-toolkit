@@ -10,12 +10,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@se/canvas": "workspace:*",
     "@se/charts": "workspace:*",
     "@se/tokens": "workspace:*",
     "@se/ui": "workspace:*",
+    "lucide-react": "^0.469.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "lucide-react": "^0.469.0"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^10.6.0",

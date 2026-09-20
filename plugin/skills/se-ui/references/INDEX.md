@@ -1,6 +1,6 @@
 # 컴포넌트 레퍼런스 (자동 생성 — 수정하지 말 것, `pnpm gen:skill-docs`)
 
-파일 53개 · 내보내는 컴포넌트 122개
+파일 56개 · 내보내는 컴포넌트 127개
 
 - [Alert](components/alert.md) — 컴포넌트 · 페이지 안의 안내 배너. 토스트는 "방금 일어난 일", 배너는 "지금 상태"
 - [Avatar](components/avatar.md) — 컴포넌트 · 이니셜 아바타. 사진 없는 내부 도구에 딱 필요한 만큼
@@ -55,3 +55,6 @@
 - [ChartCard · ChartLegend · BarChart · LineChart · MeterList · SeriesColor](components/charts-index.md) — 차트
 - [LineChart](components/charts-line-chart.md) — 차트 · 선 2px, 점 없음(호버 시만), 크로스헤어 툴팁
 - [MeterList](components/charts-meter-list.md) — 차트 · 미터 목록 — 순위·비율 비교. 막대 차트보다 라벨을 읽기 쉽다.
+- [Canvas](components/canvas-canvas.md) — 캔버스
+- [Canvas · TaskNode · LayoutNode](components/canvas-index.md) — 캔버스
+- [TaskNode](components/canvas-task-node.md) — 캔버스 · 태스크 노드 — 카드 한 장. 이름(mono) · 상태 배지 · 메타 한 줄. 상태가 테두리 색이 된다(Airflow 관례).

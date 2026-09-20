@@ -76,6 +76,17 @@ function overview(range: '24h' | '7d'): Overview {
     { name: 'wk-04', status: 'online' as const, cpu: 21, mem: 40, running: 1 },
     { name: 'gpu-01', status: 'online' as const, cpu: 77, mem: 83, running: 1 },
   ]
+  // 실패 원인 — 에러 문자열의 첫 단어로 묶는다(OOMKilled · Timeout · S3 · Schema …)
+  const failed = jobs.filter((j) => j.state === 'failed')
+  const byCause = new Map<string, number>()
+  for (const j of failed) {
+    const cause = (j.error ?? '알 수 없음').split(/[\s:(]/)[0] || '알 수 없음'
+    byCause.set(cause, (byCause.get(cause) ?? 0) + 1)
+  }
+  const failureCauses = [...byCause.entries()]
+    .map(([cause, count]) => ({ cause, count, share: failed.length ? Math.round((count / failed.length) * 100) : 0 }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5)
   const queueWait = hourly.map((b, i) => {
     const base = 20 + (i % 6) * 6
     const spike = i === Math.floor(n * 0.7) ? 90 : 0
@@ -88,6 +99,7 @@ function overview(range: '24h' | '7d'): Overview {
     recentFailures: jobs.filter((j) => j.state === 'failed').slice(0, 5),
     nodes,
     queueWait,
+    failureCauses,
   }
 }
 

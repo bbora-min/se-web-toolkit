@@ -38,6 +38,7 @@ export { StatusStrip, type StatusStripProps, type StripHealth } from './signatur
 export { SearchHero, type SearchHeroProps } from './signatures/search-hero'
 export { CommandPalette, useCommandPalette, type CommandGroup, type CommandItem } from './components/command-palette'
 export { IdentitySheet, useIdentityFavicon, type IdentitySheetProps } from './patterns/identity-sheet'
+export { TileGrid, Tile, type TileGridProps, type TileProps } from './patterns/tile-grid'
 export { Textarea } from './components/textarea'
 export { Checkbox, CheckboxField } from './components/checkbox'
 export { Switch, SwitchRow } from './components/switch'

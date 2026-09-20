@@ -21,8 +21,7 @@ export function App() {
                 <Route index element={<Navigate to="/datasets" replace />} />
                 <Route path="/datasets" element={<DatasetsPage />} />
                 <Route path="/datasets/:id" element={<DatasetPage />} />
-                <Route path="/domains" element={<DomainPage />} />
-                <Route path="/domains/:domain" element={<DomainPage />} />
+                <Route path="/domains/:domain?" element={<DomainPage />} />
                 {import.meta.env.DEV ? <Route path="/__identity" element={<IdentityPage />} /> : null}
                 <Route path="*" element={<Navigate to="/datasets" replace />} />
               </Route>

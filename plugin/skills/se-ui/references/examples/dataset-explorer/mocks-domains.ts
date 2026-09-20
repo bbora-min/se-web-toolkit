@@ -24,7 +24,8 @@ const OWNER_TEAM: Record<string, [string, string]> = {
 
 function sections(domain: string, ds: Dataset[]): DocSection[] {
   const first = ds[0]
-  const ids = ds.map((d) => d.id)
+  const dsIds = ds.map((d) => d.id)
+  const [team] = OWNER_TEAM[domain] ?? ['data-platform']
   const convention: Record<string, string[]> = {
     events: ['파티션은 `dt`(이벤트 발생일, KST). 적재는 매시 정각 + 20분에 직전 시간 분량이 들어와요.', '`properties` 는 이벤트별 자유 속성(JSON). 자주 쓰는 키는 컬럼으로 승격돼요 — 승격 요청은 데이터 플랫폼 채널로.', '`user_id` 는 PII 예요. 외부로 나가는 리포트엔 해시된 값을 쓰세요.'],
     dim: ['현재 값은 `valid_to IS NULL`. 특정 시점의 값은 `valid_from <= t AND (valid_to IS NULL OR t < valid_to)`.', '키가 바뀌지 않는 속성(id·created_at)은 첫 행에서, 바뀌는 속성은 유효 구간의 행에서 읽어요.', '`email` 은 PII 예요. 조인 키로만 쓰고 SELECT 하지 마세요.'],
@@ -50,11 +51,11 @@ function sections(domain: string, ds: Dataset[]): DocSection[] {
     finance: `-- 월별 정산 합계 (권한 필요)\nSELECT DATE_TRUNC(settled_at, MONTH) AS month, SUM(amount_krw)\nFROM finance.settlements\nGROUP BY 1`,
   }
   return [
-    { id: 'overview', title: '개요', blocks: [{ type: 'p', text: SUMMARY[domain]! }, { type: 'p', text: `이 도메인에는 데이터셋 ${ds.length}개가 있고, ${OWNER_TEAM[domain]![0]} 팀이 소유해요. 신선도가 지연이나 오류인 테이블은 상세 화면의 "최근 변경"을 먼저 보세요.` }] },
-    { id: 'rules', title: '적재 규약과 사용 규칙', blocks: [{ type: 'ul', items: convention[domain] ?? [] }, { type: 'callout', ...caution[domain]! }] },
-    { id: 'dictionary', title: '데이터 사전', blocks: [{ type: 'p', text: '이름을 누르면 데이터셋 상세(스키마·계보·쿼리)로 가요. 표의 신선도는 지금 값이에요.' }, { type: 'datasets', ids }, ...(first ? [{ type: 'columns' as const, dataset: first.id }] : [])] },
-    { id: 'queries', title: '자주 쓰는 쿼리', blocks: [{ type: 'code', lang: 'sql', code: query[domain]! }, { type: 'p', text: '결과를 대시보드에 붙이려면 쿼리 자체가 아니라 fct 의 집계 테이블을 참조하세요.' }] },
-    { id: 'contact', title: '문의', blocks: [{ type: 'p', text: `데이터 정의·스키마 변경 요청은 ${OWNER_TEAM[domain]![0]} 채널로, 권한은 보안팀으로. 긴급한 신선도 문제는 온콜에게.` }] },
+    { id: 'overview', title: '개요', blocks: [{ type: 'p', text: SUMMARY[domain] ?? `${domain} 도메인의 테이블이에요.` }, { type: 'p', text: `이 도메인에는 데이터셋 ${ds.length}개가 있고, ${team} 팀이 소유해요. 신선도가 지연이나 오류인 테이블은 상세 화면의 "최근 변경"을 먼저 보세요.` }] },
+    { id: 'rules', title: '적재 규약과 사용 규칙', blocks: [{ type: 'ul', items: convention[domain] ?? ['아직 적힌 규약이 없어요. 소유 팀에 물어보세요.'] }, { type: 'callout', ...(caution[domain] ?? { tone: 'info', title: '규약 확인', text: '이 도메인의 규약은 소유 팀 채널에서 확인하세요.' }) }] },
+    { id: 'dictionary', title: '데이터 사전', blocks: [{ type: 'p', text: '이름을 누르면 데이터셋 상세(스키마·계보·쿼리)로 가요. 표의 신선도는 지금 값이에요.' }, { type: 'datasets', ids: dsIds }, ...(first ? [{ type: 'columns' as const, dataset: first.id }] : [])] },
+    { id: 'queries', title: '자주 쓰는 쿼리', blocks: [{ type: 'code', lang: 'sql', code: query[domain] ?? `SELECT *\nFROM ${domain}.${first?.name.split('.')[1] ?? 'table'}\nLIMIT 100` }, { type: 'p', text: '결과를 대시보드에 붙이려면 쿼리 자체가 아니라 fct 의 집계 테이블을 참조하세요.' }] },
+    { id: 'contact', title: '문의', blocks: [{ type: 'p', text: `데이터 정의·스키마 변경 요청은 ${team} 채널로, 권한은 보안팀으로. 긴급한 신선도 문제는 온콜에게.` }] },
   ]
 }
 
@@ -74,10 +75,10 @@ export function domainDoc(id: string, datasets: Dataset[], now = Date.now()): Do
     summary: SUMMARY[id] ?? '',
     ownerTeam,
     owner,
-    updatedAt: new Date(now - (3 + ids(id)) * 86400_000).toISOString(),
-    watchers: 4 + ids(id) * 3,
+    updatedAt: new Date(now - (3 + salt(id)) * 86400_000).toISOString(),
+    watchers: 4 + salt(id) * 3,
     sections: sections(id, ds),
     datasets: ds,
   }
 }
-const ids = (s: string) => s.length % 5
+const salt = (s: string) => s.length % 5

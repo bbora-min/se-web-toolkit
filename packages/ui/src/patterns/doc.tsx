@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { ChevronRight } from 'lucide-react'
 import { cn } from '../lib/cn'
+import { useShellLayout } from './app-shell'
+import { Alert, type AlertProps } from '../components/alert'
 
 /* ──────────────────────────────────────────────────────────────
  * DocLayout · DocHeader · TreeNav · TableOfContents · Prose — 문서(document) 골격의 재료.
@@ -18,17 +20,24 @@ export interface DocLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
   tocWidth?: number
 }
 
-/** 3단 문서 레이아웃. 양옆은 헤더 아래에 붙어(sticky) 본문만 흐른다. 1024 이하에서 목차는 본문 위로 접힌다 */
-export function DocLayout({ aside, toc, asideWidth = 220, tocWidth = 200, className, children, ...props }: DocLayoutProps) {
+/** 쉘 배치별 상단 고정 높이(px) — topnav 는 헤더가 sticky(56), sidebar 는 헤더가 흐르므로 0, panes 는 main 이 스크롤 컨테이너라 0 */
+export function useStickyTop(): number {
+  const layout = useShellLayout()
+  return layout === 'topnav' ? 56 : 0
+}
+
+/** 3단 문서 레이아웃. 양옆은 붙고(sticky) 본문만 흐른다. 1024 이하에서 목차는 본문 위로 접힌다. `--doc-sticky-top` 을 자식(목차·제목 scroll-margin)이 쓴다 */
+export function DocLayout({ aside, toc, asideWidth = 220, tocWidth = 200, className, style, children, ...props }: DocLayoutProps) {
+  const top = useStickyTop()
   return (
     <div
-      className={cn('grid items-start gap-x-10 pt-6 max-lg:grid-cols-[var(--doc-aside)_minmax(0,1fr)] max-lg:gap-x-8', className)}
-      style={{ gridTemplateColumns: `${asideWidth}px minmax(0,1fr) ${tocWidth}px`, '--doc-aside': `${asideWidth}px` } as React.CSSProperties}
+      className={cn('grid grid-cols-[var(--doc-cols)] items-start gap-x-10 pt-6 max-lg:grid-cols-[var(--doc-aside)_minmax(0,1fr)] max-lg:gap-x-8', className)}
+      style={{ '--doc-cols': `${asideWidth}px minmax(0,1fr) ${tocWidth}px`, '--doc-aside': `${asideWidth}px`, '--doc-sticky-top': `${top}px`, ...style } as React.CSSProperties}
       {...props}
     >
-      {aside ? <aside className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto pb-8 pr-2">{aside}</aside> : <div />}
+      {aside ? <aside className="sticky max-h-[calc(100vh-var(--doc-sticky-top))] overflow-y-auto pb-8 pr-2" style={{ top }}>{aside}</aside> : <div />}
       <article className="flex min-w-0 flex-col pb-24">{children}</article>
-      {toc ? <nav className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto pb-8 max-lg:col-span-2 max-lg:col-start-2 max-lg:row-start-1 max-lg:static max-lg:max-h-none max-lg:pb-4" aria-label="목차">{toc}</nav> : null}
+      {toc ? <nav className="sticky max-h-[calc(100vh-var(--doc-sticky-top))] overflow-y-auto pb-8 max-lg:static max-lg:col-span-2 max-lg:col-start-2 max-lg:row-start-1 max-lg:max-h-none max-lg:pb-4" style={{ top }} aria-label="목차">{toc}</nav> : null}
     </div>
   )
 }
@@ -66,22 +75,15 @@ export function Prose({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 }
 
 export interface CalloutProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
-  tone?: 'info' | 'warning' | 'danger' | 'success'
+  tone?: AlertProps['tone']
   title?: React.ReactNode
 }
-const CALLOUT: Record<NonNullable<CalloutProps['tone']>, string> = {
-  info: 'border-info/30 bg-info-soft',
-  warning: 'border-warning/30 bg-warning-soft',
-  danger: 'border-danger/30 bg-danger-soft',
-  success: 'border-success/30 bg-success-soft',
-}
-/** 본문 속 강조 상자 — 규칙·주의·팁. 문단 사이에 하나씩, 연달아 쓰지 않는다 */
+/** 본문 속 강조 상자 — 규칙·주의·팁. `Alert` 와 같은 톤·질감에 문단 간격만. 절마다 하나씩, 연달아 쓰지 않는다 */
 export function Callout({ tone = 'info', title, className, children, ...props }: CalloutProps) {
   return (
-    <div className={cn('my-5 flex flex-col gap-1 rounded-md border px-4 py-3 text-sm leading-relaxed text-ink', CALLOUT[tone], className)} role="note" {...props}>
-      {title ? <strong className="font-semibold">{title}</strong> : null}
-      <div>{children}</div>
-    </div>
+    <Alert tone={tone} title={title} className={cn('my-5', className)} {...props}>
+      {children}
+    </Alert>
   )
 }
 
@@ -104,26 +106,30 @@ export interface TreeNavProps {
   'aria-label'?: string
 }
 
-function ancestorsOf(items: TreeItem[], id: string | null | undefined, path: string[] = []): string[] {
-  if (!id) return []
+/** id 까지의 조상 경로. 못 찾으면 null */
+function ancestorsOf(items: TreeItem[], id: string | null | undefined, path: string[] = []): string[] | null {
+  if (!id) return null
   for (const it of items) {
     if (it.id === id) return path
     if (it.children) {
       const found = ancestorsOf(it.children, id, [...path, it.id])
-      if (found.length || it.children.some((c) => c.id === id)) return found.length ? found : [...path, it.id]
+      if (found) return found
     }
   }
-  return []
+  return null
 }
+const openFor = (items: TreeItem[], id: string | null | undefined) => [...(ancestorsOf(items, id) ?? []), ...(id ? [id] : [])]
 
 /** 좌측 트리 — 묶음은 접히고, 활성 항목은 액센트. 문서 허브·데이터 사전·런북 묶음 */
 export function TreeNav({ items, activeId, onSelect, defaultExpanded, className, 'aria-label': ariaLabel = '문서' }: TreeNavProps) {
-  const [expanded, setExpanded] = React.useState<Set<string>>(() => new Set(defaultExpanded ?? [...ancestorsOf(items, activeId), ...(activeId ? [activeId] : [])]))
+  const [expanded, setExpanded] = React.useState<Set<string>>(() => new Set(defaultExpanded ?? openFor(items, activeId)))
+  // 활성 항목이 바뀔 때만 그 조상과 자기 자신을 펼친다 — 부모가 다시 그려도 사용자가 접은 건 접힌 채로
+  const itemsRef = React.useRef(items)
+  itemsRef.current = items
   React.useEffect(() => {
-    // 활성 항목이 바뀌면 그 조상과 자기 자신(묶음이면)을 펼친다
-    const open = [...ancestorsOf(items, activeId), ...(activeId ? [activeId] : [])]
+    const open = openFor(itemsRef.current, activeId)
     if (open.length) setExpanded((s) => new Set([...s, ...open]))
-  }, [items, activeId])
+  }, [activeId])
   const toggle = (id: string) => setExpanded((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
 
   const render = (list: TreeItem[], depth: number) => (
@@ -173,27 +179,31 @@ export interface TocItem {
 }
 export interface TableOfContentsProps {
   items: TocItem[]
-  /** 헤더 높이만큼 — 스크롤 감지 기준선(px). 기본 96 */
+  /** 스크롤 감지 기준선(px). 기본: 쉘의 sticky 높이 + 40 */
   offset?: number
   title?: string
   className?: string
 }
 
 /** 우측 목차 — 스크롤에 따라 현재 절이 액센트. 항목은 본문의 `id` 를 가진 제목 */
-export function TableOfContents({ items, offset = 96, title = '이 문서에서', className }: TableOfContentsProps) {
+export function TableOfContents({ items, offset, title = '이 문서에서', className }: TableOfContentsProps) {
+  const top = useStickyTop()
+  const threshold = offset ?? top + 40
+  const key = items.map((i) => i.id).join('|')
   const [active, setActive] = React.useState<string | null>(items[0]?.id ?? null)
   React.useEffect(() => {
-    const els = items.map((i) => document.getElementById(i.id)).filter((e): e is HTMLElement => Boolean(e))
+    const els = key.split('|').map((id) => document.getElementById(id)).filter((e): e is HTMLElement => Boolean(e))
     if (!els.length) return
     const onScroll = () => {
       let cur = els[0]!.id
-      for (const el of els) if (el.getBoundingClientRect().top - offset <= 0) cur = el.id
+      for (const el of els) if (el.getBoundingClientRect().top - threshold <= 0) cur = el.id
       setActive(cur)
     }
     onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [items, offset])
+    // capture: panes 배치처럼 main 이 스크롤 컨테이너여도 잡힌다
+    document.addEventListener('scroll', onScroll, { capture: true, passive: true })
+    return () => document.removeEventListener('scroll', onScroll, { capture: true })
+  }, [key, threshold])
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <div className="text-[11px] font-medium uppercase tracking-wider text-muted">{title}</div>

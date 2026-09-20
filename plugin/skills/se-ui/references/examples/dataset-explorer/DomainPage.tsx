@@ -13,6 +13,7 @@
  *  3상태      : 머리·본문 스켈레톤 / "아직 작성된 가이드가 없어요" + 첫 절 쓰기 / 원인 + 다시 시도.
  *  톤         : friendly.
  */
+import * as React from 'react'
 import { Pencil } from 'lucide-react'
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
 import { Badge, Button, Callout, DocHeader, DocLayout, EmptyState, ErrorState, Prose, Skeleton, Table, TableBody, TableCell, TableHead, TableHeader, TableOfContents, TableRow, TreeNav, formatAbsolute, formatCompact, formatRelative, toast, type TreeItem } from '@se/ui'
@@ -27,10 +28,23 @@ export function DomainPage() {
   const domains = useDomains()
   const doc = useDomain(domain)
 
-  // /domains 로 오면 첫 도메인으로
+  const toc = React.useMemo(() => doc.data?.sections.map((s) => ({ id: s.id, label: s.title })), [doc.data?.sections])
+
+  // /domains 로 오면 첫 도메인으로 — 목록이 없거나 실패하면 그것도 화면이다
   if (!domain) {
     const first = domains.data?.items[0]?.id
-    return first ? <Navigate to={`/domains/${first}${params.size ? `?${params}` : ''}`} replace /> : <div className="pt-6"><Skeleton className="h-8 w-64" /></div>
+    if (first) return <Navigate to={`/domains/${first}${params.size ? `?${params}` : ''}`} replace />
+    return (
+      <div className="pt-6">
+        {domains.isError ? (
+          <ErrorState title="도메인 목록을 불러오지 못했어요" description={domains.error.message} action={<Button onClick={() => domains.refetch()}>다시 시도</Button>} />
+        ) : domains.data ? (
+          <EmptyState title="아직 도메인이 없어요" description="데이터셋이 등록되면 도메인이 생기고, 도메인마다 가이드를 쓸 수 있어요." action={<Button asChild><Link to="/datasets">데이터셋 보기</Link></Button>} />
+        ) : (
+          <Skeleton className="h-8 w-64" />
+        )}
+      </div>
+    )
   }
 
   const tree: TreeItem[] = (domains.data?.items ?? []).map((d) => ({
@@ -41,13 +55,17 @@ export function DomainPage() {
     children: (d.id === domain ? doc.data?.datasets ?? [] : []).map((ds) => ({ id: `ds:${ds.id}`, label: <span className="font-mono text-xs">{ds.name.split('.')[1]}</span>, href: `/datasets/${ds.id}` })),
   }))
   const d = doc.data
-  const toc = d?.sections.map((s) => ({ id: s.id, label: s.title }))
 
   return (
     <DocLayout
       aside={
         domains.isPending ? (
           <div className="flex flex-col gap-2 pt-1">{Array.from({ length: 6 }, (_, i) => <Skeleton key={i} className="h-6" />)}</div>
+        ) : domains.isError ? (
+          <div className="flex flex-col gap-2 pt-1 text-xs text-muted">
+            <span>도메인 목록을 불러오지 못했어요</span>
+            <Button variant="secondary" size="sm" onClick={() => domains.refetch()}>다시 시도</Button>
+          </div>
         ) : (
           <TreeNav aria-label="도메인" items={tree} activeId={domain} onSelect={(it) => navigate(it.href ?? '/domains')} />
         )

@@ -66,6 +66,24 @@ export interface QueuePoint {
   p50: number
   p95: number
 }
+/** 파이프라인의 태스크 — DAG 의 노드. 상태는 마지막 실행 기준 */
+export interface PipelineTask {
+  id: string
+  name: string
+  state: JobState
+  upstream: string[]
+  durationSec: number | null
+  node?: string
+  attempts: number
+  error?: string
+}
+export interface Pipeline {
+  name: string
+  schedule: string
+  owner: string
+  lastRun: { jobId: string; state: JobState; startedAt: string; durationSec: number | null }
+  tasks: PipelineTask[]
+}
 export interface FailureCause {
   cause: string
   count: number

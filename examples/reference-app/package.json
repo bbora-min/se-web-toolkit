@@ -13,6 +13,7 @@
     "e2e:visual:update": "playwright test --update-snapshots"
   },
   "dependencies": {
+    "@se/canvas": "workspace:*",
     "@se/charts": "workspace:*",
     "@se/tokens": "workspace:*",
     "@se/ui": "workspace:*",

@@ -10,6 +10,7 @@
 | `packages/tokens` | `@se/tokens` — 브랜드 코어(고정) + `createTheme(identity)`, Vite 플러그인, Tailwind v4 매핑 | P1 ✓ |
 | `packages/ui` | `@se/ui` — shadcn/Radix 관례의 React 컴포넌트 50개, AppShell, 시그니처 5종(`/__signatures` 갤러리) | ✓ |
 | `packages/charts` | `@se/charts` — Recharts 래퍼 (ChartCard·Bar·Line·MeterList) | ✓ |
+| `packages/canvas` | `@se/canvas` — React Flow 래퍼 (Canvas·TaskNode·dagLayout). 파이프라인 DAG·의존 맵 | ✓ |
 | `packages/eslint-plugin` | `@se/eslint-plugin` — 규칙 5개, recommended/library 설정 | ✓ |
 | `packages/upgrade` | `@se/upgrade` — 앱의 `@se/*` 참조를 새 태그로: CHANGELOG '앱에서 할 일' → 참조 교체 → install·typecheck·lint. `/se:upgrade` 와 `upgrade-apps` 워크플로가 쓴다 | ✓ |
 | `packages/codemods` | `@se/codemods` — MUI·antd·raw 컨트롤·Tailwind 팔레트 → `@se/ui`·토큰 (jscodeshift, `/se:adopt` 4단계가 먼저 돌림) | ✓ |

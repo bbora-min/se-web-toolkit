@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
-import type { ClusterSummary, Job, JobState, Overview } from './types'
+import type { ClusterSummary, Job, JobState, Overview, Pipeline } from './types'
 
 export interface JobFilters {
   q?: string
@@ -46,6 +46,20 @@ export function useJobs(filters: JobFilters, opts: { enabled?: boolean; refetchI
   })
 }
 
+/** 파이프라인 목록(이름·마지막 실행) */
+export function usePipelines() {
+  return useQuery({ queryKey: ['pipelines'], queryFn: () => api<{ items: Array<{ name: string; lastState: JobState }> }>('/pipelines'), staleTime: 30_000 })
+}
+/** 파이프라인 하나 — 태스크 DAG. 마지막 실행이 실행 중이면 5초마다 */
+export function usePipeline(name: string | undefined) {
+  return useQuery({
+    queryKey: ['pipelines', name],
+    queryFn: () => api<Pipeline>(`/pipelines/${name}`),
+    enabled: Boolean(name),
+    refetchInterval: (q) => (q.state.data?.lastRun.state === 'running' ? 5_000 : false),
+  })
+}
+
 /** 잡 하나 — 콘솔 화면. 실행 중이면 5초마다 */
 export function useJob(id: string | undefined) {
   return useQuery({
@@ -69,7 +83,7 @@ export function useBulkJobs() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (d: { ids: string[]; action: 'retry' | 'cancel' }) => api<{ affected: number }>('/jobs/bulk', { method: 'POST', body: JSON.stringify(d) }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
+    onSuccess: () => { void qc.invalidateQueries({ queryKey: jobKeys.all }); void qc.invalidateQueries({ queryKey: ['pipelines'] }) },
   })
 }
 
@@ -85,7 +99,7 @@ export function useRetryJob() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api<Job>(`/jobs/${id}/retry`, { method: 'POST' }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
+    onSuccess: () => { void qc.invalidateQueries({ queryKey: jobKeys.all }); void qc.invalidateQueries({ queryKey: ['pipelines'] }) },
   })
 }
 
@@ -93,7 +107,7 @@ export function useCancelJob() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api<Job>(`/jobs/${id}/cancel`, { method: 'POST' }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: jobKeys.all }),
+    onSuccess: () => { void qc.invalidateQueries({ queryKey: jobKeys.all }); void qc.invalidateQueries({ queryKey: ['pipelines'] }) },
   })
 }
 

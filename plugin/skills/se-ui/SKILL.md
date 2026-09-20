@@ -15,7 +15,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 ## 규칙 — 1–3은 `@se/eslint-plugin`이 error로 막고, 4–5는 warn(템플릿의 `lint`는 `--max-warnings=0`이라 역시 실패)
 1. **색은 토큰 클래스만.** `bg-canvas` `bg-surface` `bg-surface-2` `text-ink` `text-muted` `border-line` `border-line-strong` `bg-accent` `text-on-accent` `text-accent-fg` `bg-accent-soft` `text-success|warning|danger|info` `bg-*-soft` `text-on-danger|warning|success|info`(의미 색 블록 위 글자) `bg-chart-1..8`. hex·rgb·Tailwind 기본 팔레트(`bg-blue-500`) 금지. 서비스 색은 `se.identity.json`이 정한다 — 코드에서 고르지 않는다.
 2. **폼 컨트롤·표·다이얼로그는 `@se/ui`.** raw `<button> <input> <select> <textarea> <table>` 금지.
-3. **기반 라이브러리 직접 import 금지.** `@radix-ui/*` `cmdk` `sonner` `recharts` `@tanstack/react-table` → 항상 `@se/ui`·`@se/charts`를 거친다.
+3. **기반 라이브러리 직접 import 금지.** `@radix-ui/*` `cmdk` `sonner` `recharts` `@tanstack/react-table` `@xyflow/react` → 항상 `@se/ui`·`@se/charts`·`@se/canvas`를 거친다.
 4. **한 화면에 `variant="primary"` Button은 하나.** 주 액션이 둘이면 둘 다 아니다. 린터는 파일 단위로만 보므로 여러 파일이 한 라우트를 이룰 땐 직접 확인한다. `variant="danger"` 는 파괴적 액션(삭제·종결·강제 중단)에만 — "등록 버튼을 빨갛게" 처럼 색 요청이 의미와 어긋나면 그대로 하지 말고 되묻는다(강조가 목적이면 primary 가 이미 이 서비스의 색이다). 주 액션을 danger 로 바꾸면 화면에서 primary 가 사라진다.
 5. **모든 목록은 3상태.** `DataTable`에 `loading`(스켈레톤)·`error`(원인+다시 시도)·`empty`(다음 행동 버튼). 빈 상태는 "없음"이 아니라 "다음에 무엇을 할지".
 
@@ -35,9 +35,10 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 | 하나씩 처리하는 큐 — 받은 편지함·승인 대기·인시던트 | **트리아지** | **TriagePage** | `references/examples/release-desk/ApprovalsPage.tsx` (SplitPane 3단 · j/k · 결정 뒤 다음) | `references/patterns/triage.md` |
 | 로그·트레이스·빌드 출력 — 수천 줄에서 빨간 줄 찾기 | **콘솔** | **ConsolePage** | `references/examples/reference-app/JobConsolePage.tsx` (패싯 · 줄 필터 · LogViewer 라이브 테일 · 컨텍스트) | `references/patterns/console.md` |
 | "언제"가 질문 — 배포 창·온콜·배치 스케줄·프리즈 | **일정** | **SchedulePage** | `references/examples/release-desk/CalendarPage.tsx` (월 격자 · 프리즈 빗금 · 고른 날 목록) | `references/patterns/schedule.md` |
+| 관계가 정보 — 파이프라인 DAG·의존 맵·토폴로지 | **캔버스** | **CanvasPage** | `references/examples/reference-app/PipelinePage.tsx` (`@se/canvas` Canvas · 인스펙터 · 상태색 노드) | `references/patterns/canvas.md` |
 | 검색이 전부인 목록 | 원장 | ListDetail + `SearchHero` | `references/examples/dataset-explorer/DatasetsPage.tsx` | — |
 
-골격이 위 표에 없으면(캔버스·대화) 툴킷의 다음 버전에서 원본이 생긴다 — 그 전엔 `AppShell layout` 과 있는 컴포넌트로 페이지 안에 만들고 보고한다. 있는 원장 원본을 억지로 쓰지 않는다.
+골격이 위 표에 없으면(대화) 툴킷의 다음 버전에서 원본이 생긴다 — 그 전엔 `AppShell layout` 과 있는 컴포넌트로 페이지 안에 만들고 보고한다. 있는 원장 원본을 억지로 쓰지 않는다.
 
 원본 파일 상단의 `디자인 플랜` 주석까지 읽는다 — 왜 그렇게 놓았는지가 거기 있다. 쉘·목·훅의 원본은 `references/examples/reference-app/{Shell.tsx,mocks-handlers.ts,api-jobs.ts}`. (동봉본은 툴킷의 `examples/`에서 자동 복사된다 — 어느 폴더에서 열어도 있다)
 

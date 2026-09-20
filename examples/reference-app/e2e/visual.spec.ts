@@ -11,6 +11,7 @@ const SCREENS = [
   { name: 'jobs-error', path: '/jobs?__state=error' },
   { name: 'job-console', path: '/jobs/demo-failed/logs' },
   { name: 'job-console-live', path: '/jobs/demo-running/logs' },
+  { name: 'pipeline', path: '/pipelines/etl-daily' },
   { name: 'identity', path: '/__identity' },
   { name: 'signatures', path: '/__signatures' },
 ]

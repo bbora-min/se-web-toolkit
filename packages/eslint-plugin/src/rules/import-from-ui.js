@@ -6,6 +6,7 @@ const BLOCKED = [
   { test: (s) => s === 'recharts', alt: '@se/charts' },
   { test: (s) => s === '@tanstack/react-table', alt: '@se/ui (DataTable)' },
   { test: (s) => s === '@tanstack/react-virtual', alt: '@se/ui (LogViewer)' },
+  { test: (s) => s === '@xyflow/react' || s === 'reactflow', alt: '@se/canvas (Canvas · TaskNode · dagLayout)' },
 ]
 
 /** @type {import('eslint').Rule.RuleModule} */

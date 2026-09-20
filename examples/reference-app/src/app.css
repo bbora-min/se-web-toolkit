@@ -3,3 +3,4 @@
 @import '@se/ui/styles.css';
 @source '../../../packages/ui/src';
 @source '../../../packages/charts/src';
+@source '../../../packages/canvas/src';

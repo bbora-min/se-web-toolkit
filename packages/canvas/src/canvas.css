@@ -1,0 +1,9 @@
+/* @se/canvas — React Flow 크롬을 토큰으로. 라이트·다크·아이덴티티를 자동으로 따른다 */
+.se-canvas .react-flow__controls { box-shadow: none; border: 1px solid var(--se-line); border-radius: 6px; overflow: hidden; background: var(--se-surface); }
+.se-canvas .react-flow__controls-button { background: var(--se-surface); border-bottom: 1px solid var(--se-line); color: var(--se-ink); width: 28px; height: 28px; }
+.se-canvas .react-flow__controls-button:hover { background: var(--se-surface-2); }
+.se-canvas .react-flow__controls-button svg { fill: currentColor; max-width: 12px; max-height: 12px; }
+.se-canvas .react-flow__minimap { border: 1px solid var(--se-line); border-radius: 6px; }
+.se-canvas .react-flow__edge-path { stroke: var(--se-line-strong); }
+.se-canvas .react-flow__node { font-family: inherit; }
+.se-canvas .react-flow__handle { border-width: 1px; }

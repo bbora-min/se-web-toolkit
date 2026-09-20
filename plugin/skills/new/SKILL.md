@@ -12,11 +12,12 @@ argument-hint: "<kebab-id> [--name '표시 이름']"
 ## 절차
 1. **아이덴티티 먼저** — 인터뷰 5문항(서비스가 하는 일 / 주 사용자와 사용 순간 / 분위기 3단어 / 닮으면 안 되는 형제 / 가장 중요한 화면). 답으로 시그니처·톤·밀도·hue 후보 2–3안을 한 줄씩 보여주고 고르게 한다
    - 시그니처: 모니터링(지금 괜찮은가) → `status-strip`, 조회·탐색(무엇을 찾나) → `search-hero`, 승인·단계(어디까지 왔나) → `stage-rail`, 활동·이력(최근 무슨 일이) → `timeline-ribbon`, 비용·사용량·품질(얼마인가) → `metric-marquee`. 형제가 이미 쓰는 것은 피한다
+   - 쉘 배치: 목록·대시보드 → `sidebar`, 입구·콘솔 → `topnav`, 트리아지·로그 → `panes`. 형제가 둘 이상 쓰는 배치는 피한다(CLI 가 경고)
    - 톤: 운영 도구 → `terse`, 탐색 도구 → `friendly`, 승인·규정 → `procedural`
    - hue: 의미 색(30·70·155·260°)과 18° 이상. 형제(팀의 다른 서비스)를 사용자가 말해주면 그 hue와 30° 이상. 모르면 CLI가 가장 먼 값을 고른다
 2. **생성** — 어디서든 한 줄:
    ```
-   pnpm dlx "github:bbora-min/se-web-toolkit#path:packages/create-se-app" <id> --name "…" --hue … --signature … --tone … --density … --subtitle "…" [--dir .]
+   pnpm dlx "github:bbora-min/se-web-toolkit#path:packages/create-se-app" <id> --name "…" --hue … --signature … --shell … --tone … --density … --subtitle "…" [--dir .]
    ```
    (툴킷 모노레포 안이라면 `node packages/create-se-app/bin/create-se-app.mjs …` — `examples/<id>`에 생기고 레지스트리에 등록된다.)
    `@se/*`는 git 태그에서 설치된다(`github:bbora-min/se-web-toolkit#v<CLI 버전>&path:packages/*` — 이후 갱신은 `/se:upgrade`) — 첫 설치 1–2분. pnpm이 없으면 `corepack enable pnpm`

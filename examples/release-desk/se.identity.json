@@ -6,6 +6,7 @@
   "accent": { "hue": 235 },
   "neutralBias": "neutral",
   "signature": "stage-rail",
+  "shell": "sidebar",
   "density": "comfortable",
   "displayFont": "pretendard",
   "chart": "accent-sequential",

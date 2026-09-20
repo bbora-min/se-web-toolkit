@@ -8,5 +8,5 @@
 | prop | 타입 | 기본 | 설명 |
 |---|---|---|---|
 | `identity` **필수** | `{ accent: { hue: number; }; name: string; id: string; mark: { type: "monogram"; text: s…` |  |  |
-| `siblings` | `{ id: string; name: string; hue: number; signature: string; }[]` |  | 레지스트리의 형제들 — 가족 초상화 |
+| `siblings` | `RegistryEntry[]` |  | 레지스트리의 형제들 — 가족 초상화 |
 | `signaturePreview` | `ReactNode` |  | 이 서비스의 시그니처를 실제 컴포넌트로 렌더한 것 |

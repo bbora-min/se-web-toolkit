@@ -3,6 +3,21 @@
 툴킷(패키지 `@se/*` + 플러그인)은 **한 버전**으로 움직인다. 항목마다 세 칸: **바뀐 것** / **화면 변화**(코드는 그대로인데 보이는 게 달라지는 것) / **앱에서 할 일**(코드를 고쳐야 하는 것). 앱 담당자는 세 번째 칸만 읽어도 된다.
 버전 의미: patch = 화면 변화 없음 · minor = 추가 또는 화면 변화, 코드 수정 불필요 · major = 앱 코드를 고쳐야 함. 깨지는 변경은 한 minor 동안 옛 방식을 남기고 경고한다.
 
+## 0.10.0 — 2026-09-20
+
+**바뀐 것**
+- **골격(archetype) 축** — 세 예제가 "색만 다르고 골격은 하나"(사이드바 · 제목 · 띠 · 필터 · 표)라는 진단(DESIGN §3.2). 쉘 배치를 서비스 슬롯으로 내리고, 페이지 골격(원장·보드·관측 벽·문서·허브·트리아지·콘솔·일정)을 화면의 첫 결정으로 둔다. 골격별 원본은 다음 릴리스부터 하나씩(0.11.0 허브 · 0.12.0 관측 벽 · 0.13.0 보드 · 0.14.0 문서)
+- `se.identity.json` 에 **`shell`** 슬롯(`sidebar` 기본 · `topnav` · `panes`). 스키마·`parseIdentity`·`identity.schema.json`. 레지스트리(`identities/registry.json`)에 `shell` 열 — **같은 배치가 셋 이상이면 `check-identity` 가 경고**(`MAX_SAME_SHELL = 2`). `create-se-app --shell`
+- `AppShell` **`layout`** prop — `sidebar`(지금 그대로) · `topnav`(상단 한 줄 네비, 사이드바 없음, 활성 항목 액센트 밑줄, 크레딧은 푸터) · `panes`(56px 아이콘 레일 + 전폭 콘텐츠, 패딩·최대 폭 없음, `NavItem label=` 이 툴팁). `NavItem`·`NavSection` 이 배치에 맞춰 모양을 바꾼다(`useShellLayout`). `ThemeToggle compact`(버튼 하나로 순환)
+- `IdentitySheet` 에 쉘 배치 표시(히어로 한 줄 · 슬롯 9개 · 가족 카드). Storybook AppShell 스토리에 상단 네비·패널
+- 스킬: `se-design` 플랜 첫 줄이 **골격**, 정보 설계 첫 항목 "골격이 첫 결정", 루브릭 개성 항목에 "형제와 골격이 같고 색만 다르면 7점 이하" · `se-ui` 선택표에 골격 열, 절차 3 "고른 골격의 원본 구조 유지", 쉘 절 `layout={identity.shell}` · `identity` 슬롯 9개, 같은 배치 둘까지 · `new --shell` · `se-design-critic` 6번 골격 판단
+
+**화면 변화**
+- `/__identity` 시트에 쉘 배치 줄·행이 생긴다(레퍼런스 앱 3개 기준 스크린샷 갱신). 그 외 화면은 그대로 — 기존 앱은 전부 `sidebar` 이고 `layout` 기본값이라 픽셀 변화 없음
+
+**앱에서 할 일**
+- 없음 — `/se:upgrade` 만. 배치를 바꾸려면 `se.identity.json` 의 `shell` 과 `Shell.tsx` 의 `<AppShell layout={parseIdentity(identity).shell}>` 을 함께(`panes` 는 `NavItem label=` 추가). 다음 `/se:identity` 가 형제와 겹치지 않는 배치를 제안한다
+
 ## 0.9.0 — 2026-09-15
 
 **바뀐 것**

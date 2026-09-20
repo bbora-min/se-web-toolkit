@@ -12,7 +12,7 @@ argument-hint: "<화면 이름>"
 1. **디자인 플랜** — `se-design` 스킬 1절의 10줄을 먼저 쓴다. 파일 상단 주석이 된다
 2. **패턴 원본을 연다** — `se-ui` 스킬의 선택표에서 원본(`se-ui/references/examples/…`, 플러그인에 동봉)을 읽는다. 골격은 `references/patterns/<pattern>.md`
 3. **데이터 층**: `src/api/types.ts`에 타입, `src/api/<domain>.ts`에 `useQuery` 훅(필터·page·sort는 URL 파라미터 그대로), `src/mocks/handlers.ts`에 목 핸들러(`?__state=empty|error|slow` 지원, 서버 페이지네이션·counts)
-4. **화면**: `src/pages/<domain>/<Name>Page.tsx`. 원본을 복사해 컬럼·필터·액션만 바꾼다. 골격(제목 → 시그니처 → 탭 → 필터 → 표 → 상세)은 유지. 시그니처는 `se.identity.json`의 것
+4. **화면**: `src/pages/<domain>/<Name>Page.tsx`. 플랜의 골격에 맞는 원본을 복사해 컬럼·필터·액션만 바꾼다. 원본의 구조(원장이면 제목 → 시그니처 → 탭 → 필터 → 표 → 상세)는 유지. 시그니처는 `se.identity.json`의 것
 5. **등록**: `App.tsx` Route, `Shell.tsx` NAV와 커맨드 팔레트 그룹, `e2e/screens.spec.ts` 화면 목록(기본·empty·error)
 6. `pnpm typecheck && pnpm lint` — 통과할 때까지
 7. **스크린샷 1회**: `pnpm e2e` 또는 Playwright로 1440·1024, 라이트·다크, empty·error를 찍고 `se-design` 6절 루브릭으로 스스로 채점. 7점 미만 항목은 고치고 다시 찍는다

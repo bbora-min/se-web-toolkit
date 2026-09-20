@@ -2,7 +2,11 @@ import * as React from 'react'
 import { Database, LayoutGrid, Monitor, Moon, Palette, Rows3, ShieldAlert, Star, Sun, Tags, Users } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { AppShell, Avatar, Badge, NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
+import { parseIdentity } from '@se/tokens'
 import identity from '../../se.identity.json'
+
+/** 스키마 기본값(shell 등)이 채워진 아이덴티티 */
+const ID = parseIdentity(identity)
 import { useDatasets } from '../api/datasets'
 
 const NAV = [
@@ -55,6 +59,7 @@ export function Shell() {
 
   return (
     <AppShell
+      layout={ID.shell}
       name={identity.name}
       mark={<LayoutGrid className="size-4" />}
       subtitle="warehouse · bigquery-prod"

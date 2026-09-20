@@ -4,7 +4,11 @@ import { Activity, GitBranch, LayoutDashboard, ListChecks, Monitor, Moon, Palett
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { AppShell, Avatar, NavItem, NavSection, StatusBadge, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
+import { parseIdentity } from '@se/tokens'
 import identity from '../../se.identity.json'
+
+/** 스키마 기본값(shell 등)이 채워진 아이덴티티 */
+const ID = parseIdentity(identity)
 import { useJobs } from '../api/jobs'
 
 const NAV = [
@@ -60,6 +64,7 @@ export function Shell() {
 
   return (
     <AppShell
+      layout={ID.shell}
       name={identity.name}
       mark={identity.mark.text}
       subtitle="production · ap-northeast-2"

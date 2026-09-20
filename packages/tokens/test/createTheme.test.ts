@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createTheme, hueDistance, themeToCss, contrast, MIN_HUE_DISTANCE } from '../src'
+import { createTheme, hueDistance, themeToCss, contrast, checkRegistry, parseIdentity, MIN_HUE_DISTANCE } from '../src'
 
 const base = {
   id: 'job-monitor',
@@ -67,5 +67,21 @@ describe('hueDistance', () => {
   it('형제 서비스 최소 거리', () => {
     expect(hueDistance(195, 220)).toBeLessThan(MIN_HUE_DISTANCE)
     expect(hueDistance(195, 150)).toBeGreaterThanOrEqual(MIN_HUE_DISTANCE)
+  })
+})
+
+describe('checkRegistry — 쉘 배치', () => {
+  const svc = (id: string, hue: number, shell?: string) => ({ id, name: id, hue, signature: id, shell })
+  it('shell 이 없으면 sidebar 로 본다', () => {
+    expect(parseIdentity({ id: 'a-b', name: 'A', mark: { type: 'monogram', text: 'A' }, accent: { hue: 195 }, signature: 'status-strip' }).shell).toBe('sidebar')
+  })
+  it('같은 쉘 배치가 셋 이상이면 경고한다', () => {
+    const issues = checkRegistry([svc('a', 0), svc('b', 100), svc('c', 200)])
+    expect(issues.filter((i) => i.level === 'warn' && /쉘 배치/.test(i.message))).toHaveLength(1)
+    expect(issues.some((i) => i.level === 'error')).toBe(false)
+  })
+  it('배치가 갈리면 경고하지 않는다', () => {
+    const issues = checkRegistry([svc('a', 0), svc('b', 100), svc('c', 200, 'topnav')])
+    expect(issues.filter((i) => /쉘 배치/.test(i.message))).toHaveLength(0)
   })
 })

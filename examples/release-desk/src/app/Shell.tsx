@@ -11,10 +11,11 @@ import identity from '../../se.identity.json'
 const ID = parseIdentity(identity)
 import { useReleases } from '../api/releases'
 import { StageBadge } from '../pages/releases/bits'
+import { isMyTurn } from '../lib/workflow'
 
 const NAV = [
   { to: '/releases', label: '릴리스', icon: <Rocket /> },
-  { to: '/releases?mine=1', label: '내 승인 대기', icon: <ClipboardCheck /> },
+  { to: '/approvals', label: '내 승인 대기', icon: <ClipboardCheck /> },
   { to: '/calendar', label: '배포 캘린더', icon: <CalendarClock /> },
   { to: '/history', label: '이력', icon: <History /> },
 ]
@@ -25,7 +26,7 @@ export function Shell() {
   const { setMode, setDensity, density } = useTheme()
   const list = useReleases({})
   useIdentityFavicon(identity as Parameters<typeof useIdentityFavicon>[0])
-  const pendingForMe = list.data?.items.filter((r) => r.approvers.some((a) => a.name === 'bora' && a.decision === 'pending')).length ?? 0
+  const pendingForMe = list.data?.items.filter((r) => isMyTurn(r)).length ?? 0
 
   const command: CommandGroup[] = React.useMemo(
     () => [
@@ -33,7 +34,7 @@ export function Shell() {
         heading: '액션',
         items: [
           { id: 'new', label: '새 릴리스 등록', icon: <Plus />, hint: 'N', onSelect: () => navigate('/releases/new') },
-          { id: 'mine', label: '내 승인 대기 보기', icon: <ClipboardCheck />, onSelect: () => navigate('/releases?mine=1') },
+          { id: 'mine', label: '내 승인 대기 보기', icon: <ClipboardCheck />, hint: '트리아지', onSelect: () => navigate('/approvals') },
           { id: 'settings', label: '설정', icon: <Settings />, onSelect: () => navigate('/settings') },
           { id: 'density', label: `밀도: ${density === 'compact' ? 'comfortable' : 'compact'}로`, onSelect: () => setDensity(density === 'compact' ? 'comfortable' : 'compact') },
           { id: 'dark', label: '테마: 다크', onSelect: () => setMode('dark') },
@@ -82,7 +83,7 @@ export function Shell() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>bora@se · platform</DropdownMenuLabel>
-            <DropdownMenuItem onSelect={() => navigate('/releases?mine=1')}>
+            <DropdownMenuItem onSelect={() => navigate('/approvals')}>
               <ClipboardCheck /> 내 승인 대기 <span className="ml-auto rounded-full bg-accent-soft px-1.5 text-xs text-accent-fg tnum">{pendingForMe}</span>
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => navigate('/settings')}><Settings /> 설정</DropdownMenuItem>
@@ -98,13 +99,13 @@ export function Shell() {
             {NAV.map((n) => {
               // 쿼리까지 포함해 비교 — "/releases"와 "/releases?mine=1"은 다른 화면
               const [path, qs = ''] = n.to.split('?')
-              const active = pathname === path && (qs ? search.includes(qs) : !search.includes('mine=1'))
+              const active = path === '/approvals' ? pathname.startsWith('/approvals') : pathname === path && (qs ? search.includes(qs) : !search.includes('mine=1'))
               return (
                 <NavItem key={n.to} asChild active={active}>
                   <Link to={n.to}>
                     {n.icon}
                     <span className="flex-1 truncate">{n.label}</span>
-                    {n.to.includes('mine') && pendingForMe ? <span className="text-xs text-accent-fg tnum">{pendingForMe}</span> : null}
+                    {n.to === '/approvals' && pendingForMe ? <span className="text-xs text-accent-fg tnum">{pendingForMe}</span> : null}
                   </Link>
                 </NavItem>
               )

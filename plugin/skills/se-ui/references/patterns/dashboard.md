@@ -6,7 +6,7 @@
 
 ## 골격
 ```
-<div -mx-6 xl:-mx-8 px-6 xl:px-8 bg-canvas border-t flex-col gap-3>   ← 쉘 패딩을 무르고 전폭. 바탕은 canvas(원장은 surface)
+<ShellFill className="bg-canvas border-t px-6 xl:px-8 gap-3">        ← 쉘 패딩을 무르고 전폭(배치별 값은 쉘이 안다). 바탕은 canvas(원장은 surface)
   <h1 sr-only />
   <툴바 h-9>  [범위 라벨] [기간 Select] [자동 갱신 · n분 전 갱신] … [목록 링크들]   ← 제목 대신. 기간 하나가 벽 전체를 바꾼다
   <시그니처 full />                                                    ← 상태 블록(단색 액센트) + 스탯 4개. 벽에서도 첫 줄

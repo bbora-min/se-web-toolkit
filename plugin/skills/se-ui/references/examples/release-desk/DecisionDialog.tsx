@@ -9,6 +9,7 @@ import {
 } from '@se/ui'
 import { useDecide } from '../../api/releases'
 import type { Release } from '../../api/types'
+import { decisionBlocker, requiredMissing } from '../../lib/workflow'
 
 const schema = z
   .object({
@@ -22,21 +23,28 @@ const schema = z
 type Values = z.infer<typeof schema>
 
 /** 승인/반려 — 반려에는 사유가 필수. 위험 릴리스는 체크리스트 완료를 요구한다 */
-export function DecisionDialog({ release, onClose }: { release: Release | null; onClose: () => void }) {
+export function DecisionDialog({ release, onClose, onDecided, defaultDecision = 'approved' }: { release: Release | null; onClose: () => void; /** 결정이 실제로 저장된 뒤 — 닫기(취소)와 구분한다 */ onDecided?: (decision: 'approved' | 'rejected') => void; defaultDecision?: 'approved' | 'rejected' }) {
   const decide = useDecide(release?.id ?? '')
-  const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { decision: 'approved', comment: '' } })
+  const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { decision: defaultDecision, comment: '' } })
   React.useEffect(() => {
-    if (release) form.reset({ decision: 'approved', comment: '' })
-  }, [release, form])
-  const missing = release?.checklist.filter((c) => c.required && !c.done) ?? []
+    if (release) form.reset({ decision: defaultDecision, comment: '' })
+  }, [release, form, defaultDecision])
+  const missing = release ? release.checklist.filter((c) => c.required && !c.done) : []
   const decision = form.watch('decision')
 
   const submit = form.handleSubmit(async (v) => {
     if (!release) return
+    // 승인 가능 여부는 트리아지·상세와 같은 규칙(lib/workflow)
+    if (v.decision === 'approved') {
+      const why = decisionBlocker(release)
+      if (why) return void toast.error(why)
+    }
     await decide.mutateAsync({ decision: v.decision, comment: v.comment || undefined })
     toast[v.decision === 'approved' ? 'success' : 'error'](v.decision === 'approved' ? '승인되었습니다' : '반려되었습니다', { description: `${release.version} · ${release.title}` })
+    onDecided?.(v.decision)
     onClose()
   })
+  void requiredMissing
 
   return (
     <Dialog open={Boolean(release)} onOpenChange={(o) => !o && onClose()}>

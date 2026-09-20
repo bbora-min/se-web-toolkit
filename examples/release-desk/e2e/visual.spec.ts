@@ -9,6 +9,8 @@ const SCREENS = [
   { name: 'releases-board', path: '/releases?view=board' },
   { name: 'releases-empty', path: '/releases?__state=empty' },
   { name: 'releases-error', path: '/releases?__state=error' },
+  { name: 'approvals', path: '/approvals' },
+  { name: 'approvals-empty', path: '/approvals?__state=empty' },
   { name: 'new-release', path: '/releases/new' },
   { name: 'settings', path: '/settings' },
   { name: 'identity', path: '/__identity' },

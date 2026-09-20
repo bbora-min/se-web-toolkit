@@ -333,6 +333,27 @@ export function NavSection({ title, children }: { title?: string; children: Reac
   )
 }
 
+export interface ShellFillProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** true 면 남은 화면 높이에 고정(트리아지·콘솔 — 칸마다 스크롤). false 면 폭만 전폭(관측 벽) */
+  fixed?: boolean
+}
+
+const FILL: Record<ShellLayout, { bleed: string; fixed: string }> = {
+  sidebar: { bleed: '-mx-6 -mb-16 xl:-mx-8', fixed: 'h-[calc(100vh-3.5rem)]' },
+  topnav: { bleed: '-mx-6 -mb-16 xl:-mx-8', fixed: 'h-[calc(100vh-3.5rem)]' },
+  panes: { bleed: '', fixed: 'h-full' },
+}
+
+/**
+ * 쉘 콘텐츠 영역의 패딩·최대 폭을 무르고 전폭으로 — 관측 벽·트리아지·콘솔처럼 "페이지"가 아닌 골격.
+ * 배치별 패딩 값은 여기 한 곳에만 있다. 페이지가 `-mx-6` 같은 쉘 내부 값을 적지 않는다.
+ */
+export function ShellFill({ fixed, className, ...props }: ShellFillProps) {
+  const layout = useShellLayout()
+  const f = FILL[layout]
+  return <div className={cn('flex min-h-0 min-w-0 flex-col', f.bleed, fixed ? f.fixed : 'flex-1', className)} {...props} />
+}
+
 /** 페이지 상단: 제목 + 설명 + 우측 액션. */
 export function PageHeader({
   title,

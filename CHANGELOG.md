@@ -3,6 +3,21 @@
 툴킷(패키지 `@se/*` + 플러그인)은 **한 버전**으로 움직인다. 항목마다 세 칸: **바뀐 것** / **화면 변화**(코드는 그대로인데 보이는 게 달라지는 것) / **앱에서 할 일**(코드를 고쳐야 하는 것). 앱 담당자는 세 번째 칸만 읽어도 된다.
 버전 의미: patch = 화면 변화 없음 · minor = 추가 또는 화면 변화, 코드 수정 불필요 · major = 앱 코드를 고쳐야 함. 깨지는 변경은 한 minor 동안 옛 방식을 남기고 경고한다.
 
+## 0.15.0 — 2026-09-20
+
+**바뀐 것**
+- **트리아지(3단) 골격** — Release Desk "내 승인 대기"가 `/releases?mine=1`(표) 에서 **`/approvals/:id?`** 로: 목록 | 본문 | 속성. 선택은 URL, `j`/`k`(↑↓) 이동·`Enter` 상세, 승인(primary, 바로)·반려(사유 다이얼로그), 결정하면 다음 항목으로. 필수 체크리스트가 남으면 승인 비활성 + 이유 한 줄. 화면 높이에 고정, 칸마다 스크롤, 폭 1440
+- `@se/ui` **`SplitPane`** — 가로 분할(왼쪽·가운데·오른쪽), 손잡이 끌기·키보드(←→), `storageKey` 로 폭 기억, 1024 이하 오른쪽 접힘. **`ShellFill`** — 쉘 패딩·최대 폭을 무르는 전폭 컨테이너(`fixed` 면 화면 높이) — 관측 벽·트리아지가 쉘 내부 값을 적지 않는다
+- Release Desk `lib/workflow` 에 `isMyTurn`·`requiredMissing`·`decisionBlocker` — 상세·보드·트리아지·다이얼로그·쉘 카운트가 같은 규칙. `DecisionDialog onDecided`(취소와 구분)·`defaultDecision`
+- 시각 회귀에 `approvals`·`approvals-empty`. 쉘 네비·팔레트·사용자 메뉴의 "내 승인 대기"가 `/approvals` 로
+- 스킬: `se-ui` 선택표에 **트리아지** 행, `references/patterns/triage.md`, `ApprovalsPage.tsx` 동봉. Storybook `패턴/SplitPane`
+
+**화면 변화**
+- Release Desk 에 `/approvals` 화면이 생기고 네비의 "내 승인 대기"가 그리로 간다(기준 스크린샷 추가). `?mine=1` 표는 남아 있다. 다른 화면·앱은 그대로
+
+**앱에서 할 일**
+- 없음 — `/se:upgrade` 만. 받은 편지함·인시던트 큐가 필요하면 `ApprovalsPage.tsx` 를 복사하고 결정 액션만 바꾼다
+
 ## 0.14.0 — 2026-09-20
 
 **바뀐 것**

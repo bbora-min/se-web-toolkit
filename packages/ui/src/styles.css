@@ -38,3 +38,26 @@
 .se-service-mark { background: var(--se-mark-bg); color: var(--se-mark-fg) }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .se-service-mark { background: var(--se-mark-bg-dark); color: var(--se-mark-fg-dark) } }
 :root[data-theme="dark"] .se-service-mark { background: var(--se-mark-bg-dark); color: var(--se-mark-fg-dark) }
+
+/* Prose — 문서 골격의 본문 타이포. 클래스 없이 h2/p/ul/code/pre/table 이 토큰으로 꾸며진다 */
+.se-prose { max-width: 68ch; font-size: 15px; line-height: 1.7; color: var(--se-ink); }
+.se-prose > section + section { margin-top: 2.5rem; }
+.se-prose h2 { margin: 0 0 .75rem; font-size: 20px; line-height: 1.3; font-weight: 600; letter-spacing: -0.01em; scroll-margin-top: calc(var(--doc-sticky-top, 0px) + 1.5rem); }
+.se-prose h3 { margin: 1.5rem 0 .5rem; font-size: 16px; line-height: 1.4; font-weight: 600; scroll-margin-top: calc(var(--doc-sticky-top, 0px) + 1.5rem); }
+.se-prose p { margin: 0 0 1rem; }
+.se-prose ul, .se-prose ol { margin: 0 0 1rem; padding-left: 1.25rem; }
+.se-prose ul { list-style: disc; }
+.se-prose ol { list-style: decimal; }
+.se-prose li { margin: 0 0 .35rem; }
+.se-prose li::marker { color: var(--se-muted); }
+.se-prose a { color: var(--se-accent-fg); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in oklab, var(--se-accent-fg) 40%, transparent); }
+.se-prose a:hover { text-decoration-color: var(--se-accent-fg); }
+.se-prose strong { font-weight: 600; }
+.se-prose code { font-family: var(--se-font-mono); font-size: 13px; padding: .1em .35em; border-radius: 4px; background: var(--se-surface-2); }
+.se-prose pre { margin: 0 0 1rem; padding: .875rem 1rem; overflow-x: auto; border: 1px solid var(--se-line); border-radius: 6px; background: var(--se-canvas); font-size: 13px; line-height: 1.6; }
+.se-prose pre code { padding: 0; background: none; }
+.se-prose blockquote { margin: 0 0 1rem; padding-left: 1rem; border-left: 2px solid var(--se-line-strong); color: var(--se-muted); }
+.se-prose hr { margin: 2rem 0; border: 0; border-top: 1px solid var(--se-line); }
+.se-prose-table { margin: 0 0 1.25rem; font-size: 13.5px; }
+.se-prose-table a { text-decoration: none; }
+.se-prose-table a:hover { text-decoration: underline; }

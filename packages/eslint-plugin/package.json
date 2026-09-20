@@ -1,6 +1,6 @@
 {
   "name": "@se/eslint-plugin",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "SE 디자인 시스템 규칙 — 문서가 아니라 린터가 지킨다",
   "type": "module",
   "main": "./src/index.js",

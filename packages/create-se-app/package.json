@@ -1,6 +1,6 @@
 {
   "name": "create-se-app",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "SE Web Toolkit 템플릿으로 새 내부 도구를 만든다 — pnpm dlx github:bbora-min/se-web-toolkit#path:packages/create-se-app <id>",
   "type": "module",
   "bin": {

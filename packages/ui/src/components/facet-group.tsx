@@ -25,6 +25,7 @@ export interface FacetGroupProps {
 const TONE: Record<NonNullable<FacetOption['tone']>, string> = { default: 'text-ink', success: 'text-success', warning: 'text-warning', danger: 'text-danger', info: 'text-info' }
 
 export function FacetGroup({ title, options, values, onChange, className }: FacetGroupProps) {
+  const uid = React.useId()
   const toggle = (v: string) => onChange(values.includes(v) ? values.filter((x) => x !== v) : [...values, v])
   return (
     <section className={cn('flex flex-col gap-1', className)}>
@@ -35,10 +36,10 @@ export function FacetGroup({ title, options, values, onChange, className }: Face
       <ul className="flex flex-col">
         {options.map((o) => {
           const on = values.includes(o.value)
-          const id = `facet-${title}-${o.value}`
+          const id = `${uid}-${o.value.replace(/\s+/g, '_')}`
           return (
             <li key={o.value} className={cn('group flex h-7 items-center gap-2 rounded-md px-2 text-[13px] hover:bg-surface-2', o.count === 0 && 'opacity-50')}>
-              <Checkbox id={id} checked={on} onCheckedChange={() => toggle(o.value)} aria-label={String(o.label ?? o.value)} />
+              <Checkbox id={id} checked={on} onCheckedChange={() => toggle(o.value)} />
               <label htmlFor={id} className={cn('min-w-0 flex-1 cursor-pointer truncate font-mono text-xs', on ? TONE[o.tone ?? 'default'] : 'text-ink/80')}>{o.label ?? o.value}</label>
               {o.count !== undefined ? (
                 <button

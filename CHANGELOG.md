@@ -12,7 +12,7 @@
 - 스킬: `se-ui` 선택표에 **콘솔** 행, `references/patterns/console.md`, `JobConsolePage.tsx` 동봉
 
 **화면 변화**
-- Job Monitor 에 `/jobs/:id/logs` 화면이 생기고 잡 드로어 로그 탭 옆에 "콘솔" 버튼(기준 스크린샷 추가 — 드로어는 목록 스크린샷에 없어 그대로). 다른 화면·앱은 그대로
+- Job Monitor 에 `/jobs/:id/logs` 화면이 생기고 잡 드로어 로그 탭 옆에 "콘솔" 버튼(기준 스크린샷 추가). `SplitPane` 오른쪽 칸이 1280 미만에서 접히므로 Release Desk `/approvals` 1024 기준 스크린샷도 갱신. 그 외는 그대로
 
 **앱에서 할 일**
 - 없음 — `/se:upgrade` 만. 빌드·트레이스 화면이 필요하면 `JobConsolePage.tsx` 를 복사하고 줄 파싱을 백엔드로 옮긴다

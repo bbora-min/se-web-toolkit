@@ -3,7 +3,19 @@ import type { ClusterSummary, Job, Overview } from '../api/types'
 import { makeJobs, makeLogs } from './data'
 
 let jobs: Job[] = makeJobs()
-const resolveJob = (id: string) => (id === 'demo-failed' ? jobs.find((x) => x.state === 'failed') : id === 'demo-running' ? jobs.find((x) => x.state === 'running') : jobs.find((x) => x.id === id))
+/** 시연 별칭은 처음 해석한 잡에 고정된다 — 재시도로 상태가 바뀌어도 다른 잡으로 튀지 않는다 */
+const aliasPins = new Map<string, string>()
+function resolveJob(id: string): Job | undefined {
+  if (id === 'demo-failed' || id === 'demo-running') {
+    const pinned = aliasPins.get(id)
+    const j = (pinned ? jobs.find((x) => x.id === pinned) : undefined) ?? jobs.find((x) => x.state === (id === 'demo-failed' ? 'failed' : 'running'))
+    if (j) aliasPins.set(id, j.id)
+    return j
+  }
+  return jobs.find((x) => x.id === id)
+}
+/** 라이브 데모의 로그는 자라지 않는다 — 스크린샷이 매번 같아야 한다 */
+const demoLogs = new Map<string, string[]>()
 
 /** 결정적 시계열 — 현재값으로 끝나는 24포인트 */
 function series(end: number, spread: number, seed: number): number[] {
@@ -151,10 +163,17 @@ export const handlers = [
     if (!j) return HttpResponse.json({ message: '잡을 찾을 수 없습니다' }, { status: 404 })
     return HttpResponse.json(j)
   }),
-  http.get('/api/jobs/:id/logs', async ({ params }) => {
+  http.get('/api/jobs/:id/logs', async ({ params, request }) => {
     await delay(150)
-    const j = resolveJob(String(params.id))
+    const forced = await devState(new URL(request.url))
+    if (forced && forced.status !== 200) return forced
+    const id = String(params.id)
+    const j = resolveJob(id)
     if (!j) return HttpResponse.json({ message: '잡을 찾을 수 없습니다' }, { status: 404 })
+    if (id.startsWith('demo-')) {
+      if (!demoLogs.has(id)) demoLogs.set(id, makeLogs(j))
+      return HttpResponse.json({ lines: demoLogs.get(id), live: j.state === 'running' })
+    }
     return HttpResponse.json({ lines: makeLogs(j), live: j.state === 'running' })
   }),
   http.post('/api/jobs/bulk', async ({ request }) => {

@@ -26,8 +26,9 @@ export const jobKeys = {
   summary: ['jobs', 'summary'] as const,
 }
 
-export function useJobs(filters: JobFilters) {
+export function useJobs(filters: JobFilters, opts: { enabled?: boolean; refetchInterval?: number | false } = {}) {
   return useQuery({
+    enabled: opts.enabled ?? true,
     queryKey: jobKeys.list(filters),
     queryFn: () => {
       const p = new URLSearchParams()
@@ -41,7 +42,7 @@ export function useJobs(filters: JobFilters) {
       const qs = p.toString()
       return api<JobList>(`/jobs${qs ? `?${qs}` : ''}`)
     },
-    refetchInterval: 15_000,
+    refetchInterval: opts.refetchInterval ?? 15_000,
     placeholderData: (prev) => prev,
   })
 }

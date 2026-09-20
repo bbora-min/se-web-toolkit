@@ -61,3 +61,8 @@
 .se-prose-table { margin: 0 0 1.25rem; font-size: 13.5px; }
 .se-prose-table a { text-decoration: none; }
 .se-prose-table a:hover { text-decoration: underline; }
+
+/* CalendarGrid — 구간(프리즈·점검) 빗금. 색은 토큰 변수만 */
+.se-cal-span-warning { background-image: repeating-linear-gradient(135deg, var(--se-status-warning-soft) 0 4px, transparent 4px 11px); }
+.se-cal-span-danger { background-image: repeating-linear-gradient(135deg, var(--se-status-danger-soft) 0 4px, transparent 4px 11px); }
+.se-cal-span-neutral { background-image: repeating-linear-gradient(135deg, var(--se-surface-2) 0 4px, transparent 4px 11px); }

@@ -42,6 +42,8 @@ export { IdentitySheet, useIdentityFavicon, type IdentitySheetProps } from './pa
 export { TileGrid, Tile, type TileGridProps, type TileProps } from './patterns/tile-grid'
 export { DocLayout, DocHeader, Prose, Callout, TreeNav, TableOfContents, useStickyTop, type DocLayoutProps, type DocHeaderProps, type CalloutProps, type TreeItem, type TreeNavProps, type TocItem, type TableOfContentsProps } from './patterns/doc'
 export { SplitPane, type SplitPaneProps } from './patterns/split-pane'
+export { ymd, parseLocal, dayOf, addDays, isValidYmd } from './lib/date'
+export { CalendarGrid, monthDays, type CalendarGridProps, type CalendarEvent, type CalendarSpan, type CalendarTone } from './patterns/calendar-grid'
 export { Board, BoardColumn, BoardCard, type BoardProps, type BoardColumnProps, type BoardCardProps } from './patterns/board'
 export { Textarea } from './components/textarea'
 export { Checkbox, CheckboxField } from './components/checkbox'

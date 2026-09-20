@@ -1,7 +1,7 @@
 {
   "name": "se-web-toolkit",
   "private": true,
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "SE 내부 엔지니어링 도구용 디자인 시스템 + Claude Code 플러그인",
   "packageManager": "pnpm@9.15.4",
   "engines": {

@@ -46,6 +46,26 @@ export interface Release {
   notifySlack: boolean
 }
 
+/** 캘린더 한 달 — 배포 창과 프리즈 구간. 격자가 이웃 달 며칠을 보여 주므로 앞뒤 일주일을 더 준다 */
+export interface CalendarWindow {
+  releaseId: string
+  version: string
+  title: string
+  service: string
+  type: ReleaseType
+  stage: StageId
+  risk: Risk
+  owner: string
+  from: string
+  to: string
+  blocked?: string
+}
+export interface CalendarMonth {
+  month: string
+  windows: CalendarWindow[]
+  freezes: Array<{ from: string; to: string; reason: string }>
+}
+
 export interface ReleaseDraft {
   service: string
   version: string

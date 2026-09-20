@@ -1,7 +1,8 @@
 import { Avatar, Badge, Tooltip, TooltipContent, TooltipTrigger, cn } from '@se/ui'
 import { STAGES, type Approver, type ReleaseType, type Risk, type StageId } from '../../api/types'
 
-const STAGE_TONE: Record<StageId, 'neutral' | 'info' | 'warning' | 'accent' | 'success'> = {
+/** 단계의 의미 색 — 배지·캘린더 칩·보드가 같은 값 */
+export const STAGE_TONE: Record<StageId, 'neutral' | 'info' | 'warning' | 'accent' | 'success'> = {
   draft: 'neutral', review: 'info', staging: 'warning', approval: 'accent', deploy: 'accent', done: 'success',
 }
 export function StageBadge({ stage, blocked }: { stage: StageId; blocked?: string }) {

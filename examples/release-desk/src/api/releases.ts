@@ -35,7 +35,7 @@ export function useReleases(f: ReleaseFilters) {
 }
 /** 배포 캘린더 한 달("YYYY-MM") */
 export function useCalendar(month: string) {
-  return useQuery({ queryKey: ['calendar', month], queryFn: () => api<CalendarMonth>(`/calendar?month=${month}`), placeholderData: (prev) => prev })
+  return useQuery({ queryKey: ['releases', 'calendar', month], queryFn: () => api<CalendarMonth>(`/calendar?month=${month}`), placeholderData: (prev) => prev })
 }
 
 export function useRelease(id: string | undefined) {

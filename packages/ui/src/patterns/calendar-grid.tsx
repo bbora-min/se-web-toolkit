@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { cn } from '../lib/cn'
+import { addDays, dayOf, parseLocal, ymd } from '../lib/date'
 
 /* ──────────────────────────────────────────────────────────────
  * CalendarGrid — 일정(schedule) 골격의 재료. 월 격자(7열 × 5–6주)에 이벤트 칩과 구간(프리즈·점검) 빗금.
@@ -52,10 +53,12 @@ const CHIP: Record<CalendarTone, string> = {
   info: 'bg-info-soft text-info',
   neutral: 'bg-surface-2 text-ink/80',
 }
-const SPAN: Record<NonNullable<CalendarSpan['tone']>, string> = { warning: 'se-cal-span-warning', danger: 'se-cal-span-danger', neutral: 'se-cal-span-neutral' }
-
-export const ymd = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-const dayOf = (iso: string) => ymd(new Date(iso))
+const SPAN: Record<NonNullable<CalendarSpan['tone']>, { bg: string; text: string }> = {
+  warning: { bg: 'se-cal-span-warning', text: 'text-warning' },
+  danger: { bg: 'se-cal-span-danger', text: 'text-danger' },
+  neutral: { bg: 'se-cal-span-neutral', text: 'text-muted' },
+}
+export { ymd }
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
 
 /** 월의 격자에 놓일 날짜들 — 일요일 시작, 앞뒤는 이웃 달로 채운다 */
@@ -76,16 +79,22 @@ export function CalendarGrid({ month, events, spans = [], selected, onSelectDay,
   const byDay = React.useMemo(() => {
     const map = new Map<string, Array<{ ev: CalendarEvent; first: boolean }>>()
     for (const ev of events) {
-      const a = new Date(dayOf(ev.from))
-      const b = new Date(dayOf(ev.to ?? ev.from))
-      for (let d = new Date(a); d <= b; d.setDate(d.getDate() + 1)) {
+      const a = parseLocal(dayOf(ev.from))
+      const b = parseLocal(dayOf(ev.to ?? ev.from))
+      const firstKey = ymd(a)
+      for (let d = a; d <= b; d = addDays(d, 1)) {
         const k = ymd(d)
-        map.set(k, [...(map.get(k) ?? []), { ev, first: k === ymd(a) }])
+        let list = map.get(k)
+        if (!list) map.set(k, (list = []))
+        list.push({ ev, first: k === firstKey })
       }
     }
     return map
   }, [events])
-  const spanFor = (k: string) => spans.find((s) => k >= dayOf(s.from) && k <= dayOf(s.to))
+  // 구간은 날짜 문자열로 한 번만 — 칸마다 Date 를 만들지 않는다
+  const spanRanges = React.useMemo(() => spans.map((s) => ({ s, from: dayOf(s.from), to: dayOf(s.to) })), [spans])
+  const spanFor = (k: string) => spanRanges.find((r) => k >= r.from && k <= r.to)?.s
+  const weeks = React.useMemo(() => Array.from({ length: days.length / 7 }, (_, w) => days.slice(w * 7, w * 7 + 7)), [days])
 
   return (
     <div className={cn('flex flex-col overflow-hidden rounded-lg border border-line bg-surface', className)} role="grid" aria-label={`${y}년 ${m}월`}>
@@ -94,8 +103,10 @@ export function CalendarGrid({ month, events, spans = [], selected, onSelectDay,
           <div key={w} role="columnheader" className={cn('px-2 py-1.5 text-[11px] font-medium', i === 0 ? 'text-danger/80' : i === 6 ? 'text-info/80' : 'text-muted')}>{w}</div>
         ))}
       </div>
-      <div className="grid grid-cols-7 auto-rows-[minmax(96px,1fr)]">
-        {days.map((d, i) => {
+      {weeks.map((week, wi) => (
+      <div key={wi} className="grid grid-cols-7 auto-rows-[minmax(96px,1fr)]" role="row">
+        {week.map((d, di) => {
+          const i = wi * 7 + di
           const k = ymd(d)
           const inMonth = d.getMonth() === m - 1
           const isToday = k === todayKey
@@ -110,12 +121,16 @@ export function CalendarGrid({ month, events, spans = [], selected, onSelectDay,
               aria-selected={isSel}
               tabIndex={onSelectDay ? 0 : undefined}
               onClick={() => onSelectDay?.(k)}
-              onKeyDown={(e) => { if (onSelectDay && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onSelectDay(k) } }}
+              onKeyDown={(e) => {
+                // 칩(버튼)에서 올라온 Enter 는 칩의 것
+                if (e.target !== e.currentTarget) return
+                if (onSelectDay && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onSelectDay(k) }
+              }}
               className={cn(
                 'relative flex min-w-0 flex-col gap-1 border-b border-line p-1.5 text-left transition-colors',
                 i % 7 !== 6 && 'border-r',
                 !inMonth && 'bg-canvas/60 text-muted',
-                span && SPAN[span.tone ?? 'warning'],
+                span && SPAN[span.tone ?? 'warning'].bg,
                 onSelectDay && 'cursor-pointer hover:bg-surface-2/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent',
                 isSel && 'ring-2 ring-inset ring-accent',
               )}
@@ -123,7 +138,7 @@ export function CalendarGrid({ month, events, spans = [], selected, onSelectDay,
             >
               <div className="flex items-center justify-between">
                 <span className={cn('grid size-5 place-items-center rounded-full text-[11px] tnum', isToday ? 'bg-accent font-semibold text-on-accent' : dow === 0 && inMonth ? 'text-danger/80' : dow === 6 && inMonth ? 'text-info/80' : inMonth ? 'text-ink' : 'text-muted')}>{d.getDate()}</span>
-                {span && (k === dayOf(span.from) || dow === 0) ? <span className="truncate text-[10px] text-warning">{span.label}</span> : null}
+                {span && (k === dayOf(span.from) || dow === 0) ? <span className={cn('truncate text-[10px]', SPAN[span.tone ?? 'warning'].text)}>{span.label}</span> : null}
               </div>
               <div className="flex min-w-0 flex-col gap-0.5">
                 {list.slice(0, maxChips).map(({ ev, first }) => (
@@ -143,6 +158,7 @@ export function CalendarGrid({ month, events, spans = [], selected, onSelectDay,
           )
         })}
       </div>
+      ))}
     </div>
   )
 }

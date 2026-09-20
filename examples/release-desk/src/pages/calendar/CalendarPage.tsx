@@ -15,13 +15,10 @@
 import * as React from 'react'
 import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
-import { Avatar, Badge, Button, CalendarGrid, EmptyState, ErrorState, PageBody, PageHeader, Skeleton, formatAbsolute, ymd, type CalendarEvent, type CalendarSpan } from '@se/ui'
+import { Avatar, Badge, Button, CalendarGrid, EmptyState, ErrorState, PageBody, PageHeader, Skeleton, dayOf, formatAbsolute, isValidYmd, parseLocal, ymd, type CalendarEvent, type CalendarSpan } from '@se/ui'
 import { useCalendar } from '../../api/releases'
-import type { CalendarWindow, StageId } from '../../api/types'
-import { RiskLabel, StageBadge, TypeBadge } from '../releases/bits'
-
-/** 단계 → 칩 색. StageBadge 와 같은 의미 색을 쓴다 */
-const STAGE_TONE: Record<StageId, 'neutral' | 'info' | 'warning' | 'accent' | 'success'> = { draft: 'neutral', review: 'info', staging: 'warning', approval: 'accent', deploy: 'accent', done: 'success' }
+import type { CalendarWindow } from '../../api/types'
+import { RiskLabel, STAGE_TONE, StageBadge, TypeBadge } from '../releases/bits'
 const timeFmt = new Intl.DateTimeFormat('ko-KR', { hour: '2-digit', minute: '2-digit' })
 const dayFmt = new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' })
 const monthLabel = (ym: string) => { const [y, m] = ym.split('-'); return `${y}년 ${Number(m)}월` }
@@ -31,8 +28,11 @@ export function CalendarPage() {
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const today = ymd(new Date())
-  const month = /^\d{4}-\d{2}$/.test(params.get('month') ?? '') ? params.get('month')! : today.slice(0, 7)
-  const selected = params.get('day') ?? (today.startsWith(month) ? today : `${month}-01`)
+  // URL 값은 검증한다 — 잘못된 날짜로 Intl 이 던지면 화면이 통째로 비니까
+  const monthParam = params.get('month') ?? ''
+  const month = isValidYmd(`${monthParam}-01`) ? monthParam : today.slice(0, 7)
+  const dayParam = params.get('day')
+  const selected = isValidYmd(dayParam) ? dayParam : today.startsWith(month) ? today : `${month}-01`
   const set = (patch: Record<string, string>) => {
     const next = new URLSearchParams(params)
     for (const [k, v] of Object.entries(patch)) v ? next.set(k, v) : next.delete(k)
@@ -47,8 +47,10 @@ export function CalendarPage() {
     [d?.windows],
   )
   const spans: CalendarSpan[] = React.useMemo(() => (d?.freezes ?? []).map((f, i) => ({ id: `f${i}`, from: f.from, to: f.to, label: '프리즈', tone: 'warning' as const })), [d?.freezes])
-  const dayWindows = (d?.windows ?? []).filter((w) => ymd(new Date(w.from)) <= selected && ymd(new Date(w.to)) >= selected)
-  const freezeOfDay = (d?.freezes ?? []).find((f) => ymd(new Date(f.from)) <= selected && ymd(new Date(f.to)) >= selected)
+  const dayWindows = (d?.windows ?? []).filter((w) => dayOf(w.from) <= selected && dayOf(w.to) >= selected)
+  const freezeOfDay = (d?.freezes ?? []).find((f) => dayOf(f.from) <= selected && dayOf(f.to) >= selected)
+  /** 창이 프리즈 시각과 실제로 겹치는가 — 날이 아니라 시각으로 */
+  const overlapsFreeze = (w: CalendarWindow) => (d?.freezes ?? []).some((f) => Date.parse(w.from) < Date.parse(f.to) && Date.parse(w.to) > Date.parse(f.from))
 
   return (
     <PageBody>
@@ -86,17 +88,17 @@ export function CalendarPage() {
 
           <aside className="flex flex-col gap-3">
             <div className="flex items-baseline justify-between">
-              <h2 className="text-sm font-semibold text-ink">{dayFmt.format(new Date(`${selected}T00:00:00`))}</h2>
+              <h2 className="text-sm font-semibold text-ink">{dayFmt.format(parseLocal(selected))}</h2>
               <span className="text-xs text-muted tnum">{cal.isPending ? '' : `${dayWindows.length}건`}</span>
             </div>
-            {freezeOfDay ? <p className="rounded-md border border-warning/30 bg-warning-soft px-3 py-2 text-xs text-ink">프리즈 — {freezeOfDay.reason}. 이 기간의 배포 창은 승인되지 않습니다.</p> : null}
+            {freezeOfDay ? <p className="rounded-md border border-warning/30 bg-warning-soft px-3 py-2 text-xs text-ink">이날 일부 시간은 프리즈({timeFmt.format(new Date(freezeOfDay.from))} 부터) — {freezeOfDay.reason}. 겹치는 창은 승인되지 않습니다.</p> : null}
             {cal.isPending ? (
               <div className="flex flex-col gap-2">{Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-16 rounded-md" />)}</div>
             ) : dayWindows.length === 0 ? (
               <EmptyState title="배포 창이 없습니다" description="이날 잡힌 배포 창이 없습니다. 다른 날을 누르거나 릴리스에서 창을 잡으십시오." action={<Button asChild variant="secondary"><Link to="/releases/new">새 릴리스</Link></Button>} />
             ) : (
               <ul className="flex flex-col gap-2">
-                {dayWindows.map((w) => <WindowCard key={w.releaseId} w={w} />)}
+                {dayWindows.map((w) => <WindowCard key={w.releaseId} w={w} frozen={overlapsFreeze(w)} />)}
               </ul>
             )}
           </aside>
@@ -106,13 +108,14 @@ export function CalendarPage() {
   )
 }
 
-function WindowCard({ w }: { w: CalendarWindow }) {
+function WindowCard({ w, frozen }: { w: CalendarWindow; frozen: boolean }) {
   return (
     <li>
       <Link to={`/releases/${w.releaseId}`} className="group flex flex-col gap-1.5 rounded-md border border-line bg-surface p-3 transition-colors hover:border-line-strong">
         <span className="flex items-center gap-2">
           <span className="font-mono text-[13px] text-ink">{w.version}</span>
           <TypeBadge type={w.type} />
+          {frozen ? <Badge tone="warning">프리즈 겹침</Badge> : null}
           <ArrowUpRight className="ml-auto size-3.5 text-muted opacity-0 transition-opacity group-hover:opacity-100" aria-hidden />
         </span>
         <span className="truncate text-[13px] text-ink/85">{w.title}</span>

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '../lib/cn'
+import { addDays, ymd } from '../lib/date'
 import { Button } from './button'
 import { Popover, PopoverContent, PopoverTrigger } from './popover'
 
@@ -11,12 +12,11 @@ export interface DateRange {
   to: ISODate
 }
 
-const fmt = (d: Date): ISODate => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+const fmt = ymd
 const parse = (s: ISODate) => {
   const [y, m, d] = s.split('-').map(Number)
   return new Date(y!, m! - 1, d!)
 }
-const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n)
 const today = () => fmt(new Date())
 
 export const RANGE_PRESETS: Array<{ id: string; label: string; range: () => DateRange }> = [

@@ -45,6 +45,15 @@
       "signature": "timeline-ribbon",
       "shell": "topnav",
       "neutralBias": "warm"
+    },
+    {
+      "id": "se-toolkit",
+      "name": "SE Web Toolkit",
+      "monogram": "SWT",
+      "hue": 130,
+      "signature": "metric-marquee",
+      "shell": "topnav",
+      "neutralBias": "neutral"
     }
   ]
 }

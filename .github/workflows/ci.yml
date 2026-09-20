@@ -19,7 +19,7 @@ jobs:
       - run: pnpm check-identity
       - run: pnpm check:skill-docs        # 스킬 문서가 코드와 어긋나면 실패
       - run: pnpm check:release           # 버전 한 값 · 코드 변경 시 버전·CHANGELOG 필수
-      - run: pnpm -r --filter './examples/*' --filter './templates/*' build
+      - run: pnpm -r --filter './examples/*' --filter './templates/*' --filter se-site build
       - run: pnpm build:storybook          # 스토리가 컴파일되는지
 
   visual:
@@ -37,7 +37,7 @@ jobs:
       - run: pnpm visual
       - if: failure()
         uses: actions/upload-artifact@v4
-        with: { name: visual-diff, path: examples/*/test-results, retention-days: 7 }
+        with: { name: visual-diff, path: '{examples,apps/site}/**/test-results', retention-days: 7 }
 
   react18:
     # peer "^18.2 || ^19" 를 실제로 검증 — 18 로 강제 설치해 @se/ui·charts typecheck, 템플릿 앱 typecheck·build·e2e

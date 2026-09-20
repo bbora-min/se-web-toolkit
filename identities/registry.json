@@ -51,6 +51,17 @@
       "neutralBias": "warm",
       "path": "examples/se-home",
       "note": "허브 골격의 원본 — 형제 전부의 입구"
+    },
+    {
+      "id": "se-toolkit",
+      "name": "SE Web Toolkit",
+      "monogram": "SWT",
+      "hue": 130,
+      "signature": "metric-marquee",
+      "shell": "topnav",
+      "neutralBias": "neutral",
+      "path": "apps/site",
+      "note": "툴킷 사이트 — GitHub Pages 루트. 예제가 아니라 툴킷 자신의 얼굴"
     }
   ]
 }

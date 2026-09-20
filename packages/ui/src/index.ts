@@ -69,3 +69,4 @@ export { LogViewer, LOG_LEVEL_RE, type LogViewerProps } from './components/log-v
 export { parseAnsi, stripAnsi, type AnsiSpan } from './lib/ansi'
 export { formatRelative, formatAbsolute, formatDuration, formatCompact, formatBytes } from './lib/format'
 export { createApiClient, hasForcedState, ApiError, type ApiClientOptions } from './lib/api'
+export { restoreDeepLink, routerBasename, DEEP_LINK_KEY } from './lib/spa'

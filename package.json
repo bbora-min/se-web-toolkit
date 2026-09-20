@@ -1,7 +1,7 @@
 {
   "name": "se-web-toolkit",
   "private": true,
-  "version": "0.19.0",
+  "version": "0.20.0",
   "description": "SE 내부 엔지니어링 도구용 디자인 시스템 + Claude Code 플러그인",
   "packageManager": "pnpm@9.15.4",
   "engines": {
@@ -22,8 +22,10 @@
     "gen:design-pdf": "node scripts/gen-design-pdf.mjs",
     "storybook": "pnpm --filter se-storybook dev",
     "build:storybook": "pnpm --filter se-storybook build",
-    "visual": "pnpm -r --filter './examples/*' run e2e:visual",
-    "visual:update": "pnpm -r --filter './examples/*' run e2e:visual:update"
+    "site": "pnpm --filter se-site dev",
+    "build:pages": "node scripts/build-pages.mjs",
+    "visual": "pnpm -r --filter './examples/*' --filter se-site run e2e:visual",
+    "visual:update": "pnpm -r --filter './examples/*' --filter se-site run e2e:visual:update"
   },
   "devDependencies": {
     "@se/eslint-plugin": "workspace:*",

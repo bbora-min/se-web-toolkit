@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Database, LayoutGrid, Monitor, Moon, Palette, Rows3, ShieldAlert, Star, Sun, Tags, Users } from 'lucide-react'
+import { Database, LayoutGrid, MessageCircleQuestion, Monitor, Moon, Palette, Rows3, ShieldAlert, Star, Sun, Tags, Users } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { AppShell, Avatar, Badge, NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
 import { parseIdentity } from '@se/tokens'
@@ -12,6 +12,7 @@ import { useDatasets } from '../api/datasets'
 const NAV = [
   { to: '/datasets', label: '데이터셋', icon: <Database /> },
   { to: '/domains', label: '도메인', icon: <LayoutGrid /> },
+  { to: '/ask', label: '질문', icon: <MessageCircleQuestion /> },
   { to: '/owners', label: '소유자', icon: <Users /> },
   { to: '/tags', label: '태그', icon: <Tags /> },
 ]

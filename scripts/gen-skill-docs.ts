@@ -114,6 +114,8 @@ const EXAMPLES: Array<[string, string]> = [
   ['examples/dataset-explorer/src/pages/datasets/DatasetPage.tsx', 'dataset-explorer/DatasetPage.tsx'],
   ['examples/dataset-explorer/src/pages/domains/DomainPage.tsx', 'dataset-explorer/DomainPage.tsx'],
   ['examples/dataset-explorer/src/mocks/domains.ts', 'dataset-explorer/mocks-domains.ts'],
+  ['examples/dataset-explorer/src/pages/ask/AskPage.tsx', 'dataset-explorer/AskPage.tsx'],
+  ['examples/dataset-explorer/src/mocks/ask.ts', 'dataset-explorer/mocks-ask.ts'],
   ['examples/release-desk/src/pages/releases/ReleasesPage.tsx', 'release-desk/ReleasesPage.tsx'],
   ['examples/release-desk/src/pages/releases/ReleasePage.tsx', 'release-desk/ReleasePage.tsx'],
   ['examples/release-desk/src/pages/releases/NewReleasePage.tsx', 'release-desk/NewReleasePage.tsx'],

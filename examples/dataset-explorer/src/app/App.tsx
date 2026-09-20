@@ -6,6 +6,7 @@ import { Shell } from './Shell'
 import { DatasetsPage } from '../pages/datasets/DatasetsPage'
 import { DatasetPage } from '../pages/datasets/DatasetPage'
 import { DomainPage } from '../pages/domains/DomainPage'
+import { AskPage } from '../pages/ask/AskPage'
 import { IdentityPage } from '../pages/identity/IdentityPage'
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: (n) => !hasForcedState() && n < 1, staleTime: 5_000 } } })
@@ -22,6 +23,7 @@ export function App() {
                 <Route path="/datasets" element={<DatasetsPage />} />
                 <Route path="/datasets/:id" element={<DatasetPage />} />
                 <Route path="/domains/:domain?" element={<DomainPage />} />
+                <Route path="/ask/:threadId?" element={<AskPage />} />
                 {import.meta.env.DEV ? <Route path="/__identity" element={<IdentityPage />} /> : null}
                 <Route path="*" element={<Navigate to="/datasets" replace />} />
               </Route>

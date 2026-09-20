@@ -39,6 +39,14 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .se-service-mark { background: var(--se-mark-bg-dark); color: var(--se-mark-fg-dark) } }
 :root[data-theme="dark"] .se-service-mark { background: var(--se-mark-bg-dark); color: var(--se-mark-fg-dark) }
 
+/* 스트리밍 커서(Message streaming) — 마지막 글 끝에 붙는다. 자식이 인라인이면 바로 뒤, 블록(Prose p·pre)이면 가장 안쪽 마지막 블록 끝(4단계까지) */
+.se-caret:not(:has(*))::after,
+.se-caret > :last-child:not(:has(*))::after,
+.se-caret > :last-child > :last-child:not(:has(*))::after,
+.se-caret > :last-child > :last-child > :last-child:not(:has(*))::after,
+.se-caret > :last-child > :last-child > :last-child > :last-child:not(:has(*))::after { content: ''; display: inline-block; width: 2px; height: 1em; margin-left: .125rem; transform: translateY(2px); background: var(--se-accent); animation: se-caret 1s ease-in-out infinite; }
+@keyframes se-caret { 50% { opacity: .2 } }
+
 /* Prose — 문서 골격의 본문 타이포. 클래스 없이 h2/p/ul/code/pre/table 이 토큰으로 꾸며진다 */
 .se-prose { max-width: 68ch; font-size: 15px; line-height: 1.7; color: var(--se-ink); }
 .se-prose > section + section { margin-top: 2.5rem; }

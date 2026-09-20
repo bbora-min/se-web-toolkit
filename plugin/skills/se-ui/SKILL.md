@@ -36,9 +36,10 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 | 로그·트레이스·빌드 출력 — 수천 줄에서 빨간 줄 찾기 | **콘솔** | **ConsolePage** | `references/examples/reference-app/JobConsolePage.tsx` (패싯 · 줄 필터 · LogViewer 라이브 테일 · 컨텍스트) | `references/patterns/console.md` |
 | "언제"가 질문 — 배포 창·온콜·배치 스케줄·프리즈 | **일정** | **SchedulePage** | `references/examples/release-desk/CalendarPage.tsx` (월 격자 · 프리즈 빗금 · 고른 날 목록) | `references/patterns/schedule.md` |
 | 관계가 정보 — 파이프라인 DAG·의존 맵·토폴로지 | **캔버스** | **CanvasPage** | `references/examples/reference-app/PipelinePage.tsx` (`@se/canvas` Canvas · 인스펙터 · 상태색 노드) | `references/patterns/canvas.md` |
+| 묻고 답하는 화면 — 데이터 질의·런북 봇·VOC 요약 | **대화** | **ChatPage** | `references/examples/dataset-explorer/AskPage.tsx` (스레드 목록 · Thread/Message/Composer · 출처 칩 · 스트리밍) + `mocks-ask.ts` | `references/patterns/chat.md` |
 | 검색이 전부인 목록 | 원장 | ListDetail + `SearchHero` | `references/examples/dataset-explorer/DatasetsPage.tsx` | — |
 
-골격이 위 표에 없으면(대화) 툴킷의 다음 버전에서 원본이 생긴다 — 그 전엔 `AppShell layout` 과 있는 컴포넌트로 페이지 안에 만들고 보고한다. 있는 원장 원본을 억지로 쓰지 않는다.
+골격 열 개(원장·허브·관측 벽·보드·문서·트리아지·콘솔·일정·캔버스·대화)에 전부 원본이 있다. 표에 없는 골격이 필요하면 `AppShell layout` 과 있는 컴포넌트로 페이지 안에 만들고 보고한다. 있는 원장 원본을 억지로 쓰지 않는다.
 
 원본 파일 상단의 `디자인 플랜` 주석까지 읽는다 — 왜 그렇게 놓았는지가 거기 있다. 쉘·목·훅의 원본은 `references/examples/reference-app/{Shell.tsx,mocks-handlers.ts,api-jobs.ts}`. (동봉본은 툴킷의 `examples/`에서 자동 복사된다 — 어느 폴더에서 열어도 있다)
 

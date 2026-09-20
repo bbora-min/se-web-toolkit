@@ -10,6 +10,24 @@ export interface Column {
   pii?: boolean
 }
 
+/** 어시스턴트 대화 — 말 하나. 답에는 출처가 붙는다 */
+export interface AskMessage {
+  id: string
+  role: 'user' | 'assistant'
+  /** 문단은 빈 줄, 코드는 ```sql 펜스. 마크다운 전체는 받지 않는다 */
+  text: string
+  citations?: Array<{ id: string; label: string; href: string }>
+  at: string
+}
+export interface AskThreadSummary {
+  id: string
+  title: string
+  updatedAt: string
+}
+export interface AskThread extends AskThreadSummary {
+  messages: AskMessage[]
+}
+
 /** 문서 블록 — 백엔드(위키)가 구조화해서 준다. 화면은 타이포만 */
 export type DocBlock =
   | { type: 'p'; text: string }

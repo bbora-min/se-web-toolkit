@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { ArrowDownToLine, Copy, Search, WrapText } from 'lucide-react'
 import { cn } from '../lib/cn'
+import { isNearBottom } from '../lib/scroll'
 import { parseAnsi, stripAnsi, type AnsiSpan } from '../lib/ansi'
 import { Button } from './button'
 import { Input } from './input'
@@ -65,7 +66,7 @@ export function LogViewer({ lines, live, height = 480, title, className, emptyTe
   const onScroll = () => {
     const el = parentRef.current
     if (!el) return
-    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 8
+    const atBottom = isNearBottom(el)
     if (!atBottom && follow) setFollow(false)
   }
   const jump = (dir: 1 | -1) => {

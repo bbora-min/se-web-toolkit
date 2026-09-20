@@ -115,6 +115,7 @@ const EXAMPLES: Array<[string, string]> = [
   ['examples/release-desk/src/pages/releases/DecisionDialog.tsx', 'release-desk/DecisionDialog.tsx'],
   ['examples/release-desk/src/pages/releases/bits.tsx', 'release-desk/bits.tsx'],
   ['examples/release-desk/src/pages/releases/ReleasesBoard.tsx', 'release-desk/ReleasesBoard.tsx'],
+  ['examples/release-desk/src/pages/approvals/ApprovalsPage.tsx', 'release-desk/ApprovalsPage.tsx'],
   ['examples/release-desk/src/pages/settings/SettingsPage.tsx', 'release-desk/SettingsPage.tsx'],
   ['examples/se-home/src/pages/home/HomePage.tsx', 'se-home/HomePage.tsx'],
   ['examples/se-home/src/pages/services/ServicesPage.tsx', 'se-home/ServicesPage.tsx'],

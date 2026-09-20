@@ -1,12 +1,13 @@
 # 컴포넌트 레퍼런스 (자동 생성 — 수정하지 말 것, `pnpm gen:skill-docs`)
 
-파일 45개 · 내보내는 컴포넌트 101개
+파일 47개 · 내보내는 컴포넌트 104개
 
 - [Alert](components/alert.md) — 컴포넌트 · 페이지 안의 안내 배너. 토스트는 "방금 일어난 일", 배너는 "지금 상태"
 - [Avatar](components/avatar.md) — 컴포넌트 · 이니셜 아바타. 사진 없는 내부 도구에 딱 필요한 만큼
 - [Badge · StatusBadge](components/badge.md) — 컴포넌트
 - [Button](components/button.md) — 컴포넌트
 - [CheckboxField · Checkbox](components/checkbox.md) — 컴포넌트 · 체크박스 + 라벨 + 설명 한 줄. 체크리스트에 쓴다
+- [Chip](components/chip.md) — 컴포넌트
 - [Combobox](components/combobox.md) — 컴포넌트 · 검색되는 셀렉트. 항목이 8개를 넘으면 Select 대신 이걸 쓴다
 - [CommandPalette](components/command-palette.md) — 컴포넌트 · 커맨드 팔레트 — ⌘K. 페이지 이동·항목 점프·액션을 한 입력창에서.
 - [ConfirmDialog](components/confirm-dialog.md) — 컴포넌트 · 확인 다이얼로그. 위험 동작은 항상 이걸 거친다
@@ -23,6 +24,7 @@
 - [RadioCards · RadioGroup · RadioGroupItem](components/radio-group.md) — 컴포넌트 · 선택지가 3–5개고 각각 설명이 필요할 때 — 카드형 라디오
 - [Select](components/select.md) — 컴포넌트 · 네이티브 select. 필터바처럼 값 목록이 짧고 정적인 곳에 쓴다
 - [Separator · Kbd](components/separator.md) — 컴포넌트
+- [ServiceMark](components/service-mark.md) — 컴포넌트
 - [SheetHeader · SheetBody · SheetFooter · Sheet · SheetTrigger · SheetClose · SheetContent · SheetTitle · SheetDescription](components/sheet.md) — 컴포넌트
 - [Skeleton](components/skeleton.md) — 컴포넌트 · 로딩 자리표시. 최종 콘텐츠와 같은 크기·위치로 놓아 레이아웃이 튀지 않게 한다
 - [Sparkline](components/sparkline.md) — 컴포넌트 · 스파크라인. 선 2px, 회색(de-emphasis) + 마지막 구간 액센트, 끝점 강조.
@@ -35,7 +37,7 @@
 - [Textarea](components/textarea.md) — 컴포넌트
 - [Toaster](components/toast.md) — 컴포넌트 · 토스트는 우하단 한 곳. 완료 알림은 짧게, 실패는 원인을 포함
 - [TooltipProvider · Tooltip · TooltipTrigger · TooltipContent](components/tooltip.md) — 컴포넌트
-- [AppShell · NavItem · NavSection · PageHeader · PageBody · ThemeToggle](components/app-shell.md) — 패턴
+- [AppShell · NavItem · NavSection · PageHeader · SectionHeader · PageBody · ThemeToggle](components/app-shell.md) — 패턴
 - [IdentitySheet](components/identity-sheet.md) — 패턴 · 아이덴티티 시트 — 서비스의 "얼굴"을 한 장으로.
 - [MetricMarquee](components/metric-marquee.md) — 시그니처 · 시그니처 · 지표 마키 — 숫자가 목적인 서비스(비용·사용량·품질 지표)의 얼굴.
 - [SearchHero](components/search-hero.md) — 시그니처 · 시그니처 · 검색 히어로 — 데이터 조회 서비스의 얼굴.

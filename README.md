@@ -16,6 +16,7 @@
 | `examples/reference-app` | **Job Monitor** — 모니터링. 개요(Dashboard)·잡 목록(ListDetail, 서버 모드)·로그 뷰어 | ✓ |
 | `examples/dataset-explorer` | **Dataset Explorer** — 조회. 검색 히어로·상세(DetailPage) | ✓ |
 | `examples/release-desk` | **Release Desk** — 업무 처리. 단계 레일·위자드(FormWizard)·설정(Settings) | ✓ |
+| `examples/se-home` | **SE Home** — 입구. **허브 골격**(상단 네비 쉘 · 서비스 카드 · 최근 항목)의 원본, 형제 전부의 포털 | ✓ |
 | `identities/` | 서비스 아이덴티티 레지스트리 (hue·시그니처·쉘 배치 충돌 검사) | ✓ |
 | `plugin/` | Claude Code 플러그인 — 스킬 12개(자동 2 + 명령 10), 에이전트 3, 훅 2 | ✓ |
 | `templates/app-vite-react` + `packages/create-se-app` | 새 서비스 템플릿(워크스페이스에서 컴파일됨)과 CLI — `pnpm dlx`로 어느 폴더에서든 | ✓ |
@@ -55,7 +56,7 @@ claude plugin update se@se-web-toolkit   # 스킬·규칙
 ```bash
 # Node 22 (.nvmrc) + pnpm 9
 pnpm install            # @se/tokens 는 prepare 단계에서 dist 빌드
-pnpm dev                # Job Monitor 5173 (dataset-explorer 5174 · release-desk 5175는 --filter 로)
+pnpm dev                # Job Monitor 5173 (dataset-explorer 5174 · release-desk 5175 · se-home 5177는 --filter 로)
 pnpm lint               # @se/eslint-plugin 규칙 (warning도 실패)
 pnpm test               # 토큰 대비 검증 등
 pnpm check-identity     # 레지스트리 hue/시그니처 검사

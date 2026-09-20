@@ -76,6 +76,11 @@ export function hueDistance(a: number, b: number): number {
 /** 형제 서비스와 최소한 이만큼 떨어져야 "다른 제품"으로 읽힌다 */
 export const MIN_HUE_DISTANCE = 30
 
+/** 레지스트리 행의 마크 글자 — monogram 이 없으면 이름의 영문 이니셜 2자, 그것도 없으면 SE */
+export function registryMonogram(s: { name: string; monogram?: string }): string {
+  return s.monogram ?? (s.name.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'SE')
+}
+
 /** @se/ui 가 실제로 구현한 시그니처 — 지금은 SIGNATURES 전부. 새 시그니처를 스키마에 먼저 예약하고 @se/ui 에 구현한 뒤 여기 올리는 순서를 위해 따로 둔다 */
 export const IMPLEMENTED_SIGNATURES = ['status-strip', 'search-hero', 'stage-rail', 'timeline-ribbon', 'metric-marquee'] as const satisfies readonly (typeof SIGNATURES)[number][]
 
@@ -86,6 +91,9 @@ export interface RegistryEntry {
   signature: string
   /** 없으면 sidebar */
   shell?: string
+  /** 마크 글자(1–3자). 없으면 이름의 영문 이니셜 */
+  monogram?: string
+  neutralBias?: string
 }
 export interface RegistryIssue {
   level: 'error' | 'warn'

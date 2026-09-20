@@ -30,6 +30,7 @@ for (const s of services) {
     if (id.id !== s.id) fail(`${s.id}: se.identity.json의 id(${id.id})가 레지스트리와 다름`)
     if (id.accent.hue !== s.hue) fail(`${s.id}: hue가 레지스트리(${s.hue})와 다름 (${id.accent.hue})`)
     if (id.signature !== s.signature) fail(`${s.id}: signature가 레지스트리와 다름`)
+    if (id.mark.type === 'monogram' && s.monogram && id.mark.text !== s.monogram) fail(`${s.id}: monogram이 레지스트리(${s.monogram})와 다름 (${id.mark.text})`)
     if (id.shell !== (s.shell ?? DEFAULT_SHELL)) fail(`${s.id}: shell이 레지스트리(${s.shell ?? DEFAULT_SHELL})와 다름 (${id.shell})`)
     console.log('✓', s.id, `hue ${s.hue}°`, id.shell, s.signature)
   } catch (e) {

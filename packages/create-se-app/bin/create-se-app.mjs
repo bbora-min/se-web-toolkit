@@ -166,7 +166,7 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
     throw e
   }
   if (inWorkspace && registryPath) {
-    registry.services.push({ id, name, hue, signature, shell, neutralBias: identity.neutralBias, path: relative(workspace, dir) })
+    registry.services.push({ id, name, monogram: identity.mark.text, hue, signature, shell, neutralBias: identity.neutralBias, path: relative(workspace, dir) })
     writeFileSync(registryPath, JSON.stringify(registry, null, 2) + '\n')
   }
 

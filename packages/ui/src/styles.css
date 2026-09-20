@@ -33,3 +33,8 @@
 @keyframes se-rise { from { transform: translateY(6px); opacity: 0 } to { transform: none; opacity: 1 } }
 @keyframes se-pop-in { from { transform: translateY(-4px) scale(.98); opacity: 0 } to { transform: none; opacity: 1 } }
 @keyframes se-pop-center { from { transform: translate(-50%, calc(-50% + 6px)) scale(.985); opacity: 0 } to { transform: translate(-50%, -50%) scale(1); opacity: 1 } }
+
+/* ServiceMark — 형제 서비스 마크. 값은 인라인 변수(accentScale), 선택은 토큰 CSS 와 같은 테마 셀렉터 */
+.se-service-mark { background: var(--se-mark-bg); color: var(--se-mark-fg) }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .se-service-mark { background: var(--se-mark-bg-dark); color: var(--se-mark-fg-dark) } }
+:root[data-theme="dark"] .se-service-mark { background: var(--se-mark-bg-dark); color: var(--se-mark-fg-dark) }

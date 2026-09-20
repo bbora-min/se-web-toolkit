@@ -4,6 +4,19 @@ import type { ClusterSummary, Job, Overview } from '../api/types'
 import { makeJobs, makeLogs } from './data'
 
 let jobs: Job[] = makeJobs()
+/** 시연 별칭은 처음 해석한 잡에 고정된다 — 재시도로 상태가 바뀌어도 다른 잡으로 튀지 않는다 */
+const aliasPins = new Map<string, string>()
+function resolveJob(id: string): Job | undefined {
+  if (id === 'demo-failed' || id === 'demo-running') {
+    const pinned = aliasPins.get(id)
+    const j = (pinned ? jobs.find((x) => x.id === pinned) : undefined) ?? jobs.find((x) => x.state === (id === 'demo-failed' ? 'failed' : 'running'))
+    if (j) aliasPins.set(id, j.id)
+    return j
+  }
+  return jobs.find((x) => x.id === id)
+}
+/** 라이브 데모의 로그는 자라지 않는다 — 스크린샷이 매번 같아야 한다 */
+const demoLogs = new Map<string, string[]>()
 
 /** 결정적 시계열 — 현재값으로 끝나는 24포인트 */
 function series(end: number, spread: number, seed: number): number[] {
@@ -143,10 +156,25 @@ export const handlers = [
       pipelines: [...new Set(jobs.map((j) => j.pipeline))].sort(),
     })
   }),
-  http.get('/api/jobs/:id/logs', async ({ params }) => {
-    await delay(150)
-    const j = jobs.find((x) => x.id === params.id)
+  /** 잡 하나. `demo-failed`·`demo-running` 은 시연·스크린샷용 별칭 — 시드 데이터의 첫 실패·첫 실행 중 잡 */
+  http.get('/api/jobs/:id', async ({ params, request }) => {
+    const forced = await devState(new URL(request.url))
+    if (forced && forced.status !== 200) return forced
+    const j = resolveJob(String(params.id))
     if (!j) return HttpResponse.json({ message: '잡을 찾을 수 없습니다' }, { status: 404 })
+    return HttpResponse.json(j)
+  }),
+  http.get('/api/jobs/:id/logs', async ({ params, request }) => {
+    await delay(150)
+    const forced = await devState(new URL(request.url))
+    if (forced && forced.status !== 200) return forced
+    const id = String(params.id)
+    const j = resolveJob(id)
+    if (!j) return HttpResponse.json({ message: '잡을 찾을 수 없습니다' }, { status: 404 })
+    if (id.startsWith('demo-')) {
+      if (!demoLogs.has(id)) demoLogs.set(id, makeLogs(j))
+      return HttpResponse.json({ lines: demoLogs.get(id), live: j.state === 'running' })
+    }
     return HttpResponse.json({ lines: makeLogs(j), live: j.state === 'running' })
   }),
   http.post('/api/jobs/bulk', async ({ request }) => {

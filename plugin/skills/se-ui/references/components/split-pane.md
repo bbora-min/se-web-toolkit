@@ -4,7 +4,7 @@
 
 | prop | 타입 | 기본 | 설명 |
 |---|---|---|---|
-| `collapseRightNarrow` | `boolean` | `true` | 1024 이하에서 오른쪽 칸을 숨긴다(기본 true) — 가운데가 먼저다 |
+| `collapseRightNarrow` | `boolean` | `true` | 1280 미만에서 오른쪽 칸을 숨긴다(기본 true) — 가운데가 먼저다 |
 | `left` | `ReactNode` |  | 왼쪽 칸(목록·패싯). 없으면 2단 |
 | `leftWidth` | `number` | `320` |  |
 | `minCenter` | `number` | `360` | 가운데 칸의 최소 폭 — 손잡이가 이보다 좁게 만들지 않는다 |

@@ -1,6 +1,7 @@
 // 원본: examples/reference-app/src/pages/jobs/JobDetailSheet.tsx (자동 복사 — 수정하지 말 것, pnpm gen:skill-docs)
 import * as React from 'react'
-import { AlertTriangle, RotateCcw, XCircle } from 'lucide-react'
+import { AlertTriangle, RotateCcw, SquareTerminal, XCircle } from 'lucide-react'
+import { Link } from 'react-router'
 import {
   Button,
   ConfirmDialog,
@@ -57,7 +58,10 @@ export function JobDetailSheet({ job, open, onClose }: { job: Job | null; open: 
               <SheetDescription className="font-mono text-xs">{job.id}</SheetDescription>
             </SheetHeader>
             <SheetBody className="flex flex-col gap-5">
-              <Tabs value={tab} onChange={setTab} aria-label="상세" items={[{ value: 'overview', label: '개요' }, { value: 'logs', label: '로그', count: logs.data?.lines.length }]} className="-mt-1" />
+              <div className="-mt-1 flex items-center gap-3">
+                <Tabs value={tab} onChange={setTab} aria-label="상세" items={[{ value: 'overview', label: '개요' }, { value: 'logs', label: '로그', count: logs.data?.lines.length }]} className="flex-1" />
+                <Button variant="ghost" size="sm" asChild><Link to={`/jobs/${job.id}/logs`}><SquareTerminal /> 콘솔</Link></Button>
+              </div>
               {tab === 'logs' ? (
                 <LogViewer lines={logs.data?.lines ?? []} live={logs.data?.live} height="calc(100vh - 220px)" title={job.name} emptyText={logs.isPending ? '로그를 불러오는 중…' : job.state === 'pending' ? '아직 시작되지 않았습니다' : '로그가 없습니다'} />
               ) : (

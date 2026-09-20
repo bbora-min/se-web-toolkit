@@ -22,7 +22,9 @@ const COLOR_CLS: Record<NonNullable<AnsiSpan['color']>, string> = {
   black: 'text-ink', red: 'text-danger', green: 'text-success', yellow: 'text-warning', blue: 'text-info',
   magenta: 'text-chart-6', cyan: 'text-accent-fg', white: 'text-ink', gray: 'text-muted',
 }
-const LEVEL = /\b(ERROR|FATAL|PANIC)\b|\b(WARN|WARNING)\b/
+/** 로그 줄의 레벨 — 1번 그룹이면 ERROR 급, 2번 그룹이면 WARN 급. 콘솔 화면의 패싯이 같은 규칙을 쓴다 */
+export const LOG_LEVEL_RE = /\b(ERROR|FATAL|PANIC)\b|\b(WARN|WARNING)\b/
+const LEVEL = LOG_LEVEL_RE
 
 /**
  * 로그 뷰어 — 수천 줄을 가상 스크롤로. ANSI 색, 레벨 강조, 검색(일치 이동), 따라가기, 줄바꿈, 복사.
@@ -31,6 +33,8 @@ const LEVEL = /\b(ERROR|FATAL|PANIC)\b|\b(WARN|WARNING)\b/
 export function LogViewer({ lines, live, height = 480, title, className, emptyText = '로그가 없습니다' }: LogViewerProps) {
   const parentRef = React.useRef<HTMLDivElement>(null)
   const [follow, setFollow] = React.useState(!!live)
+  // live 가 바뀌면(콘솔의 라이브 테일 스위치) 따라가기도 따라간다
+  React.useEffect(() => setFollow(!!live), [live])
   const [wrap, setWrap] = React.useState(false)
   const [q, setQ] = React.useState('')
   const [cursor, setCursor] = React.useState(0)

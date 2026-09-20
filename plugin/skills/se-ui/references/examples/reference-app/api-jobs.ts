@@ -26,8 +26,9 @@ export const jobKeys = {
   summary: ['jobs', 'summary'] as const,
 }
 
-export function useJobs(filters: JobFilters) {
+export function useJobs(filters: JobFilters, opts: { enabled?: boolean; refetchInterval?: number | false } = {}) {
   return useQuery({
+    enabled: opts.enabled ?? true,
     queryKey: jobKeys.list(filters),
     queryFn: () => {
       const p = new URLSearchParams()
@@ -41,8 +42,18 @@ export function useJobs(filters: JobFilters) {
       const qs = p.toString()
       return api<JobList>(`/jobs${qs ? `?${qs}` : ''}`)
     },
-    refetchInterval: 15_000,
+    refetchInterval: opts.refetchInterval ?? 15_000,
     placeholderData: (prev) => prev,
+  })
+}
+
+/** 잡 하나 — 콘솔 화면. 실행 중이면 5초마다 */
+export function useJob(id: string | undefined) {
+  return useQuery({
+    queryKey: ['jobs', 'one', id],
+    queryFn: () => api<Job>(`/jobs/${id}`),
+    enabled: Boolean(id),
+    refetchInterval: (q) => (q.state.data?.state === 'running' ? 5_000 : false),
   })
 }
 

@@ -20,7 +20,7 @@ export interface SplitPaneProps extends React.HTMLAttributes<HTMLDivElement> {
   minCenter?: number
   /** 폭을 기억할 키(localStorage). 없으면 기억하지 않는다 */
   storageKey?: string
-  /** 1024 이하에서 오른쪽 칸을 숨긴다(기본 true) — 가운데가 먼저다 */
+  /** 1280 미만에서 오른쪽 칸을 숨긴다(기본 true) — 가운데가 먼저다 */
   collapseRightNarrow?: boolean
 }
 
@@ -118,7 +118,7 @@ export function SplitPane({ left, right, leftWidth = 320, rightWidth = 280, minL
       ) : null}
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">{children}</div>
       {right ? (
-        <div className={cn('contents', collapseRightNarrow && 'max-lg:hidden')}>
+        <div className={cn('contents', collapseRightNarrow && 'max-xl:hidden')}>
           <Handle onPointerDown={drag('r')} onKeyDown={onKey('r')} label="오른쪽 칸 폭" value={r} />
           <div className="flex min-h-0 shrink-0 flex-col overflow-y-auto border-l border-line bg-canvas" style={{ width: r }}>
             {right}

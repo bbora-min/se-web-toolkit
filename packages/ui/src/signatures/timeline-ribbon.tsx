@@ -32,6 +32,8 @@ export interface TimelineRibbonProps {
   events: RibbonEvent[]
   /** 줄 순서. 없으면 events 에 나온 순서 */
   lanes?: string[]
+  /** 줄 이름 칸의 폭(px). 기본 56 — 서비스 이름처럼 긴 줄 이름이면 96–120 */
+  laneWidth?: number
   /** 왼쪽 제목 — "지난 24시간 · 배포 6 · 장애 1" */
   headline?: React.ReactNode
   detail?: React.ReactNode
@@ -75,7 +77,7 @@ function tickLabel(t: number, span: number): string {
  * "최근 무슨 일이 있었고 지금 어디쯤인가"를 시간축 한 줄로. 배포·장애·알림이 줄(lane)마다 놓이고 구간은 막대, 순간은 점.
  * 액센트는 "지금" 선과 이 서비스의 일(tone=accent)에만. 의미 색은 상태에만.
  */
-export function TimelineRibbon({ from, to, now, events, lanes, headline, detail, selected, onSelect, className }: TimelineRibbonProps) {
+export function TimelineRibbon({ from, to, now, events, lanes, laneWidth = 56, headline, detail, selected, onSelect, className }: TimelineRibbonProps) {
   const f = Date.parse(from)
   const t = Date.parse(to)
   const span = Math.max(1, t - f)
@@ -105,7 +107,7 @@ export function TimelineRibbon({ from, to, now, events, lanes, headline, detail,
           const items = visible.filter((e) => (e.lane ?? '이벤트') === lane)
           return (
             <div key={lane} className="flex items-center gap-3">
-              <span className="w-14 shrink-0 truncate py-1 text-xs text-muted" title={lane}>{lane}</span>
+              <span className="shrink-0 truncate py-1 text-xs text-muted" style={{ width: laneWidth }} title={lane}>{lane}</span>
               <div className="relative h-7 min-w-0 flex-1 border-b border-dashed border-line" role="list" aria-label={lane}>
                 {items.map((e) => {
                   const tone = TONE[e.tone ?? 'accent']
@@ -148,7 +150,7 @@ export function TimelineRibbon({ from, to, now, events, lanes, headline, detail,
         })}
 
         {/* 눈금 — 라벨 열만큼 들여쓴 같은 좌표계 */}
-        <div className="ml-[calc(3.5rem+0.75rem)] relative mt-1 h-5 text-[11px] text-muted tnum" aria-hidden>
+        <div className="relative mt-1 h-5 text-[11px] text-muted tnum" style={{ marginLeft: laneWidth + 12 }} aria-hidden>
           {tk.map((x) => (
             <span key={x} className="absolute top-0 -translate-x-1/2" style={{ left: `${((x - f) / span) * 100}%` }}>
               {tickLabel(x, span)}
@@ -156,7 +158,7 @@ export function TimelineRibbon({ from, to, now, events, lanes, headline, detail,
           ))}
         </div>
         {showNow ? (
-          <div className="pointer-events-none absolute bottom-8 left-5 right-5 top-3 ml-[calc(3.5rem+0.75rem)]" aria-hidden>
+          <div className="pointer-events-none absolute bottom-8 left-5 right-5 top-3" style={{ marginLeft: laneWidth + 12 }} aria-hidden>
             <span className="absolute inset-y-0 w-px bg-accent" style={{ left: nowLeft }} />
             <span className="absolute -top-2.5 -translate-x-1/2 rounded-sm bg-accent px-1 text-[10px] font-medium leading-4 text-on-accent" style={{ left: nowLeft }}>지금</span>
           </div>

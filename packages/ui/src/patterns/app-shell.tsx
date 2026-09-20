@@ -22,10 +22,19 @@ import { CommandPalette, useCommandPalette, type CommandGroup } from '../compone
 /** 쉘 배치 — @se/tokens 의 `Shell`(se.identity.json 의 shell) 그대로 */
 export type ShellLayout = Shell
 
-const LayoutCtx = React.createContext<ShellLayout>(DEFAULT_SHELL)
+interface ShellCtx {
+  layout: ShellLayout
+  /** 커맨드 팔레트(⌘K)를 연다. `command` 가 없으면 아무 일도 안 한다 */
+  openSearch: () => void
+}
+const Ctx = React.createContext<ShellCtx>({ layout: DEFAULT_SHELL, openSearch: () => {} })
 /** 지금 쉘의 배치. NavItem·NavSection 이 배치에 맞춰 모양을 바꾼다 */
 export function useShellLayout(): ShellLayout {
-  return React.useContext(LayoutCtx)
+  return React.useContext(Ctx).layout
+}
+/** 페이지 안에서 쉘의 검색(⌘K 팔레트)을 연다 — 허브의 큰 검색처럼 "검색이 주 동선"인 화면용 */
+export function useShellSearch(): () => void {
+  return React.useContext(Ctx).openSearch
 }
 
 export interface AppShellProps {
@@ -88,18 +97,19 @@ export function AppShell({
       )}
     >
       <Search className="size-4" aria-hidden />
-      <span className="flex-1 text-left">{searchPlaceholder}</span>
+      <span className="min-w-0 flex-1 truncate text-left">{searchPlaceholder}</span>
       <kbd className="rounded-sm border border-line px-1 font-mono text-[10px] leading-4">⌘K</kbd>
     </button>
   ) : null
   const Layout = LAYOUTS[layout]
+  const ctx = React.useMemo<ShellCtx>(() => ({ layout, openSearch: () => palette.setOpen(true) }), [layout, palette.setOpen])
   return (
-    <LayoutCtx.Provider value={layout}>
+    <Ctx.Provider value={ctx}>
       <Layout name={name} mark={mark} subtitle={subtitle} nav={nav} search={search} topEnd={topEnd} credit={credit} maxWidth={maxWidth}>
         {children}
       </Layout>
       {command ? <CommandPalette open={palette.open} onOpenChange={palette.setOpen} groups={command} placeholder={searchPlaceholder} /> : null}
-    </LayoutCtx.Provider>
+    </Ctx.Provider>
   )
 }
 

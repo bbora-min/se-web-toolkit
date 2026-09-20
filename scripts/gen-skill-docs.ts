@@ -113,6 +113,10 @@ const EXAMPLES: Array<[string, string]> = [
   ['examples/release-desk/src/pages/releases/DecisionDialog.tsx', 'release-desk/DecisionDialog.tsx'],
   ['examples/release-desk/src/pages/releases/bits.tsx', 'release-desk/bits.tsx'],
   ['examples/release-desk/src/pages/settings/SettingsPage.tsx', 'release-desk/SettingsPage.tsx'],
+  ['examples/se-home/src/pages/home/HomePage.tsx', 'se-home/HomePage.tsx'],
+  ['examples/se-home/src/pages/services/ServicesPage.tsx', 'se-home/ServicesPage.tsx'],
+  ['examples/se-home/src/app/Shell.tsx', 'se-home/Shell.tsx'],
+  ['examples/se-home/src/mocks/handlers.ts', 'se-home/mocks-handlers.ts'],
 ]
 /** 파일 하나를 플러그인에 동봉한다 — --check 면 커밋본과 비교만. transform 으로 내용을 바꿔 담을 수 있다 */
 function bundle(src: string, to: string, header = '', transform: (s: string) => string = (s) => s) {

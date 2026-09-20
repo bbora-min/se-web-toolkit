@@ -6,6 +6,7 @@ import { Badge, StatusBadge } from '../components/badge'
 import { Button } from '../components/button'
 import { Input } from '../components/input'
 import { Tabs } from '../components/tabs'
+import { ServiceMark } from '../components/service-mark'
 
 export interface IdentitySheetProps {
   identity: Identity
@@ -195,8 +196,7 @@ export function IdentitySheet({ identity: id, signaturePreview, siblings }: Iden
           <div className="flex flex-wrap gap-3">
             {siblings.map((s) => (
               <div key={s.id} className={cn('flex items-center gap-3 rounded-lg border px-3 py-2', s.id === id.id ? 'border-accent bg-accent-soft/50' : 'border-line bg-surface')}>
-                {/* eslint-disable-next-line se/no-raw-color -- 형제 서비스의 색은 이 앱의 토큰에 없다. hue로 계산하는 것이 이 표시의 목적 */}
-                <span className="size-6 rounded-md" style={{ background: `oklch(0.5 0.12 ${s.hue})` }} aria-hidden />
+                <ServiceMark hue={s.hue}>{s.name.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'SE'}</ServiceMark>
                 <div className="flex flex-col leading-tight">
                   <span className="text-sm font-medium text-ink">{s.name}</span>
                   <span className="text-xs text-muted">{s.hue}° · {shellLabel(s.shell)} · {SIGNATURE_LABEL[s.signature] ?? s.signature}</span>

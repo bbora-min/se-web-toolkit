@@ -3,12 +3,14 @@ import { createTheme, parseIdentity, themeToCss, type Identity, type IdentityInp
 import jobMonitor from '../../../examples/reference-app/se.identity.json'
 import datasetExplorer from '../../../examples/dataset-explorer/se.identity.json'
 import releaseDesk from '../../../examples/release-desk/se.identity.json'
+import seHome from '../../../examples/se-home/se.identity.json'
 import registry from '../../../identities/registry.json'
 
 const known: Record<string, IdentityInput> = {
   'job-monitor': jobMonitor as IdentityInput,
   'dataset-explorer': datasetExplorer as IdentityInput,
   'release-desk': releaseDesk as IdentityInput,
+  'se-home': seHome as IdentityInput,
 }
 
 /** 레지스트리 순서대로. path 없는 서비스는 hue·시그니처·뉴트럴만 알고 마크는 이니셜 */

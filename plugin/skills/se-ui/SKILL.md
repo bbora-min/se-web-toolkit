@@ -29,9 +29,10 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 | 단일 객체 + 탭 | 원장(상세) | **DetailPage** | `references/examples/dataset-explorer/DatasetPage.tsx` · `references/examples/release-desk/ReleasePage.tsx` (워크플로 액션) | `references/patterns/detail.md` |
 | 여러 단계 입력 | 폼 | **FormWizardPage** | `references/examples/release-desk/NewReleasePage.tsx` (+ `DecisionDialog.tsx` 폼 모달) | `references/patterns/form-wizard.md` |
 | 설정·토글 | 폼 | **SettingsPage** | `references/examples/release-desk/SettingsPage.tsx` | `references/patterns/settings.md` |
+| 입구·포털 — 서비스·도구·문서를 고르는 화면 | **허브** | **HubPage** | `references/examples/se-home/HomePage.tsx` (상단 네비 쉘 · 큰 검색 · 카드 카탈로그 · 최근 항목) + `se-home/Shell.tsx` (`layout="topnav"` 쉘 원본) | `references/patterns/hub.md` |
 | 검색이 전부인 목록 | 원장 | ListDetail + `SearchHero` | `references/examples/dataset-explorer/DatasetsPage.tsx` | — |
 
-골격이 위 표에 없으면(보드·관측 벽·문서·허브·트리아지·콘솔·일정) 툴킷의 다음 버전에서 원본이 생긴다 — 그 전엔 `AppShell layout` 과 있는 컴포넌트로 페이지 안에 만들고 보고한다. 있는 원장 원본을 억지로 쓰지 않는다.
+골격이 위 표에 없으면(보드·관측 벽·문서·트리아지·콘솔·일정) 툴킷의 다음 버전에서 원본이 생긴다 — 그 전엔 `AppShell layout` 과 있는 컴포넌트로 페이지 안에 만들고 보고한다. 있는 원장 원본을 억지로 쓰지 않는다.
 
 원본 파일 상단의 `디자인 플랜` 주석까지 읽는다 — 왜 그렇게 놓았는지가 거기 있다. 쉘·목·훅의 원본은 `references/examples/reference-app/{Shell.tsx,mocks-handlers.ts,api-jobs.ts}`. (동봉본은 툴킷의 `examples/`에서 자동 복사된다 — 어느 폴더에서 열어도 있다)
 

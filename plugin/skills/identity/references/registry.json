@@ -32,6 +32,14 @@
       "signature": "status-strip",
       "shell": "sidebar",
       "neutralBias": "cool"
+    },
+    {
+      "id": "se-home",
+      "name": "SE Home",
+      "hue": 350,
+      "signature": "timeline-ribbon",
+      "shell": "topnav",
+      "neutralBias": "warm"
     }
   ]
 }

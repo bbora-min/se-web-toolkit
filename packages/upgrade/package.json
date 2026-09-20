@@ -1,6 +1,6 @@
 {
   "name": "@se/upgrade",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "앱의 @se/* 참조를 새 툴킷 태그로 올린다 — CHANGELOG '앱에서 할 일' 출력 → 참조 교체 → install → typecheck·lint. /se:upgrade 와 자동 업그레이드 PR 워크플로가 쓴다",
   "type": "module",
   "bin": {

@@ -3,6 +3,20 @@
 툴킷(패키지 `@se/*` + 플러그인)은 **한 버전**으로 움직인다. 항목마다 세 칸: **바뀐 것** / **화면 변화**(코드는 그대로인데 보이는 게 달라지는 것) / **앱에서 할 일**(코드를 고쳐야 하는 것). 앱 담당자는 세 번째 칸만 읽어도 된다.
 버전 의미: patch = 화면 변화 없음 · minor = 추가 또는 화면 변화, 코드 수정 불필요 · major = 앱 코드를 고쳐야 함. 깨지는 변경은 한 minor 동안 옛 방식을 남기고 경고한다.
 
+## 0.11.0 — 2026-09-20
+
+**바뀐 것**
+- **허브(Hub) 골격** — 4번째 레퍼런스 앱 `examples/se-home` **SE Home**(hue 350° · `topnav` 쉘 · timeline-ribbon · friendly). 형제 전부의 입구: 인사 + 상태 한 줄 → 큰 검색(⌘K 팔레트) + 빠른 진입 칩 → 가족의 24시간 리본(줄 = 서비스) → 서비스 카드 3열(+ 새 서비스) → 최근 본 것 · 오늘(온콜·공지). `/services` 는 같은 데이터를 표(원장)로. 5177 포트, 시각 회귀 5화면
+- `@se/ui` **`ServiceMark`** — 형제 서비스의 마크를 hue 로 그린다(허브 카드·팔레트·아이덴티티 시트의 가족 카드가 공유). **`useShellSearch()`** — 페이지 안에서 쉘의 ⌘K 팔레트를 연다(허브의 큰 검색). `TimelineRibbon laneWidth`(줄 이름 칸 폭 — 서비스 이름처럼 긴 줄), 쉘 검색 버튼 플레이스홀더 말줄임
+- 스킬: `se-ui` 선택표에 **허브** 행(`references/examples/se-home/HomePage.tsx` · `Shell.tsx`), `references/patterns/hub.md`. 목·쉘 원본 동봉
+- 레지스트리에 `se-home` 등록 — 쉘 배치가 처음으로 갈린다(sidebar 4 · topnav 1)
+
+**화면 변화**
+- `/__identity` 가족 카드의 색 칩이 모노그램 마크(`ServiceMark`)로 — 레퍼런스 앱 3개 기준 스크린샷 갱신. 그 외 없음
+
+**앱에서 할 일**
+- 없음 — `/se:upgrade` 만. 팀 포털이 필요하면 `examples/se-home` 을 `/se:new --shell topnav --signature timeline-ribbon` 으로 시작해 레지스트리(`/api/home`)를 실제 백엔드에 연결
+
 ## 0.10.0 — 2026-09-20
 
 **바뀐 것**

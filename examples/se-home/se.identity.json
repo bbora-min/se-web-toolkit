@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/@se/tokens/identity.schema.json",
+  "id": "se-home",
+  "name": "SE Home",
+  "mark": {
+    "type": "monogram",
+    "text": "SE"
+  },
+  "accent": {
+    "hue": 350
+  },
+  "neutralBias": "warm",
+  "signature": "timeline-ribbon",
+  "shell": "topnav",
+  "density": "comfortable",
+  "displayFont": "pretendard",
+  "chart": "accent-sequential",
+  "tone": "friendly"
+}

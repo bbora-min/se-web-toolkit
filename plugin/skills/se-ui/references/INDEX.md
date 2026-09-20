@@ -1,6 +1,6 @@
 # 컴포넌트 레퍼런스 (자동 생성 — 수정하지 말 것, `pnpm gen:skill-docs`)
 
-파일 45개 · 내보내는 컴포넌트 101개
+파일 46개 · 내보내는 컴포넌트 102개
 
 - [Alert](components/alert.md) — 컴포넌트 · 페이지 안의 안내 배너. 토스트는 "방금 일어난 일", 배너는 "지금 상태"
 - [Avatar](components/avatar.md) — 컴포넌트 · 이니셜 아바타. 사진 없는 내부 도구에 딱 필요한 만큼
@@ -23,6 +23,7 @@
 - [RadioCards · RadioGroup · RadioGroupItem](components/radio-group.md) — 컴포넌트 · 선택지가 3–5개고 각각 설명이 필요할 때 — 카드형 라디오
 - [Select](components/select.md) — 컴포넌트 · 네이티브 select. 필터바처럼 값 목록이 짧고 정적인 곳에 쓴다
 - [Separator · Kbd](components/separator.md) — 컴포넌트
+- [ServiceMark](components/service-mark.md) — 컴포넌트
 - [SheetHeader · SheetBody · SheetFooter · Sheet · SheetTrigger · SheetClose · SheetContent · SheetTitle · SheetDescription](components/sheet.md) — 컴포넌트
 - [Skeleton](components/skeleton.md) — 컴포넌트 · 로딩 자리표시. 최종 콘텐츠와 같은 크기·위치로 놓아 레이아웃이 튀지 않게 한다
 - [Sparkline](components/sparkline.md) — 컴포넌트 · 스파크라인. 선 2px, 회색(de-emphasis) + 마지막 구간 액센트, 끝점 강조.

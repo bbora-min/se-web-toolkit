@@ -8,6 +8,7 @@ export { Badge, StatusBadge, type BadgeProps, type StatusBadgeProps } from './co
 export { Skeleton } from './components/skeleton'
 export { Tabs, type TabsProps, type TabItem } from './components/tabs'
 export { Avatar } from './components/avatar'
+export { ServiceMark, type ServiceMarkProps } from './components/service-mark'
 export { Sparkline, type SparklineProps } from './components/sparkline'
 export { StatCard, formatDelta, type StatCardProps } from './components/stat-card'
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './components/tooltip'
@@ -30,7 +31,7 @@ export { ConfirmDialog, type ConfirmDialogProps } from './components/confirm-dia
 export { DescriptionList, type DescriptionItem } from './components/description-list'
 export { Toaster, toast } from './components/toast'
 
-export { AppShell, NavItem, NavSection, PageHeader, PageBody, ThemeToggle, useShellLayout, type AppShellProps, type ShellLayout } from './patterns/app-shell'
+export { AppShell, NavItem, NavSection, PageHeader, PageBody, ThemeToggle, useShellLayout, useShellSearch, type AppShellProps, type ShellLayout } from './patterns/app-shell'
 
 export { StatusStrip, type StatusStripProps, type StripHealth } from './signatures/status-strip'
 export { SearchHero, type SearchHeroProps } from './signatures/search-hero'

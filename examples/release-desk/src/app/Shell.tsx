@@ -3,8 +3,7 @@ import { CalendarClock, ChevronDown, ClipboardCheck, History, LogOut, Palette, P
 import { Link, Outlet, useLocation, useNavigate } from 'react-router'
 import {
   AppShell, Avatar, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
-  NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup,
-} from '@se/ui'
+  NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup, type ShellLayout } from '@se/ui'
 import identity from '../../se.identity.json'
 import { useReleases } from '../api/releases'
 import { StageBadge } from '../pages/releases/bits'
@@ -62,6 +61,7 @@ export function Shell() {
 
   return (
     <AppShell
+      layout={identity.shell as ShellLayout}
       name={identity.name}
       mark={identity.mark.text}
       subtitle="platform · 릴리스 관리"

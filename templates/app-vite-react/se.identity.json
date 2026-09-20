@@ -11,6 +11,7 @@
   },
   "neutralBias": "neutral",
   "signature": "status-strip",
+  "shell": "sidebar",
   "density": "comfortable",
   "displayFont": "pretendard",
   "chart": "accent-sequential",

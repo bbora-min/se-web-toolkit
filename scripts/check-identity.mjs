@@ -16,7 +16,7 @@ for (const s of services) {
   if (!s.path) {
     // 툴킷 밖 서비스: 레지스트리 행으로 최소 아이덴티티를 만들어 같은 규칙(의미 색 18°·대비)을 돌린다
     try {
-      createTheme({ id: s.id, name: s.name, mark: { type: 'monogram', text: 'SE' }, accent: { hue: s.hue }, signature: s.signature, neutralBias: s.neutralBias })
+      createTheme({ id: s.id, name: s.name, mark: { type: 'monogram', text: 'SE' }, accent: { hue: s.hue }, signature: s.signature, shell: s.shell, neutralBias: s.neutralBias })
       console.log('·', s.id, `hue ${s.hue}°`, s.signature, '(툴킷 밖 — 레지스트리 행으로 검사)')
     } catch (e) {
       fail(`${s.id}: ${e.message}`)
@@ -30,7 +30,8 @@ for (const s of services) {
     if (id.id !== s.id) fail(`${s.id}: se.identity.json의 id(${id.id})가 레지스트리와 다름`)
     if (id.accent.hue !== s.hue) fail(`${s.id}: hue가 레지스트리(${s.hue})와 다름 (${id.accent.hue})`)
     if (id.signature !== s.signature) fail(`${s.id}: signature가 레지스트리와 다름`)
-    console.log('✓', s.id, `hue ${s.hue}°`, s.signature)
+    if ((id.shell ?? 'sidebar') !== (s.shell ?? 'sidebar')) fail(`${s.id}: shell이 레지스트리(${s.shell ?? 'sidebar'})와 다름 (${id.shell ?? 'sidebar'})`)
+    console.log('✓', s.id, `hue ${s.hue}°`, s.shell ?? 'sidebar', s.signature)
   } catch (e) {
     fail(`${s.id}: ${e.message}`)
   }

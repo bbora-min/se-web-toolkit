@@ -5,14 +5,14 @@
  *
  *   node packages/create-se-app/bin/create-se-app.mjs incident-desk --name "Incident Desk" --hue 325 --signature stage-rail
  *
- * 옵션: --name --mark --hue --signature --neutral --density --tone --port --dir --subtitle
+ * 옵션: --name --mark --hue --signature --shell --neutral --density --tone --port --dir --subtitle
  * 모노레포 안이면 workspace:* 로 링크, 밖이면 git 서브디렉터리 의존성으로 설치한다.
  */
 import { execSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { checkRegistry, createTheme, hueDistance, IMPLEMENTED_SIGNATURES, SIGNATURES, statusHues } from '@se/tokens'
+import { checkRegistry, createTheme, hueDistance, IMPLEMENTED_SIGNATURES, SHELLS, SIGNATURES, statusHues } from '@se/tokens'
 
 const here = dirname(fileURLToPath(import.meta.url))
 // 동봉본(prepare 가 복사) 우선 — 모노레포 밖(pnpm dlx·git 설치)에서도 동작. 없으면 모노레포 원본
@@ -103,7 +103,7 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
   const args = parseArgs(argv)
   const id = args._[0]
   if (!id || !/^[a-z][a-z0-9-]{1,39}$/.test(id)) {
-    throw new Error(`사용법: create-se-app <id> [--name "표시 이름"] [--hue 0-360] [--signature ${IMPLEMENTED_SIGNATURES.join('|')}] [--neutral cool|warm|neutral|accent] [--density compact|comfortable] [--tone terse|friendly|procedural] [--mark AB] [--port 5173] [--subtitle "환경 · 팀"] [--dir 경로]\n  id는 kebab-case (예: incident-desk)`)
+    throw new Error(`사용법: create-se-app <id> [--name "표시 이름"] [--hue 0-360] [--signature ${IMPLEMENTED_SIGNATURES.join('|')}] [--shell ${SHELLS.join('|')}] [--neutral cool|warm|neutral|accent] [--density compact|comfortable] [--tone terse|friendly|procedural] [--mark AB] [--port 5173] [--subtitle "환경 · 팀"] [--dir 경로]\n  id는 kebab-case (예: incident-desk)`)
   }
   if (!existsSync(TEMPLATE)) throw new Error(`템플릿을 찾을 수 없습니다: ${TEMPLATE}`)
   const workspace = findWorkspaceRoot(cwd)
@@ -120,6 +120,8 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
   const signature = args.signature ?? 'status-strip'
   if (!SIGNATURES.includes(signature)) throw new Error(`signature는 ${SIGNATURES.join(' | ')} 중 하나`)
   if (!IMPLEMENTED_SIGNATURES.includes(signature)) throw new Error(`${signature}는 아직 @se/ui에 구현되지 않았습니다. 지금 쓸 수 있는 것: ${IMPLEMENTED_SIGNATURES.join(' | ')}`)
+  const shell = args.shell ?? 'sidebar'
+  if (!SHELLS.includes(shell)) throw new Error(`shell은 ${SHELLS.join(' | ')} 중 하나`)
   const name = args.name ?? id.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')
   const identity = {
     id,
@@ -128,13 +130,14 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
     accent: { hue },
     neutralBias: args.neutral ?? 'neutral',
     signature,
+    shell,
     density: args.density ?? 'comfortable',
     displayFont: 'pretendard',
     chart: 'accent-sequential',
     tone: args.tone ?? 'terse',
   }
   createTheme(identity) // 대비·의미 색 규칙 — 실패하면 여기서 던진다
-  const issues = checkRegistry([...registry.services, { id, name, hue, signature }]).filter((i) => i.a === id || i.b === id)
+  const issues = checkRegistry([...registry.services, { id, name, hue, signature, shell }]).filter((i) => i.a === id || i.b === id)
   const clash = issues.find((i) => i.level === 'error')
   if (clash) throw new Error(`${clash.message}. 예: --hue ${suggestHue(siblingHues)}`)
   const sameSig = issues.find((i) => i.level === 'warn')
@@ -163,12 +166,12 @@ export function main(argv = process.argv.slice(2), { cwd = process.cwd(), log = 
     throw e
   }
   if (inWorkspace && registryPath) {
-    registry.services.push({ id, name, hue, signature, neutralBias: identity.neutralBias, path: relative(workspace, dir) })
+    registry.services.push({ id, name, hue, signature, shell, neutralBias: identity.neutralBias, path: relative(workspace, dir) })
     writeFileSync(registryPath, JSON.stringify(registry, null, 2) + '\n')
   }
 
   log(`✓ ${name} 생성 → ${dir}`)
-  log(`  아이덴티티: hue ${hue}°${args.hue === undefined ? '(의미 색·형제와 가장 먼 값)' : ''} · ${signature} · ${identity.neutralBias} · ${identity.density} · ${identity.tone}${sameSig ? `\n  ! ${sameSig.message} (--signature)` : ''}`)
+  log(`  아이덴티티: hue ${hue}°${args.hue === undefined ? '(의미 색·형제와 가장 먼 값)' : ''} · ${signature} · ${shell} 쉘 · ${identity.neutralBias} · ${identity.density} · ${identity.tone}${sameSig ? `\n  ! ${sameSig.message} (--signature)` : ''}`)
   if (!inWorkspace) log(`  @se/* 는 git 에서 설치됩니다 (${GIT_DEP('*')}) — 첫 pnpm install 에 1–2분`)
   log(`\n다음:\n  ${inWorkspace ? `pnpm install   # 워크스페이스에 링크\n  pnpm --filter ${id} dev` : `cd ${dir}\n  pnpm install && pnpm dev`}   # http://localhost:${port}\n  Claude Code에서 /se:identity → /se:spec → /se:page 로 첫 화면을 만드십시오.`)
   return { dir, identity, port, inWorkspace }

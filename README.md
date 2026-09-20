@@ -16,7 +16,7 @@
 | `examples/reference-app` | **Job Monitor** — 모니터링. 개요(Dashboard)·잡 목록(ListDetail, 서버 모드)·로그 뷰어 | ✓ |
 | `examples/dataset-explorer` | **Dataset Explorer** — 조회. 검색 히어로·상세(DetailPage) | ✓ |
 | `examples/release-desk` | **Release Desk** — 업무 처리. 단계 레일·위자드(FormWizard)·설정(Settings) | ✓ |
-| `identities/` | 서비스 아이덴티티 레지스트리 (hue·시그니처 충돌 검사) | ✓ |
+| `identities/` | 서비스 아이덴티티 레지스트리 (hue·시그니처·쉘 배치 충돌 검사) | ✓ |
 | `plugin/` | Claude Code 플러그인 — 스킬 12개(자동 2 + 명령 10), 에이전트 3, 훅 2 | ✓ |
 | `templates/app-vite-react` + `packages/create-se-app` | 새 서비스 템플릿(워크스페이스에서 컴파일됨)과 CLI — `pnpm dlx`로 어느 폴더에서든 | ✓ |
 | `apps/storybook` | **Storybook** — 사람용. 아이덴티티 갤러리(가족 초상화)·시그니처 5종·컴포넌트·차트. 툴바에서 아이덴티티·테마·밀도 전환. `pnpm storybook` (6006). main 은 GitHub Pages 로 배포(저장소 Variables `DEPLOY_STORYBOOK=true` + Pages Source = GitHub Actions) | ✓ |

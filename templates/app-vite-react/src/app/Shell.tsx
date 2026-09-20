@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { List, Monitor, Moon, Palette, Sun } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
-import { AppShell, Avatar, NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
+import { AppShell, Avatar, NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup, type ShellLayout } from '@se/ui'
 import identity from '../../se.identity.json'
 
 /** 네비 — /se:page 가 화면을 만들면 여기와 App.tsx의 Route에 추가한다 */
@@ -31,6 +31,7 @@ export function Shell() {
 
   return (
     <AppShell
+      layout={identity.shell as ShellLayout}
       name={identity.name}
       mark={identity.mark.type === 'monogram' ? identity.mark.text : identity.name.slice(0, 1)}
       subtitle={SUBTITLE}

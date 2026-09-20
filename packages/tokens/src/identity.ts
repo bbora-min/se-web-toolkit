@@ -12,6 +12,15 @@ export const SIGNATURES = [
   'metric-marquee', // 핵심 지표 띠 (대시보드)
 ] as const
 
+/**
+ * 쉘 배치 — 서비스가 고르는 골격의 첫 결정. 화면 골격(원장·보드·관측 벽·문서 …)은 화면마다 고르지만 쉘은 서비스에 하나.
+ *  sidebar : 좌측 네비 + 상단 검색. 목록·대시보드 중심 도구 (기본)
+ *  topnav  : 상단 한 줄 네비, 사이드바 없음. 허브·콘솔처럼 화면이 넓어야 하는 도구
+ *  panes   : 좌측 아이콘 레일 + 전폭 콘텐츠. 트리아지·로그처럼 화면 안에서 패널을 나누는 도구
+ */
+export const SHELLS = ['sidebar', 'topnav', 'panes'] as const
+export type Shell = (typeof SHELLS)[number]
+
 export const DISPLAY_FONTS = {
   pretendard: '"Pretendard Variable", Pretendard, "Noto Sans KR", system-ui, sans-serif',
   'ibm-plex-sans': '"IBM Plex Sans", "Pretendard Variable", Pretendard, "Noto Sans KR", system-ui, sans-serif',
@@ -35,6 +44,8 @@ export const identitySchema = z.object({
   /** 뉴트럴(회색)을 어느 쪽으로 2–3% 기울일지 */
   neutralBias: z.enum(['cool', 'warm', 'neutral', 'accent']).default('neutral'),
   signature: z.enum(SIGNATURES),
+  /** 쉘 배치. 형제와 같은 배치가 셋 이상이면 레지스트리 검사가 경고한다 */
+  shell: z.enum(SHELLS).default('sidebar'),
   density: z.enum(['compact', 'comfortable']).default('compact'),
   displayFont: z.enum(Object.keys(DISPLAY_FONTS) as [keyof typeof DISPLAY_FONTS, ...(keyof typeof DISPLAY_FONTS)[]]).default('pretendard'),
   chart: z.enum(['accent-sequential', 'categorical']).default('accent-sequential'),
@@ -71,6 +82,8 @@ export interface RegistryEntry {
   name: string
   hue: number
   signature: string
+  /** 없으면 sidebar */
+  shell?: string
 }
 export interface RegistryIssue {
   level: 'error' | 'warn'
@@ -79,9 +92,23 @@ export interface RegistryIssue {
   message: string
 }
 
-/** 가족 규칙 — hue 30° 미만은 error, 같은 시그니처는 warn. check-identity 스크립트와 create-se-app 이 같이 쓴다 */
+/** 같은 쉘 배치를 이만큼 이상 쓰면 "색만 다른 형제" — 경고 */
+export const MAX_SAME_SHELL = 2
+
+/** 가족 규칙 — hue 30° 미만은 error, 같은 시그니처는 warn, 같은 쉘 배치 셋 이상은 warn. check-identity 스크립트와 create-se-app 이 같이 쓴다 */
 export function checkRegistry(services: RegistryEntry[]): RegistryIssue[] {
   const issues: RegistryIssue[] = []
+  const byShell = new Map<string, RegistryEntry[]>()
+  for (const s of services) {
+    const shell = s.shell ?? 'sidebar'
+    byShell.set(shell, [...(byShell.get(shell) ?? []), s])
+  }
+  for (const [shell, group] of byShell) {
+    if (group.length > MAX_SAME_SHELL) {
+      const last = group[group.length - 1]!
+      issues.push({ level: 'warn', a: group[0]!.id, b: last.id, message: `${group.map((g) => g.name).join(' · ')}: 쉘 배치가 전부 ${shell} — 색만 다른 형제가 된다. 새 서비스는 다른 배치(${SHELLS.filter((x) => x !== shell).join(' | ')})를 고려` })
+    }
+  }
   for (let i = 0; i < services.length; i++) {
     for (let j = i + 1; j < services.length; j++) {
       const a = services[i]!, b = services[j]!

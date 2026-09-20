@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Database, LayoutGrid, Monitor, Moon, Palette, Rows3, ShieldAlert, Star, Sun, Tags, Users } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
-import { AppShell, Avatar, Badge, NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
+import { AppShell, Avatar, Badge, NavItem, NavSection, useIdentityFavicon, useTheme, type CommandGroup, type ShellLayout } from '@se/ui'
 import identity from '../../se.identity.json'
 import { useDatasets } from '../api/datasets'
 
@@ -55,6 +55,7 @@ export function Shell() {
 
   return (
     <AppShell
+      layout={identity.shell as ShellLayout}
       name={identity.name}
       mark={<LayoutGrid className="size-4" />}
       subtitle="warehouse · bigquery-prod"

@@ -17,6 +17,7 @@
     "accent": { "type": "object", "required": ["hue"], "properties": { "hue": { "type": "number", "minimum": 0, "maximum": 360 } } },
     "neutralBias": { "enum": ["cool", "warm", "neutral", "accent"], "default": "neutral" },
     "signature": { "enum": ["status-strip", "search-hero", "stage-rail", "timeline-ribbon", "metric-marquee"] },
+    "shell": { "enum": ["sidebar", "topnav", "panes"], "default": "sidebar", "description": "쉘 배치 — sidebar(좌측 네비) · topnav(상단 네비, 사이드바 없음) · panes(아이콘 레일 + 전폭)" },
     "density": { "enum": ["compact", "comfortable"], "default": "compact" },
     "displayFont": { "enum": ["pretendard", "ibm-plex-sans", "noto-sans-kr", "ibm-plex-mono"], "default": "pretendard" },
     "chart": { "enum": ["accent-sequential", "categorical"], "default": "accent-sequential" },

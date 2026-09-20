@@ -44,7 +44,7 @@
 | 타이포 체계 | 본문 폰트(Pretendard + IBM Plex Mono), 타입 스케일(12/13/14/16/20/24/32), 행간, 자간 규칙 |
 | 공간 체계 | 4pt 리듬, 간격 스케일, 반경 패밀리(4/6/10), 보더·그림자 단계 |
 | 컴포넌트 해부학 | 버튼·입력·표·다이얼로그의 형태, 크기, 상태(hover/focus/disabled), 동작 |
-| AppShell 골격 | 좌측 네비 + 상단 헤더, 브레드크럼, `⌘K` 커맨드 팔레트, 사용자 메뉴, "SE ▸ 서비스명" 로크업 위치 |
+| AppShell 의 자리 | "마크 + 서비스명" 로크업, `⌘K` 커맨드 팔레트, 테마 토글, 사용자 메뉴, 크레딧 — 배치(사이드바·상단 네비·패널)는 서비스 슬롯(§3.2) |
 | 의미 색 | success/warn/danger/info, 작업 상태색(pending/running/succeeded/failed/cancelled) — 액센트와 분리 |
 | 인터랙션 관례 | 단축키, 위험 동작 확인, 토스트 위치, 빈/에러/로딩 상태 구조, 모션 시간·이징 |
 | 카피 관례 | 한국어 문체 규칙(명사형 버튼, 능동태, 에러=원인+해결) |
@@ -56,13 +56,16 @@
 | 액센트 hue | 브랜드 호환 밴드(채도·명도 고정, hue 자유). **레지스트리에서 기존 서비스와 30° 이상**, **의미 색(danger≈30°·warning≈70°·success≈155°·info≈260°)과 18° 이상** 떨어져야 함 — 가까우면 액센트 칩이 경고/오류처럼 읽힌다(Dataset Explorer에 호박 45°를 줬다가 실제로 겪음) | 청록 195° | 자두 310° | 인디고 235° (초록 150°는 success와 5°라 규칙에 걸림) |
 | 뉴트럴 편향 | 액센트 방향으로 2–3% 기울인 회색 | 차가운 회색 | 따뜻한 회색 | 중성 회색 |
 | 마크 | 모노그램 or 아이콘 + 이름 로크업 | `JM` 모노그램 | 격자 아이콘 | 태그 아이콘 |
+| **쉘 배치** (0.10.0) | `sidebar`(좌측 네비 + 상단 검색, 1120px) / `topnav`(상단 한 줄 네비, 사이드바 없음) / `panes`(아이콘 레일 + 전폭 콘텐츠). **레지스트리에서 같은 배치는 둘까지** — 셋째부터 경고. 페이지 골격(원장·보드·관측 벽·문서·허브·트리아지·콘솔·일정)은 화면마다 고른다 | sidebar | sidebar | sidebar |
 | 시그니처 요소 1개 | 헤더 하단 상태 스트립 / 검색 중심 히어로 / 진행 단계 레일 / 타임라인 리본 등 | 시스템 상태 스트립 | 커맨드 팔레트형 검색 히어로 | 릴리스 단계 레일 |
 | 기본 밀도 | compact / comfortable | compact | compact | comfortable |
 | 헤딩 폰트 | 승인 목록 3–4종(한글 호환) 중 택1 | IBM Plex Sans | Space Grotesk 계열 제외, 승인 목록 내 | Pretendard 그대로 |
 | 차트 팔레트 | 액센트 기반 순차 / 카테고리 변형 | 액센트 순차 | 카테고리 8색 | 액센트 순차 |
 | 톤 | 마이크로카피·빈 상태 문구·일러스트 톤 | 간결·기술적 | 탐색적·친절 | 절차적·신중 |
 
-**개성이 나오는 원리**: 슬롯이 8개고 각 슬롯의 선택지가 3–8개면, 조합은 수천 가지지만 골격은 하나다. 옆에 두면 "같은 팀 제품"이고, 따로 보면 "다른 제품"이다.
+**개성이 나오는 원리**: 슬롯이 9개고 각 슬롯의 선택지가 3–8개면, 조합은 수천 가지지만 자리는 하나다. 옆에 두면 "같은 팀 제품"이고, 따로 보면 "다른 제품"이다.
+
+**골격이 없으면 색만 다르다** (2026-09-20 진단): 위 슬롯은 전부 *표면* 변수라, 쉘·페이지 구조를 브랜드 코어가 고정하던 0.9.0 까지는 세 예제가 "사이드바 · 제목 · 띠 · 필터 · 표"로 똑같았다. 그래서 쉘 배치를 슬롯으로 내리고(서비스에 하나), 페이지 골격은 화면의 첫 결정으로 둔다(`se-design` 플랜 첫 줄). Jira 보드와 Confluence 문서가 한 가족인 방식 — 자리·토큰·컴포넌트·카피 관례가 같으면 배치가 달라도 형제로 읽힌다.
 
 ### 3.3 구현
 
@@ -74,6 +77,7 @@
   "accent": { "hue": 195 },              // 채도·명도는 브랜드 밴드에서 자동 계산
   "neutralBias": "cool",
   "signature": "status-strip",
+  "shell": "sidebar",                   // 쉘 배치: sidebar | topnav | panes
   "density": "compact",
   "displayFont": "IBM Plex Sans",
   "chart": "accent-sequential",
@@ -171,7 +175,7 @@ API는 shadcn/Radix 관례를 그대로 따른다(Claude가 아는 이름 → �
 |---|---|
 | T0 프리미티브 | Button, Input, Textarea, Select, Combobox, Checkbox, Switch, RadioGroup, Badge, Tooltip, Popover, Dialog, Sheet, Tabs, Table, Card, Toast, DropdownMenu, Command, Skeleton, Alert, Separator |
 | T1 내부도구 복합 | **DataTable**(TanStack: 서버 페이지네이션·정렬·컬럼 토글·행 선택·CSV), FilterBar, StatusBadge, DescriptionList, JsonViewer, LogViewer(가상 스크롤·ANSI), StatCard, TimeRangePicker, CodeBlock, EmptyState, ErrorState, ConfirmDialog, Form(react-hook-form + zod) |
-| T2 레이아웃/패턴 | AppShell, ListDetailPage, DashboardPage, DetailPage, FormWizardPage, SettingsPage |
+| T2 레이아웃/패턴 | AppShell(`layout` = sidebar · topnav · panes), ListDetailPage, DashboardPage, DetailPage, FormWizardPage, SettingsPage — 보드·관측 벽·문서·허브 골격은 0.11.0+ |
 | signatures/ | StatusStrip, SearchHero, StageRail, TimelineRibbon, MetricMarquee (아이덴티티 시그니처 후보) |
 
 각 패턴은 `examples/`에 로딩·빈·에러 상태를 포함한 완전 예제를 갖는다.

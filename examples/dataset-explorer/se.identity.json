@@ -6,6 +6,7 @@
   "accent": { "hue": 310 },
   "neutralBias": "warm",
   "signature": "search-hero",
+  "shell": "sidebar",
   "density": "comfortable",
   "displayFont": "pretendard",
   "chart": "categorical",

@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Activity, GitBranch, LayoutDashboard, ListChecks, Monitor, Moon, Palette, RefreshCw, Rows3, Server, Shapes, Sun } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
-import { AppShell, Avatar, NavItem, NavSection, StatusBadge, useIdentityFavicon, useTheme, type CommandGroup } from '@se/ui'
+import { AppShell, Avatar, NavItem, NavSection, StatusBadge, useIdentityFavicon, useTheme, type CommandGroup, type ShellLayout } from '@se/ui'
 import identity from '../../se.identity.json'
 import { useJobs } from '../api/jobs'
 
@@ -60,6 +60,7 @@ export function Shell() {
 
   return (
     <AppShell
+      layout={identity.shell as ShellLayout}
       name={identity.name}
       mark={identity.mark.text}
       subtitle="production · ap-northeast-2"

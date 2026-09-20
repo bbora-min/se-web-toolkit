@@ -5,7 +5,8 @@ import { cn } from '../lib/cn'
  * Board · BoardColumn · BoardCard — 보드(Kanban) 골격의 재료.
  * 열 = 상태(단계), 카드 = 항목. 가로로 스크롤하고, 카드를 다른 열에 끌어다 놓으면 `onMove` 가 불린다.
  * 끌기는 브라우저의 HTML5 drag & drop(의존성 없음). 키보드·터치는 카드의 메뉴("다음 단계로")로 같은 일을 한다 — 끌기만으로 할 수 있는 일을 두지 않는다.
- * 어디로 옮길 수 있는지는 `canMove` 가 정한다(워크플로 규칙은 페이지의 것). 옮길 수 없는 열은 끄는 동안 흐려진다.
+ * 어디로 옮길 수 있는지는 `canMove` 가 정한다(워크플로 규칙은 페이지의 것). 옮길 수 없는 열은 끄는 동안 흐려지지만 놓을 수는 있다 —
+ * 그때도 `onMove` 가 불리므로 페이지가 이유를 말한다(toast). 조용히 튕겨내지 않는다.
  * ────────────────────────────────────────────────────────────── */
 
 interface BoardCtx {
@@ -17,16 +18,14 @@ interface BoardCtx {
 const Ctx = React.createContext<BoardCtx>({ dragging: null, setDragging: () => {} })
 
 export interface BoardProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 스크롤 컨테이너 — 시그니처에서 열로 스크롤할 때 `querySelector('[data-column=…]')` */
-  ref?: React.Ref<HTMLDivElement>
-  /** 카드를 열에 놓았을 때. 없으면 끌 수 없다 */
+  /** 카드를 열에 놓았을 때 — `canMove` 가 false 인 열에 놓아도 불린다(페이지가 이유를 말할 수 있게). 없으면 끌 수 없다 */
   onMove?: (cardId: string, toColumnId: string) => void
-  /** 이 카드를 이 열에 놓을 수 있는가. 없으면 전부 허용 */
+  /** 이 카드를 이 열에 놓을 수 있는가 — 놓을 자리 표시(액센트/흐림)에 쓴다. 없으면 전부 허용 */
   canMove?: (cardId: string, toColumnId: string) => boolean
 }
 
-/** 가로 스크롤 보드. 자식은 `BoardColumn` */
-export function Board({ ref, onMove, canMove, className, children, ...props }: BoardProps) {
+/** 가로 스크롤 보드. 자식은 `BoardColumn`. ref 는 스크롤 컨테이너 — 시그니처에서 열로 스크롤할 때 `querySelector('[data-column=…]')` */
+export const Board = React.forwardRef<HTMLDivElement, BoardProps>(function Board({ onMove, canMove, className, children, ...props }, ref) {
   const [dragging, setDragging] = React.useState<string | null>(null)
   const ctx = React.useMemo<BoardCtx>(() => ({ dragging, setDragging, onMove, canMove }), [dragging, onMove, canMove])
   return (
@@ -36,7 +35,7 @@ export function Board({ ref, onMove, canMove, className, children, ...props }: B
       </div>
     </Ctx.Provider>
   )
-}
+})
 
 export interface BoardColumnProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title'> {
   id: string
@@ -54,13 +53,15 @@ export interface BoardColumnProps extends Omit<React.HTMLAttributes<HTMLElement>
 }
 
 /** 열 하나. 끄는 카드를 받을 수 있으면 놓을 자리가 액센트로, 받을 수 없으면 흐려진다 */
-export function BoardColumn({ id, title, count, blocked, highlighted, width = 288, actions, className, children, ...props }: BoardColumnProps) {
+export function BoardColumn({ id, title, count, blocked, highlighted, width = 288, actions, className, children, onDragOver, onDragLeave, onDrop, ...props }: BoardColumnProps) {
   const { dragging, onMove, canMove } = React.useContext(Ctx)
   const [over, setOver] = React.useState(false)
-  const acceptable = dragging !== null && Boolean(onMove) && (canMove ? canMove(dragging, id) : true)
+  const droppable = dragging !== null && Boolean(onMove)
+  const acceptable = droppable && (canMove ? canMove(dragging!, id) : true)
   const rejected = dragging !== null && !acceptable
   return (
     <section
+      {...props}
       data-column={id}
       className={cn(
         'flex shrink-0 snap-start flex-col rounded-lg border bg-canvas transition-[opacity,box-shadow,border-color] duration-150',
@@ -71,22 +72,24 @@ export function BoardColumn({ id, title, count, blocked, highlighted, width = 28
       )}
       style={{ width }}
       onDragOver={(e) => {
-        if (!acceptable) return
+        onDragOver?.(e)
+        if (!droppable) return
         e.preventDefault()
-        e.dataTransfer.dropEffect = 'move'
+        e.dataTransfer.dropEffect = acceptable ? 'move' : 'none'
         if (!over) setOver(true)
       }}
       onDragLeave={(e) => {
+        onDragLeave?.(e)
         if (e.currentTarget.contains(e.relatedTarget as Node | null)) return
         setOver(false)
       }}
       onDrop={(e) => {
+        onDrop?.(e)
         e.preventDefault()
         setOver(false)
         const cardId = e.dataTransfer.getData('text/plain') || dragging
-        if (cardId && acceptable) onMove?.(cardId, id)
+        if (cardId) onMove?.(cardId, id)
       }}
-      {...props}
     >
       <header className="flex h-10 items-center gap-2 px-3">
         <h2 className="truncate text-[13px] font-semibold text-ink">{title}</h2>
@@ -110,11 +113,12 @@ export interface BoardCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 /** 카드 한 장. 내용은 자식으로 — 첫 줄 식별자(mono) · 제목 · 하단 메타 순서를 권한다 */
-export function BoardCard({ id, onOpen, draggable = true, className, children, onKeyDown, ...props }: BoardCardProps) {
+export function BoardCard({ id, onOpen, draggable = true, className, children, onClick, onKeyDown, onDragStart, onDragEnd, ...props }: BoardCardProps) {
   const { dragging, setDragging, onMove } = React.useContext(Ctx)
   const canDrag = draggable && Boolean(onMove)
   return (
     <div
+      {...props}
       role="listitem"
       tabIndex={onOpen ? 0 : undefined}
       draggable={canDrag}
@@ -126,7 +130,10 @@ export function BoardCard({ id, onOpen, draggable = true, className, children, o
         dragging === id && 'opacity-50',
         className,
       )}
-      onClick={onOpen}
+      onClick={(e) => {
+        onClick?.(e)
+        if (!e.defaultPrevented) onOpen?.()
+      }}
       onKeyDown={(e) => {
         onKeyDown?.(e)
         if (e.defaultPrevented) return
@@ -136,12 +143,17 @@ export function BoardCard({ id, onOpen, draggable = true, className, children, o
         }
       }}
       onDragStart={(e) => {
+        onDragStart?.(e)
+        // 끌 수 없는 카드 안에서 글자를 끌 때 — 카드 끌기로 보지 않는다
+        if (!canDrag || e.target !== e.currentTarget) return
         e.dataTransfer.setData('text/plain', id)
         e.dataTransfer.effectAllowed = 'move'
         setDragging(id)
       }}
-      onDragEnd={() => setDragging(null)}
-      {...props}
+      onDragEnd={(e) => {
+        onDragEnd?.(e)
+        setDragging(null)
+      }}
     >
       {children}
     </div>

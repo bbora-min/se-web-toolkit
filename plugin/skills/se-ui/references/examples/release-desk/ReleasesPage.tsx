@@ -15,14 +15,14 @@ import { Copy, Eye, Kanban, MoreHorizontal, Plus, Rows3, ThumbsUp, XCircle } fro
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import {
   Alert, Avatar, Badge, Button, Combobox, DataTable, DateRangePicker, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
-  ErrorState, FilterBar, PageBody, PageHeader, SearchInput, StageRail, Tooltip, TooltipContent, TooltipTrigger, toast, useContentWidth, type ColumnDef, type DateRange,
+  EmptyState, ErrorState, FilterBar, PageBody, PageHeader, SearchInput, StageRail, Tooltip, TooltipContent, TooltipTrigger, toast, useContentWidth, type ColumnDef, type DateRange,
 } from '@se/ui'
 import { useReleases } from '../../api/releases'
 import { SERVICES, type Release, type StageId } from '../../api/types'
 import { formatAbsolute } from '@se/ui'
 import { ApproverStack, RiskLabel, StageBadge, TypeBadge } from './bits'
 import { DecisionDialog } from './DecisionDialog'
-import { ReleasesBoard } from './ReleasesBoard'
+import { ReleasesBoard, type BoardFocus } from './ReleasesBoard'
 
 const windowLabel = new Intl.DateTimeFormat('ko-KR', { month: 'short', day: 'numeric', weekday: 'short' })
 
@@ -78,7 +78,9 @@ export function ReleasesPage() {
   }
   const view: 'table' | 'board' = params.get('view') === 'board' ? 'board' : 'table'
   useContentWidth(view === 'board' ? 1440 : null)
-  const [focusStage, setFocusStage] = React.useState<StageId | null>(null)
+  const [focus, setFocus] = React.useState<BoardFocus | null>(null)
+  /** 필터만 지운다 — 보기(view)는 남긴다 */
+  const resetFilters = () => setParams(view === 'board' ? { view: 'board' } : {}, { replace: true })
   const set = (patch: Record<string, string>) => {
     const next = new URLSearchParams(params)
     for (const [k, v] of Object.entries(patch)) v ? next.set(k, v) : next.delete(k)
@@ -102,8 +104,8 @@ export function ReleasesPage() {
           <>
             {/* 표 ↔ 보드 — 같은 목록, 다른 골격. URL 에 남는다 */}
             <div className="flex items-center rounded-md bg-surface-2 p-0.5" role="group" aria-label="보기">
-              <Button variant="ghost" size="sm" aria-pressed={view === 'table'} onClick={() => set({ view: '' })} className={view === 'table' ? 'bg-surface text-ink shadow-xs hover:bg-surface' : 'text-muted'}><Rows3 /> 표</Button>
-              <Button variant="ghost" size="sm" aria-pressed={view === 'board'} onClick={() => set({ view: 'board', stage: '' })} className={view === 'board' ? 'bg-surface text-ink shadow-xs hover:bg-surface' : 'text-muted'}><Kanban /> 보드</Button>
+              <Button variant="ghost" size="sm" aria-pressed={view === 'table'} onClick={() => { setFocus(null); set({ view: '' }) }} className={view === 'table' ? 'bg-surface text-ink shadow-xs hover:bg-surface' : 'text-muted'}><Rows3 /> 표</Button>
+              <Button variant="ghost" size="sm" aria-pressed={view === 'board'} onClick={() => { setFocus(null); set({ view: 'board', stage: '' }) }} className={view === 'board' ? 'bg-surface text-ink shadow-xs hover:bg-surface' : 'text-muted'}><Kanban /> 보드</Button>
             </div>
             <Button variant="primary" asChild>
               <Link to="/releases/new"><Plus /> 새 릴리스</Link>
@@ -122,7 +124,7 @@ export function ReleasesPage() {
         stages={(rail.data?.stages ?? []).filter((s) => s.id !== 'draft').map((s) => ({ id: s.id, label: s.label, count: s.count, blocked: s.blocked }))}
         value={view === 'table' ? f.stage || null : null}
         // 표에선 필터, 보드에선 "그 열로 가기"
-        onChange={(id) => (view === 'table' ? set({ stage: id ?? '' }) : setFocusStage(id as StageId | null))}
+        onChange={(id) => (view === 'table' ? set({ stage: id ?? '' }) : id ? setFocus((f) => ({ stage: id as StageId, n: (f?.n ?? 0) + 1 })) : null)}
         headline={rail.data ? `${rail.data.stages.filter((s) => s.id !== 'done' && s.id !== 'draft').reduce((a, s) => a + s.count, 0)}건 진행 중` : '—'}
         detail={rail.data ? `막힘 ${rail.data.stages.reduce((a, s) => a + s.blocked, 0)}건 · 이번 주 배포 ${rail.data.stages.find((s) => s.id === 'deploy')?.count ?? 0}건` : undefined}
       />
@@ -131,8 +133,8 @@ export function ReleasesPage() {
         <FilterBar
           end={
             <span className="text-sm text-muted tnum">
-              {list.data ? `${items.length}건` : null}
-              {hasFilter ? <> · <Button variant="link" size="sm" onClick={() => setParams({}, { replace: true })}>필터 초기화</Button></> : null}
+              {view === 'board' ? (rail.data ? `${rail.data.items.length}건` : null) : list.data ? `${items.length}건` : null}
+              {hasFilter ? <> · <Button variant="link" size="sm" onClick={resetFilters}>필터 초기화</Button></> : null}
             </span>
           }
         >
@@ -150,8 +152,12 @@ export function ReleasesPage() {
         {view === 'board' ? (
           rail.isError ? (
             <ErrorState title="릴리스 목록을 불러오지 못했습니다" description={rail.error.message} action={<Button onClick={() => rail.refetch()}>다시 시도</Button>} />
+          ) : rail.data && rail.data.items.length === 0 ? (
+            hasFilter
+              ? <EmptyState title="조건에 해당하는 릴리스가 없습니다" description="필터를 조정하거나 초기화하십시오." action={<Button onClick={resetFilters}>필터 초기화</Button>} />
+              : <EmptyState title="등록된 릴리스가 없습니다" description="첫 릴리스를 등록하면 단계별 진행 상황이 여기에 표시됩니다." action={<Button asChild><Link to="/releases/new"><Plus /> 새 릴리스</Link></Button>} />
           ) : (
-            <ReleasesBoard items={rail.data?.items} loading={rail.isPending} focusStage={focusStage} onOpen={(r) => navigate(`/releases/${r.id}`)} onDecide={setDecide} />
+            <ReleasesBoard items={rail.data?.items} loading={rail.isPending} focus={focus} onOpen={(r) => navigate(`/releases/${r.id}`)} onDecide={setDecide} />
           )
         ) : (
         <DataTable
@@ -162,7 +168,7 @@ export function ReleasesPage() {
           error={list.isError ? { title: '릴리스 목록을 불러오지 못했습니다', description: list.error.message, onRetry: () => list.refetch() } : null}
           empty={
             hasFilter
-              ? { title: '조건에 해당하는 릴리스가 없습니다', description: '필터를 조정하거나 초기화하십시오.', action: <Button onClick={() => setParams({}, { replace: true })}>필터 초기화</Button> }
+              ? { title: '조건에 해당하는 릴리스가 없습니다', description: '필터를 조정하거나 초기화하십시오.', action: <Button onClick={resetFilters}>필터 초기화</Button> }
               : { title: '등록된 릴리스가 없습니다', description: '첫 릴리스를 등록하면 단계별 진행 상황이 여기에 표시됩니다.', action: <Button asChild><Link to="/releases/new"><Plus /> 새 릴리스</Link></Button> }
           }
           onRowClick={(r) => navigate(`/releases/${r.id}`)}

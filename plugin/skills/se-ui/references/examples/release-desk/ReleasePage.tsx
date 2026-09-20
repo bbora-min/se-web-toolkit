@@ -11,12 +11,12 @@ import {
   Alert, Avatar, Badge, Button, CheckboxField, ConfirmDialog, ErrorState, PageBody, Skeleton, Steps, Tabs, cn, toast,
 } from '@se/ui'
 import { useAdvance, useChecklist, useRelease } from '../../api/releases'
-import { STAGES, type Release, type StageId } from '../../api/types'
+import { STAGES, type Release } from '../../api/types'
+import { ME, ORDER, advanceBlocker } from '../../lib/workflow'
 import { formatAbsolute, formatRelative } from '@se/ui'
 import { ApproverStack, RiskLabel, StageBadge, TypeBadge } from './bits'
 import { DecisionDialog } from './DecisionDialog'
 
-const ORDER: StageId[] = ['draft', 'review', 'staging', 'approval', 'deploy', 'done']
 const windowFmt = new Intl.DateTimeFormat('ko-KR', { month: 'short', day: 'numeric', weekday: 'short', hour: 'numeric', hour12: false })
 
 export function ReleasePage() {
@@ -30,11 +30,12 @@ export function ReleasePage() {
   const [confirmAdvance, setConfirmAdvance] = React.useState(false)
 
   const myTurn = r?.stage === 'approval' && r.approvers.some((a) => a.name === 'bora' && a.decision === 'pending')
-  const isOwner = r?.owner === 'bora'
+  const isOwner = r?.owner === ME
   const requiredMissing = r?.checklist.filter((c) => c.required && !c.done).length ?? 0
   const stageIdx = r ? ORDER.indexOf(r.stage) : 0
   const nextLabel = r && r.stage !== 'done' ? STAGES[stageIdx + 1]?.label : null
-  const canAdvance = r && r.stage !== 'done' && r.stage !== 'approval' && !(r.stage === 'staging' && requiredMissing > 0)
+  // 보드의 끌기·메뉴와 같은 규칙(lib/workflow.ts)
+  const canAdvance = Boolean(r) && !advanceBlocker(r!)
 
   return (
     <PageBody>

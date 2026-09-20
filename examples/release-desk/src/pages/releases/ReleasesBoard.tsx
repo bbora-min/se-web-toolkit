@@ -17,45 +17,42 @@ import { ArrowRight, Copy, Eye, MoreHorizontal, ThumbsUp } from 'lucide-react'
 import { Avatar, Badge, Board, BoardCard, BoardColumn, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Skeleton, Tooltip, TooltipContent, TooltipTrigger, formatAbsolute, toast } from '@se/ui'
 import { useAdvanceRelease } from '../../api/releases'
 import { STAGES, type Release, type StageId } from '../../api/types'
+import { ME, advanceBlocker, nextStage } from '../../lib/workflow'
 import { ApproverStack, RiskLabel, TypeBadge } from './bits'
 
-const ORDER: StageId[] = STAGES.map((s) => s.id)
 /** 보드에 보이는 열 — 초안은 작성자만 보는 상태라 뺀다 */
 const COLUMNS = STAGES.filter((s) => s.id !== 'draft')
 const windowLabel = new Intl.DateTimeFormat('ko-KR', { month: 'short', day: 'numeric', weekday: 'short' })
 
-/** 상세 화면(ReleasePage)과 같은 규칙 — 다음 단계로 갈 수 있는가. 이유가 있으면 문자열로 */
-export function advanceBlocker(r: Release): string | null {
-  if (r.stage === 'done') return '완료된 릴리스입니다'
-  if (r.stage === 'approval') return '승인 단계는 승인자의 결정으로만 진행됩니다'
-  if (r.stage === 'staging' && r.checklist.some((c) => c.required && !c.done)) return '필수 체크리스트를 먼저 완료하십시오'
-  return null
+/** 단계 레일에서 가리킨 열 — 같은 열을 다시 눌러도 스크롤하도록 n 을 올린다 */
+export interface BoardFocus {
+  stage: StageId
+  n: number
 }
-const nextStage = (stage: StageId): StageId | null => ORDER[ORDER.indexOf(stage) + 1] ?? null
 
 export interface ReleasesBoardProps {
   items: Release[] | undefined
   loading?: boolean
   /** 단계 레일에서 가리킨 열 — 스크롤하고 잠시 강조 */
-  focusStage?: StageId | null
+  focus?: BoardFocus | null
   onOpen: (r: Release) => void
   onDecide: (r: Release) => void
 }
 
-export function ReleasesBoard({ items, loading, focusStage, onOpen, onDecide }: ReleasesBoardProps) {
-  const advance = useAdvanceRelease()
+export function ReleasesBoard({ items, loading, focus, onOpen, onDecide }: ReleasesBoardProps) {
+  const { mutateAsync: advance } = useAdvanceRelease()
   const byId = React.useMemo(() => new Map((items ?? []).map((r) => [r.id, r])), [items])
   const [highlight, setHighlight] = React.useState<StageId | null>(null)
   const boardRef = React.useRef<HTMLDivElement>(null)
 
   // 레일 → 열: 스크롤 + 1.2초 강조
   React.useEffect(() => {
-    if (!focusStage) return
-    boardRef.current?.querySelector(`[data-column="${focusStage}"]`)?.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' })
-    setHighlight(focusStage)
+    if (!focus) return
+    boardRef.current?.querySelector(`[data-column="${focus.stage}"]`)?.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' })
+    setHighlight(focus.stage)
     const t = setTimeout(() => setHighlight(null), 1200)
     return () => clearTimeout(t)
-  }, [focusStage])
+  }, [focus])
 
   const canMove = React.useCallback(
     (cardId: string, to: string) => {
@@ -72,7 +69,7 @@ export function ReleasesBoard({ items, loading, focusStage, onOpen, onDecide }: 
       if (why) return void toast(why)
       if (nextStage(r.stage) !== to) return void toast('바로 다음 단계로만 옮길 수 있습니다')
       try {
-        await advance.mutateAsync(r.id)
+        await advance(r.id)
         toast(`${r.version} — ${STAGES.find((s) => s.id === to)!.label} 단계로 이동되었습니다`)
       } catch (e) {
         toast((e as Error).message)
@@ -82,7 +79,7 @@ export function ReleasesBoard({ items, loading, focusStage, onOpen, onDecide }: 
   )
 
   return (
-    <Board ref={boardRef} onMove={(id, to) => void move(id, to)} canMove={canMove} aria-busy={loading || advance.isPending}>
+    <Board ref={boardRef} onMove={move} canMove={canMove} aria-busy={loading}>
       {COLUMNS.map((col) => {
         const cards = (items ?? []).filter((r) => r.stage === col.id)
         const blocked = cards.filter((r) => r.blocked).length
@@ -107,7 +104,7 @@ export function ReleasesBoard({ items, loading, focusStage, onOpen, onDecide }: 
 
 function ReleaseCard({ release: r, onOpen, onDecide, onAdvance }: { release: Release; onOpen: () => void; onDecide: () => void; onAdvance: () => void }) {
   const blocker = advanceBlocker(r)
-  const myTurn = r.stage === 'approval' && r.approvers.some((a) => a.name === 'bora' && a.decision === 'pending')
+  const myTurn = r.stage === 'approval' && r.approvers.some((a) => a.name === ME && a.decision === 'pending')
   const next = nextStage(r.stage)
   return (
     <BoardCard id={r.id} onOpen={onOpen} draggable={!blocker} aria-label={`${r.version} ${r.title}`}>

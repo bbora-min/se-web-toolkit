@@ -1,16 +1,6 @@
-# Board · BoardColumn · BoardCard
+# BoardColumn · BoardCard · Board
 
-`import { Board, BoardColumn, BoardCard } from '@se/ui'` — 패턴 · `packages/ui/src/patterns/board.tsx`
-
-## Board
-
-가로 스크롤 보드. 자식은 `BoardColumn`
-
-| prop | 타입 | 기본 | 설명 |
-|---|---|---|---|
-| `canMove` | `((cardId: string, toColumnId: string) => boolean)` |  | 이 카드를 이 열에 놓을 수 있는가. 없으면 전부 허용 |
-| `onMove` | `((cardId: string, toColumnId: string) => void)` |  | 카드를 열에 놓았을 때. 없으면 끌 수 없다 |
-| `ref` | `Ref<HTMLDivElement>` |  | 스크롤 컨테이너 — 시그니처에서 열로 스크롤할 때 `querySelector('[data-column=…]')` |
+`import { BoardColumn, BoardCard, Board } from '@se/ui'` — 패턴 · `packages/ui/src/patterns/board.tsx`
 
 ## BoardColumn
 
@@ -35,3 +25,12 @@
 | `id` **필수** | `string` |  |  |
 | `draggable` | `boolean` | `true` | 끌 수 없는 카드(완료 등) |
 | `onOpen` | `(() => void)` |  | 카드 전체를 눌렀을 때(상세로). 끌기와 구분된다 |
+
+## Board
+
+가로 스크롤 보드. 자식은 `BoardColumn`. ref 는 스크롤 컨테이너 — 시그니처에서 열로 스크롤할 때 `querySelector('[data-column=…]')`
+
+| prop | 타입 | 기본 | 설명 |
+|---|---|---|---|
+| `canMove` | `((cardId: string, toColumnId: string) => boolean)` |  | 이 카드를 이 열에 놓을 수 있는가 — 놓을 자리 표시(액센트/흐림)에 쓴다. 없으면 전부 허용 |
+| `onMove` | `((cardId: string, toColumnId: string) => void)` |  | 카드를 열에 놓았을 때 — `canMove` 가 false 인 열에 놓아도 불린다(페이지가 이유를 말할 수 있게). 없으면 끌 수 없다 |

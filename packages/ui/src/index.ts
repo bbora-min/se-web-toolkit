@@ -32,12 +32,13 @@ export { ConfirmDialog, type ConfirmDialogProps } from './components/confirm-dia
 export { DescriptionList, type DescriptionItem } from './components/description-list'
 export { Toaster, toast } from './components/toast'
 
-export { AppShell, NavItem, NavSection, PageHeader, SectionHeader, PageBody, ThemeToggle, useShellLayout, useShellSearch, type AppShellProps, type ShellLayout } from './patterns/app-shell'
+export { AppShell, NavItem, NavSection, PageHeader, SectionHeader, PageBody, ThemeToggle, useShellLayout, useShellSearch, useContentWidth, type AppShellProps, type ShellLayout } from './patterns/app-shell'
 
 export { StatusStrip, type StatusStripProps, type StripHealth } from './signatures/status-strip'
 export { SearchHero, type SearchHeroProps } from './signatures/search-hero'
 export { CommandPalette, useCommandPalette, type CommandGroup, type CommandItem } from './components/command-palette'
 export { IdentitySheet, useIdentityFavicon, type IdentitySheetProps } from './patterns/identity-sheet'
+export { TileGrid, Tile, type TileGridProps, type TileProps } from './patterns/tile-grid'
 export { Textarea } from './components/textarea'
 export { Checkbox, CheckboxField } from './components/checkbox'
 export { Switch, SwitchRow } from './components/switch'

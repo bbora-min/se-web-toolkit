@@ -3,6 +3,20 @@
 툴킷(패키지 `@se/*` + 플러그인)은 **한 버전**으로 움직인다. 항목마다 세 칸: **바뀐 것** / **화면 변화**(코드는 그대로인데 보이는 게 달라지는 것) / **앱에서 할 일**(코드를 고쳐야 하는 것). 앱 담당자는 세 번째 칸만 읽어도 된다.
 버전 의미: patch = 화면 변화 없음 · minor = 추가 또는 화면 변화, 코드 수정 불필요 · major = 앱 코드를 고쳐야 함. 깨지는 변경은 한 minor 동안 옛 방식을 남기고 경고한다.
 
+## 0.12.0 — 2026-09-20
+
+**바뀐 것**
+- **관측 벽(observability wall) 골격** — Job Monitor 개요(`examples/reference-app/OverviewPage.tsx`)를 제목 있는 카드 4장에서 **제목 없는 12칸 타일 벽**으로: 툴바(기간 · 자동 갱신 · 목록 링크) → 상태 스트립 → [시간별 완료 8 | 파이프라인 성공률 4] → [큐 대기 6(목표선) | 실패 원인 3 | 노드 3] → 최근 실패 12. 바탕은 canvas, 전폭(쉘이 `/overview` 에서만 1440), 임계 초과는 타일 점(`tone`)
+- `@se/ui` **`TileGrid` · `Tile`**(span · spanNarrow · title · note · legend · actions · tone), **`useContentWidth(px)`**(페이지가 떠 있는 동안 쉘 콘텐츠 폭을 바꾼다 — 벽·보드용). `@se/charts` **`ChartLegend`** 내보냄(ChartCard 가 쓰던 범례 — `Tile legend=` 에 그대로)
+- Job Monitor 목·타입에 `failureCauses`(에러 첫 단어로 묶은 실패 원인 상위 5, 기간을 따른다). 잡 검색(`q`)이 에러 문자열도 본다 — 실패 원인 타일에서 드릴다운
+- 스킬: `se-ui` 선택표의 대시보드 행이 관측 벽, `references/patterns/dashboard.md` 를 벽 골격으로 다시 씀(카드형이 나은 경우 포함). Storybook `패턴/TileGrid`
+
+**화면 변화**
+- Job Monitor `/overview` 전체(기준 스크린샷 갱신 — 노드 타일은 CPU·MEM 헤더와 실행 중 잡 수 열). 잡 목록의 검색 플레이스홀더에 "에러" 추가. 그 외 다른 화면·다른 앱은 그대로. `ChartCard` 렌더는 동일(범례가 컴포넌트로 분리됐을 뿐)
+
+**앱에서 할 일**
+- 없음 — `/se:upgrade` 만. 대시보드를 벽으로 바꾸려면 `OverviewPage.tsx` 원본을 복사한다(페이지 안의 `useContentWidth(1440)` 이 폭을 넓힌다)
+
 ## 0.11.0 — 2026-09-20
 
 **바뀐 것**

@@ -66,6 +66,12 @@ export interface QueuePoint {
   p50: number
   p95: number
 }
+export interface FailureCause {
+  cause: string
+  count: number
+  /** 0–100, 실패 전체 대비 */
+  share: number
+}
 export interface Overview {
   range: '24h' | '7d'
   hourly: HourBucket[]
@@ -73,4 +79,5 @@ export interface Overview {
   recentFailures: Job[]
   nodes: NodeStat[]
   queueWait: QueuePoint[]
+  failureCauses: FailureCause[]
 }

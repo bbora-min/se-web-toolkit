@@ -1,4 +1,4 @@
-export { ChartCard, type ChartCardProps } from './chart-card'
+export { ChartCard, ChartLegend, type ChartCardProps } from './chart-card'
 export { BarChart, type BarChartProps } from './bar-chart'
 export { LineChart, type LineChartProps } from './line-chart'
 export { MeterList, type MeterItem } from './meter-list'

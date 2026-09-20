@@ -1,6 +1,6 @@
-# ChartCard · BarChart · LineChart · MeterList · SeriesColor
+# ChartCard · ChartLegend · BarChart · LineChart · MeterList · SeriesColor
 
-`import { ChartCard, BarChart, LineChart, MeterList, SeriesColor } from '@se/charts'` — 차트 · `packages/charts/src/index.ts`
+`import { ChartCard, ChartLegend, BarChart, LineChart, MeterList, SeriesColor } from '@se/charts'` — 차트 · `packages/charts/src/index.ts`
 
 ## ChartCard
 
@@ -11,6 +11,15 @@
 | `className` | `string` |  |  |
 | `description` | `string` |  | 무엇을 어떻게 읽는지 한 줄 |
 | `legend` | `Series[]` |  | 2개 이상 시리즈면 항상 범례 |
+
+## ChartLegend
+
+범례 — 시리즈 색 점 + 라벨. ChartCard 가 쓰고, 관측 벽의 `Tile legend=` 에도 그대로 넘긴다
+
+| prop | 타입 | 기본 | 설명 |
+|---|---|---|---|
+| `series` **필수** | `Series[]` |  |  |
+| `className` | `string` |  |  |
 
 ## BarChart
 

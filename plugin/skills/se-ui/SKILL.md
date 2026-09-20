@@ -25,14 +25,14 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 | 화면 | 골격 | 패턴 | 원본 (복사해서 변형) | 골격 문서 |
 |---|---|---|---|---|
 | 목록 + 필터 + 상세 | 원장 | **ListDetailPage** | `references/examples/reference-app/JobsPage.tsx` (드로어 상세, 서버 페이지네이션, 일괄 액션) + `JobDetailSheet.tsx` · `references/examples/release-desk/ReleasesPage.tsx` (페이지 상세) | `references/patterns/list-detail.md` |
-| 지표·차트·상태 요약 | 원장(카드) | **DashboardPage** | `references/examples/reference-app/OverviewPage.tsx` | `references/patterns/dashboard.md` |
+| 지표·차트·상태 요약 | **관측 벽** (제목 없이 12칸 타일) | **DashboardPage** | `references/examples/reference-app/OverviewPage.tsx` | `references/patterns/dashboard.md` |
 | 단일 객체 + 탭 | 원장(상세) | **DetailPage** | `references/examples/dataset-explorer/DatasetPage.tsx` · `references/examples/release-desk/ReleasePage.tsx` (워크플로 액션) | `references/patterns/detail.md` |
 | 여러 단계 입력 | 폼 | **FormWizardPage** | `references/examples/release-desk/NewReleasePage.tsx` (+ `DecisionDialog.tsx` 폼 모달) | `references/patterns/form-wizard.md` |
 | 설정·토글 | 폼 | **SettingsPage** | `references/examples/release-desk/SettingsPage.tsx` | `references/patterns/settings.md` |
 | 입구·포털 — 서비스·도구·문서를 고르는 화면 | **허브** | **HubPage** | `references/examples/se-home/HomePage.tsx` (상단 네비 쉘 · 큰 검색 · 카드 카탈로그 · 최근 항목) + `se-home/Shell.tsx` (`layout="topnav"` 쉘 원본) | `references/patterns/hub.md` |
 | 검색이 전부인 목록 | 원장 | ListDetail + `SearchHero` | `references/examples/dataset-explorer/DatasetsPage.tsx` | — |
 
-골격이 위 표에 없으면(보드·관측 벽·문서·트리아지·콘솔·일정) 툴킷의 다음 버전에서 원본이 생긴다 — 그 전엔 `AppShell layout` 과 있는 컴포넌트로 페이지 안에 만들고 보고한다. 있는 원장 원본을 억지로 쓰지 않는다.
+골격이 위 표에 없으면(보드·문서·트리아지·콘솔·일정) 툴킷의 다음 버전에서 원본이 생긴다 — 그 전엔 `AppShell layout` 과 있는 컴포넌트로 페이지 안에 만들고 보고한다. 있는 원장 원본을 억지로 쓰지 않는다.
 
 원본 파일 상단의 `디자인 플랜` 주석까지 읽는다 — 왜 그렇게 놓았는지가 거기 있다. 쉘·목·훅의 원본은 `references/examples/reference-app/{Shell.tsx,mocks-handlers.ts,api-jobs.ts}`. (동봉본은 툴킷의 `examples/`에서 자동 복사된다 — 어느 폴더에서 열어도 있다)
 
@@ -45,7 +45,7 @@ description: SE 디자인 시스템(@se/ui, @se/tokens, @se/charts)을 쓰는 Re
 6. 스크린샷 1회로 확인 (1440·1024 폭, 라이트·다크)
 
 ## 쉘과 시그니처
-- 모든 페이지는 `AppShell` 안. 배치는 `layout={parseIdentity(identity).shell}`(`@se/tokens`, JSON 을 그대로 넘기면 string 이라 타입이 안 맞는다) — `sidebar`(좌측 네비, 기본) · `topnav`(상단 네비, 사이드바 없음) · `panes`(아이콘 레일 + 전폭, `NavItem label=` 필수). 로크업(마크+이름)·검색(⌘K)·테마 토글의 자리는 배치가 정하므로 건드리지 않는다. `PageHeader`·`PageBody`는 원장·폼 골격의 것 — 관측 벽·트리아지처럼 제목 없는 골격은 안 쓴다
+- 모든 페이지는 `AppShell` 안. 배치는 `layout={parseIdentity(identity).shell}`(`@se/tokens`, JSON 을 그대로 넘기면 string 이라 타입이 안 맞는다) — `sidebar`(좌측 네비, 기본) · `topnav`(상단 네비, 사이드바 없음) · `panes`(아이콘 레일 + 전폭, `NavItem label=` 필수). 로크업(마크+이름)·검색(⌘K)·테마 토글의 자리는 배치가 정하므로 건드리지 않는다. `PageHeader`·`PageBody`는 원장·폼 골격의 것 — 관측 벽(`TileGrid`·`Tile`, 툴바 + `sr-only` h1)·트리아지처럼 제목 없는 골격은 안 쓴다
 - 시그니처는 `se.identity.json`의 `signature`가 정한다. 페이지 맨 위 한 자리: `StatusStrip`(모니터링 — 지금 괜찮은가) · `SearchHero`(조회 — 무엇을 찾나) · `StageRail`(워크플로 — 어디까지 왔나) · `TimelineRibbon`(활동·이력 — 최근 무슨 일이) · `MetricMarquee`(비용·사용량·품질 — 얼마인가). `StatusStrip`은 목록 페이지에서 `variant="compact"`(한 줄), 개요 페이지에서 full. 나머지는 변형 없이 그대로. 다섯을 한눈에: `references/examples/reference-app/SignaturesPage.tsx`
 - 커맨드 팔레트: `AppShell`의 `command` prop에 그룹만 넘긴다 (이동·항목 점프·액션). 새 페이지를 만들면 여기에도 등록한다
 

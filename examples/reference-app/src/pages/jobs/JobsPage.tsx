@@ -232,7 +232,7 @@ export function JobsPage() {
           }
         >
           <SearchInput
-            placeholder="잡 이름, ID, 소유자"
+            placeholder="잡 이름, ID, 소유자, 에러"
             value={filters.q}
             onChange={(e) => setFilter('q', e.target.value)}
             aria-label="잡 검색"

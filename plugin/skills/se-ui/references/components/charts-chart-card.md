@@ -1,6 +1,17 @@
-# ChartCard
+# ChartLegend · ChartCard
 
-`import { ChartCard } from '@se/charts'` — 차트 · `packages/charts/src/chart-card.tsx`
+`import { ChartLegend, ChartCard } from '@se/charts'` — 차트 · `packages/charts/src/chart-card.tsx`
+
+## ChartLegend
+
+범례 — 시리즈 색 점 + 라벨. ChartCard 가 쓰고, 관측 벽의 `Tile legend=` 에도 그대로 넘긴다
+
+| prop | 타입 | 기본 | 설명 |
+|---|---|---|---|
+| `series` **필수** | `Series[]` |  |  |
+| `className` | `string` |  |  |
+
+## ChartCard
 
 | prop | 타입 | 기본 | 설명 |
 |---|---|---|---|

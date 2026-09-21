@@ -19,20 +19,23 @@ export interface ApiClientOptions {
   base?: string
   /** 요청마다 붙일 헤더(인증 등). 함수면 매 호출 시 계산 */
   headers?: Record<string, string> | (() => Record<string, string>)
-  /** 개발 전용 상태 강제 파라미터 전달 여부 (기본: DEV에서만) */
+  /** 상태 강제 파라미터(`?__state=`) 전달 여부 (기본: DEV 이거나 VITE_MOCK 목 빌드일 때) */
   devState?: boolean
 }
+
+/** 개발 서버이거나 목을 넣은 배포 빌드(VITE_MOCK=true, 정적 호스팅 견본)인가 — 둘 다 `?__state=` 로 화면 상태를 강제할 수 있다 */
+const mockable = (env: Record<string, string | boolean | undefined>) => Boolean(env.DEV) || env.VITE_MOCK === 'true' || env.VITE_MOCK === true
 
 /** 개발 중 URL에 `?__state=`가 있는가 — 화면 상태를 강제하는 중이면 react-query 재시도도 꺼야 스크린샷이 에러 화면을 찍는다 */
 export function hasForcedState(): boolean {
   const env = (import.meta as unknown as { env?: Record<string, string | boolean | undefined> }).env ?? {}
-  return Boolean(env.DEV) && typeof location !== 'undefined' && new URLSearchParams(location.search).has('__state')
+  return mockable(env) && typeof location !== 'undefined' && new URLSearchParams(location.search).has('__state')
 }
 
 export function createApiClient(opts: ApiClientOptions = {}) {
   const env = (import.meta as unknown as { env?: Record<string, string | boolean | undefined> }).env ?? {}
   const base = opts.base ?? (typeof env.VITE_API_BASE === 'string' && env.VITE_API_BASE ? env.VITE_API_BASE : '/api')
-  const devState = opts.devState ?? Boolean(env.DEV)
+  const devState = opts.devState ?? mockable(env)
   return async function api<T>(path: string, init?: RequestInit): Promise<T> {
     const url = new URL(base + path, location.origin)
     if (devState) {

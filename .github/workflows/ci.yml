@@ -37,7 +37,12 @@ jobs:
       - run: pnpm visual
       - if: failure()
         uses: actions/upload-artifact@v4
-        with: { name: visual-diff, path: '{examples,apps/site}/**/test-results', retention-days: 7 }
+        with:
+          name: visual-diff
+          retention-days: 7
+          path: |
+            examples/*/test-results
+            apps/site/test-results
 
   react18:
     # peer "^18.2 || ^19" 를 실제로 검증 — 18 로 강제 설치해 @se/ui·charts typecheck, 템플릿 앱 typecheck·build·e2e

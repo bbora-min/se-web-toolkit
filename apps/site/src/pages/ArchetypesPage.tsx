@@ -14,7 +14,7 @@ export function ArchetypesPage() {
       <PageHeader
         title="골격 열 개"
         description="골격은 서비스가 아니라 화면마다 고른다. 같은 서비스 안에 원장도, 문서도, 대화도 있다. 열 개 전부 실제로 돌아가는 원본 화면이 있고 /se:page 는 그걸 복사해 변형한다."
-        actions={<Button variant="secondary" size="sm" asChild><a href={`${DESIGN_DOC}#6-골격`} target="_blank" rel="noreferrer">설계 문서 <ArrowUpRight /></a></Button>}
+        actions={<Button variant="secondary" size="sm" asChild><a href={`${DESIGN_DOC}#62-seui--컴포넌트-3티어--시그니처`} target="_blank" rel="noreferrer">설계 문서 <ArrowUpRight /></a></Button>}
       />
       <nav aria-label="골격" className="flex flex-wrap gap-1.5">
         {ARCHETYPES.map((a) => <Chip key={a.id} asChild><a href={`#${a.id}`}>{a.name}</a></Chip>)}

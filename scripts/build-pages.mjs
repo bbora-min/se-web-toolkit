@@ -1,7 +1,7 @@
 // GitHub Pages 한 사이트로 조립: / 사이트(apps/site) · /storybook/ · /apps/<id>/ 예제 앱(브라우저 목 포함)
 // 사용: PAGES_BASE=/se-web-toolkit/ node scripts/build-pages.mjs  → _site/  (로컬 미리보기: npx serve _site)
 import { execSync } from 'node:child_process'
-import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 
 const base = (process.env.PAGES_BASE ?? '/').replace(/^\/?/, '/').replace(/\/?$/, '/')
 const APPS = [
@@ -11,6 +11,9 @@ const APPS = [
   ['se-home', 'se-home'],
 ]
 const out = '_site'
+// 깊은 링크 저장 키 — @se/ui restoreDeepLink 와 같은 값이어야 한다. 소스에서 읽어 어긋나면 빌드가 실패한다
+const DEEP_LINK_KEY = readFileSync('packages/ui/src/lib/spa.ts', 'utf8').match(/DEEP_LINK_KEY = '([^']+)'/)?.[1]
+if (!DEEP_LINK_KEY) throw new Error('packages/ui/src/lib/spa.ts 에서 DEEP_LINK_KEY 를 찾지 못했습니다')
 const run = (cmd, env = {}) => execSync(cmd, { stdio: 'inherit', env: { ...process.env, ...env } })
 
 rmSync(out, { recursive: true, force: true })
@@ -30,14 +33,17 @@ for (const [id, pkg] of APPS) {
   cpSync(`examples/${pkg}/dist`, `${out}/apps/${id}`, { recursive: true })
 }
 
-// 정적 호스팅엔 서버 라우팅이 없다 — 깊은 링크는 404.html 이 주소를 저장하고 그 앱의 루트로 보낸 뒤 restoreDeepLink() 가 되돌린다
+// 정적 호스팅엔 서버 라우팅이 없다 — 깊은 링크는 404.html 이 주소를 저장하고 그 앱의 루트로 보낸 뒤 restoreDeepLink() 가 되돌린다.
+// 아는 앱(APPS)과 사이트만 — 모르는 경로(옛 앱 id, storybook 안)는 404 로 남긴다(리다이렉트 무한 반복 방지)
 writeFileSync(
   `${out}/404.html`,
-  `<!doctype html><meta charset="utf-8"><title>SE Web Toolkit</title><script>
-(function(){var b=${JSON.stringify(base)},p=location.pathname,m=p.match(new RegExp('^'+b.replace(/[.*+?^$()|[\\]\\\\]/g,'\\\\$&')+'apps/([^/]+)/'));
-if(p.indexOf(b+'storybook/')===0){document.body.textContent='404';return}
-try{sessionStorage.setItem('se:deep-link',location.href)}catch(e){}
-location.replace(m?b+'apps/'+m[1]+'/':b)})()
+  `<!doctype html><meta charset="utf-8"><title>SE Web Toolkit</title><body><script>
+(function(){var b=${JSON.stringify(base)},apps=${JSON.stringify(APPS.map(([id]) => id))},p=location.pathname,root=null;
+if(p.indexOf(b+'apps/')===0){var id=p.slice(b.length+5).split('/')[0];if(apps.indexOf(id)>=0)root=b+'apps/'+id+'/'}
+else if(p.indexOf(b+'storybook/')!==0)root=b;
+if(!root||root===p){document.body.textContent='404 — '+p;return}
+try{sessionStorage.setItem(${JSON.stringify(DEEP_LINK_KEY)},location.href)}catch(e){}
+location.replace(root)})()
 </script>`,
 )
 writeFileSync(`${out}/.nojekyll`, '')

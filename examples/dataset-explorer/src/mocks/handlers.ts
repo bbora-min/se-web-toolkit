@@ -12,7 +12,7 @@ async function devState(url: URL) {
   if (s === 'slow') await delay(60_000)
   else await delay(200)
   if (s === 'error') return HttpResponse.json({ message: '카탈로그 인덱스(catalog-01)에 연결할 수 없습니다' }, { status: 502 })
-  if (s === 'empty') return HttpResponse.json({ items: [], total: 0, domains: [] })
+  if (s === 'empty') return HttpResponse.json({ items: [], total: 0, domains: [], counts: {} })
   return null
 }
 

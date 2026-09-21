@@ -65,7 +65,7 @@ export function HowPage() {
         <Prose>
           <section id="packages">
             <h2>한 버전으로 움직인다</h2>
-            <p>패키지와 플러그인은 버전 하나를 공유한다. 앱은 태그 하나(<code>v0.19.0</code>)를 가리키고, 올릴 때도 한 번에 올린다. 그래서 "UI 는 새 건데 스킬은 옛것" 같은 어긋남이 없다.</p>
+            <p>패키지와 플러그인은 버전 하나를 공유한다. 앱은 태그 하나(<code>v{__RELEASE__.version}</code>)를 가리키고, 올릴 때도 한 번에 올린다. 그래서 "UI 는 새 건데 스킬은 옛것" 같은 어긋남이 없다.</p>
             <ul>
               {PACKAGES.map(([name, what]) => <li key={name}><code>{name}</code> — {what}</li>)}
             </ul>

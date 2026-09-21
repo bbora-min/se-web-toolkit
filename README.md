@@ -21,7 +21,8 @@
 | `identities/` | 서비스 아이덴티티 레지스트리 (hue·시그니처·쉘 배치 충돌 검사) | ✓ |
 | `plugin/` | Claude Code 플러그인 — 스킬 12개(자동 2 + 명령 10), 에이전트 3, 훅 2 | ✓ |
 | `templates/app-vite-react` + `packages/create-se-app` | 새 서비스 템플릿(워크스페이스에서 컴파일됨)과 CLI — `pnpm dlx`로 어느 폴더에서든 | ✓ |
-| `apps/storybook` | **Storybook** — 사람용. 아이덴티티 갤러리(가족 초상화)·시그니처 5종·컴포넌트·차트. 툴바에서 아이덴티티·테마·밀도 전환. `pnpm storybook` (6006). main 은 GitHub Pages 로 배포(저장소 Variables `DEPLOY_STORYBOOK=true` + Pages Source = GitHub Actions) | ✓ |
+| `apps/storybook` | **Storybook** — 사람용. 아이덴티티 갤러리(가족 초상화)·시그니처 5종·컴포넌트·차트. 툴바에서 아이덴티티·테마·밀도 전환. `pnpm storybook` (6006) | ✓ |
+| `apps/site` | **툴킷 사이트** — 무엇이고 어떻게 쓰는지, 예제 앱 넷과 골격 열 개. `pnpm site` (5178). main 은 `pnpm build:pages` 로 사이트 · Storybook · 예제 앱 넷(브라우저 목)을 한 GitHub Pages 로 배포(저장소 Variables `DEPLOY_PAGES=true` + Settings › Pages › Source = GitHub Actions) | ✓ |
 
 ## 팀에서 쓰기 — 내 프로젝트 폴더에서
 

@@ -1,5 +1,5 @@
-name: storybook
-# main 의 Storybook 을 GitHub Pages 로
+name: pages
+# main 을 GitHub Pages 한 사이트로: / 사이트 · /storybook/ · /apps/<id>/ 예제 앱(브라우저 목) — scripts/build-pages.mjs
 on:
   push: { branches: [main] }
   workflow_dispatch:
@@ -7,8 +7,8 @@ permissions: { contents: read, pages: write, id-token: write }
 concurrency: { group: pages, cancel-in-progress: true }
 jobs:
   build:
-    # 저장소 Variables 에 DEPLOY_STORYBOOK=true 를 넣고 Settings › Pages › Source = GitHub Actions 를 켜면 배포된다. 그 전엔 조용히 건너뛴다
-    if: vars.DEPLOY_STORYBOOK == 'true'
+    # 저장소 Variables 에 DEPLOY_PAGES=true(예전 DEPLOY_STORYBOOK=true 도 인정)를 넣고 Settings › Pages › Source = GitHub Actions 를 켜면 배포된다. 그 전엔 조용히 건너뛴다
+    if: vars.DEPLOY_PAGES == 'true' || vars.DEPLOY_STORYBOOK == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,9 +16,9 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version-file: .nvmrc, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build:storybook
+      - run: PAGES_BASE=/${{ github.event.repository.name }}/ node scripts/build-pages.mjs
       - uses: actions/upload-pages-artifact@v3
-        with: { path: apps/storybook/dist }
+        with: { path: _site }
   deploy:
     needs: build
     runs-on: ubuntu-latest

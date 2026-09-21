@@ -150,7 +150,8 @@ export function JobsPage() {
   const [selection, setSelection] = React.useState<RowSelectionState>({})
   const items = jobs.data?.items ?? []
   // 탭 카운트는 서버가 상태 필터를 뺀 기준으로 계산 — 탭을 옮겨도 숫자가 흔들리지 않는다
-  const counts = (s: JobState | '') => jobs.data?.counts[s] ?? 0
+  // 빈 응답(?__state=empty 등)엔 counts 가 없을 수 있다 — 탭 숫자는 0
+  const counts = (s: JobState | '') => jobs.data?.counts?.[s] ?? 0
   const selected = jobId ? items.find((j) => j.id === jobId) ?? null : null
   const sortingState: SortingState = [{ id: sort, desc: dir === 'desc' }]
 

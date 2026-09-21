@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
-import { ThemeProvider, Toaster, TooltipProvider, hasForcedState } from '@se/ui'
+import { ThemeProvider, Toaster, TooltipProvider, hasForcedState, routerBasename } from '@se/ui'
 import identity from '../../se.identity.json'
 import { Shell } from './Shell'
 import { ReleasesPage } from '../pages/releases/ReleasesPage'
@@ -18,7 +18,7 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultDensity={identity.density as 'compact' | 'comfortable'}>
         <TooltipProvider delayDuration={300}>
-          <BrowserRouter>
+          <BrowserRouter basename={routerBasename(import.meta.env.BASE_URL)}>
             <Routes>
               <Route element={<Shell />}>
                 <Route index element={<Navigate to="/releases" replace />} />

@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/@se/tokens/identity.schema.json",
+  "id": "se-toolkit",
+  "name": "SE Web Toolkit",
+  "mark": { "type": "monogram", "text": "SWT" },
+  "accent": { "hue": 130 },
+  "neutralBias": "neutral",
+  "signature": "metric-marquee",
+  "shell": "topnav",
+  "density": "comfortable",
+  "displayFont": "pretendard",
+  "chart": "categorical",
+  "tone": "friendly"
+}

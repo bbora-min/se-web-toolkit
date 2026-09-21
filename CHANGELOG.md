@@ -3,6 +3,21 @@
 툴킷(패키지 `@se/*` + 플러그인)은 **한 버전**으로 움직인다. 항목마다 세 칸: **바뀐 것** / **화면 변화**(코드는 그대로인데 보이는 게 달라지는 것) / **앱에서 할 일**(코드를 고쳐야 하는 것). 앱 담당자는 세 번째 칸만 읽어도 된다.
 버전 의미: patch = 화면 변화 없음 · minor = 추가 또는 화면 변화, 코드 수정 불필요 · major = 앱 코드를 고쳐야 함. 깨지는 변경은 한 minor 동안 옛 방식을 남기고 경고한다.
 
+## 0.20.0 — 2026-09-20
+
+**바뀐 것**
+- **툴킷 사이트** `apps/site`(5178) — 툴킷이 무엇이고 어떻게 쓰는지, 예제 앱 넷과 골격 열 개를 한곳에서. 홈(세 역할 · 예제 앱 카드 · 최근 바뀐 것) · 골격(원본 화면 딥링크 · 재료 · 세상의 대표) · 시작하기(Claude Code · 직접 · 있는 앱에 · 저장소) · 동작 원리. 그림은 예제 앱의 e2e 기준 스크린샷을 그대로, 버전·최근 변경은 CHANGELOG 에서 빌드 때 읽는다
+- **GitHub Pages 한 사이트** — `pnpm build:pages`(`scripts/build-pages.mjs`)가 `/` 사이트 · `/storybook/` · `/apps/<id>/` 예제 앱 넷(브라우저 목 `VITE_MOCK=true`)을 `_site/` 로 조립. 워크플로 `pages`(`storybook` 대체, 저장소 Variables `DEPLOY_PAGES=true` + Pages Source = GitHub Actions)
+- `@se/ui` **`restoreDeepLink` · `routerBasename`** — 정적 호스팅에서 SPA 깊은 링크(루트 `404.html` → sessionStorage → 되돌리기)와 `BASE_URL` 하위 경로 배포. 예제 앱 넷·템플릿이 쓴다. `VITE_MOCK=true` 면 배포 빌드에서도 MSW 목이 켜진다
+- 레지스트리에 `se-toolkit`(hue 130 · topnav). 시각 회귀 `site` 4장
+- `?__state=` 강제 상태가 `VITE_MOCK=true` 목 빌드에서도 동작(`hasForcedState`·`createApiClient`). 그러면서 드러난 것 — Job Monitor 잡 목록·Dataset Explorer 데이터셋의 **빈 상태가 `counts` 없는 응답에 죽던 것**을 고쳤다(탭 숫자는 0)
+
+**화면 변화**
+- Job Monitor `/jobs?__state=empty` · Dataset Explorer `/datasets?__state=empty` 가 빈 화면(크래시) 대신 빈 상태를 그린다. 그 외 예제 앱은 그대로. 사이트가 새로 생긴다
+
+**앱에서 할 일**
+- 없음. 하위 경로에 배포하는 앱이면 `<BrowserRouter basename={routerBasename(import.meta.env.BASE_URL)}>` 와 `main.tsx` 맨 위 `restoreDeepLink()` 를 템플릿처럼 넣으면 된다
+
 ## 0.19.0 — 2026-09-20
 
 **바뀐 것**

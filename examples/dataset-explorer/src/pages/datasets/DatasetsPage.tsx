@@ -154,7 +154,7 @@ export function DatasetsPage() {
         hint={list.data ? `${list.data.total.toLocaleString()}개 데이터셋 · ${formatRelative(new Date(Date.now() - 4 * 60_000).toISOString())} 색인` : undefined}
         quick={QUICK.map((q) => ({
           label: q.label,
-          count: list.data?.counts[q.value],
+          count: list.data?.counts?.[q.value],
           active: f.quick === q.value,
           onClick: () => set('quick', f.quick === q.value ? '' : q.value),
         }))}

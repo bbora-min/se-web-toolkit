@@ -63,6 +63,7 @@ pnpm lint               # @se/eslint-plugin 규칙 (warning도 실패)
 pnpm test               # 토큰 대비 검증 등
 pnpm check-identity     # 레지스트리 hue/시그니처 검사
 pnpm gen:skill-docs     # 컴포넌트 문서 → 플러그인 스킬 (CI: check:skill-docs)
+pnpm check:site-docs    # 사이트 온보딩 문서(시작하기·동작 원리)가 스킬·스키마·템플릿과 일치하는지 (CI)
 node packages/create-se-app/bin/create-se-app.mjs <id>   # 모노레포 안에서 새 예제 생성
 ```
 

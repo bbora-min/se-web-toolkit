@@ -3,11 +3,13 @@
  * 순서: 준비물 → 플러그인 → 첫 앱(실습) → 첫 화면(명세·구현·리뷰) → 백엔드 → 배포 → 계속 맞춰 가기 → 있는 앱 → 막힐 때 → 첫 주 체크리스트.
  * 명령과 파일명은 플러그인 스킬(plugin/skills/*)과 템플릿(templates/app-vite-react)에서 그대로 가져온다.
  */
+import type * as React from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router'
 import { Button, Callout, DocHeader, DocLayout, PageBody, Prose, Table, TableBody, TableCell, TableHead, TableHeader, TableOfContents, TableRow, type TocItem } from '@se/ui'
 import { PLUGIN_README, README } from '../lib/links'
 import { Figure, Flow, Steps, Tree } from '../components/diagrams'
+import { ADOPT_STAGES, COMMANDS, INTERVIEW_QUESTIONS, PAGE_STEP_TITLES, TEMPLATE_TREE } from '../lib/onboarding'
 
 const TOC: TocItem[] = [
   { id: 'ready', label: '0. 준비물', level: 2 },
@@ -26,17 +28,17 @@ const TOC: TocItem[] = [
   { id: 'week', label: '첫 주 체크리스트', level: 2 },
 ]
 
-const COMMANDS = [
-  ['/se:new <id>', '새 앱', '템플릿 생성 → 아이덴티티 인터뷰 → 설치 → 첫 실행'],
-  ['/se:identity', '아이덴티티', '항목 8개를 2–3가지 안으로 제시해 정하고, 검증 후 레지스트리에 등록'],
-  ['/se:spec <요구사항>', '명세', '요구사항 문장 → 화면 명세(docs/spec.md). Figma 없는 팀의 디자인 단계'],
-  ['/se:page <화면>', '구현', '골격 선택 → 원본 복사·수정 → 목 데이터 → 3가지 상태 → 등록 → 린트 → 스크린샷'],
-  ['/se:review [라우트]', '리뷰', '스크린샷 → 디자인 비평·코드 리뷰 에이전트 → 수정 → 재채점(80점 만점)'],
-  ['/se:api <spec>', '백엔드', 'OpenAPI·설명으로 타입 클라이언트·훅. 목 데이터는 실제 응답 형태로'],
-  ['/se:deploy', '배포', 'Dockerfile·nginx·CI 점검, 환경 변수 체크리스트, 프로덕션 빌드'],
-  ['/se:upgrade [버전]', '업그레이드', '@se/* 를 새 태그로. CHANGELOG "앱에서 할 일" → 검사 → 전/후 스크린샷 → PR'],
-  ['/se:audit', '점검', '규칙 위반·3상태 누락·버전·디자인 점수를 숫자로(docs/audit.md)'],
-  ['/se:adopt [0-5]', '도입', '기존 프로젝트에 단계적으로. 단계마다 PR 하나'],
+
+/** /se:page 단계 본문 — 제목(PAGE_STEP_TITLES)과 같은 순서 */
+const PAGE_STEP_BODIES: React.ReactNode[] = [
+  <>화면 파일 맨 위 주석으로 남습니다 — 골격 · 목적 · 첫 시선 · 주 액션 · 정보 계층 · 밀도 · 액센트 · 3상태 · 말투. 플랜에서 답이 안 나오는 항목이 있으면 화면이 아직 정의되지 않은 것이라 코드로 넘어가지 않습니다.</>,
+  <>목록·보드·문서·처리함 등 <Link to="/archetypes">골격 10가지</Link> 중 하나를 고르고, 그 골격의 원본 화면(플러그인에 동봉된 예제 앱 코드)을 읽습니다. 백지에서 그리지 않습니다.</>,
+  <><code>src/api/types.ts</code>에 타입, <code>src/api/incidents.ts</code>에 <code>useQuery</code> 훅, <code>src/mocks/handlers.ts</code>에 목 핸들러. 목은 <code>?__state=empty|error|slow</code>를 지원하고 목록은 <code>{'{ items, total, counts }'}</code> 형태입니다.</>,
+  <><code>src/pages/incidents/IncidentsPage.tsx</code>. 원본을 복사해 컬럼·필터·액션만 바꿉니다. 원본의 구조(제목 → 시그니처 → 탭 → 필터 → 표 → 상세)는 그대로 둡니다.</>,
+  <><code>App.tsx</code>의 Route, <code>Shell.tsx</code>의 네비와 검색 팔레트, <code>e2e/screens.spec.ts</code>의 화면 목록(기본·empty·error).</>,
+  <><code>pnpm typecheck && pnpm lint</code>가 통과할 때까지. 저장 훅이 이미 대부분 잡았을 것입니다.</>,
+  <>1440·1024 폭, 라이트·다크, 빈·오류 상태를 찍고 스스로 채점합니다. 7점 미만 항목은 고치고 다시 찍습니다.</>,
+  <>라우트, 스크린샷 경로, 3상태 확인 URL(<code>/incidents?__state=empty</code> 등), 남은 TODO. 이 URL들을 직접 열어 보는 것이 신입의 첫 리뷰입니다.</>,
 ]
 
 export function StartPage() {
@@ -92,7 +94,7 @@ export function StartPage() {
             <pre><code>/se:new incident-desk</code></pre>
             <Steps
               items={[
-                { title: '아이덴티티 인터뷰 (질문 5개)', body: <>Claude가 묻습니다: 서비스가 하는 일 · 주 사용자와 사용 순간 · 분위기 3단어 · 닮으면 안 되는 형제 서비스 · 가장 중요한 화면. 짧게 답하면 됩니다. 예: "온콜 엔지니어가 새벽에 알림 받고 열어 봄", "긴박·정확·조용". 답을 바탕으로 색상(hue)·시그니처·말투·밀도 후보 2–3가지를 한 줄씩 제안합니다. 하나 고르세요.</> },
+                { title: `아이덴티티 인터뷰 (질문 ${INTERVIEW_QUESTIONS}개)`, body: <>Claude가 묻습니다: 서비스가 하는 일 · 주 사용자와 사용 순간 · 분위기 3단어 · 닮으면 안 되는 형제 서비스 · 가장 중요한 화면. 짧게 답하면 됩니다. 예: "온콜 엔지니어가 새벽에 알림 받고 열어 봄", "긴박·정확·조용". 답을 바탕으로 색상(hue)·시그니처·말투·밀도 후보 2–3가지를 한 줄씩 제안합니다. 하나 고르세요.</> },
                 { title: '생성', body: <>Claude가 아래 한 줄을 실행합니다. 직접 쳐도 같습니다.<pre><code>{`pnpm dlx "github:bbora-min/se-web-toolkit#path:packages/create-se-app" incident-desk \\
   --name "Incident Desk" --hue 20 --signature status-strip --shell sidebar --tone terse --density compact`}</code></pre>hue가 다른 서비스와 30° 미만이거나 의미 색(성공·경고·오류)과 18° 미만이면 CLI가 거부합니다. 감으로 고르지 말고 CLI가 제안하는 값을 쓰세요.</> },
                 { title: '설치와 첫 실행', body: <><code>cd incident-desk && pnpm install && pnpm dev</code>. 첫 설치는 1–2분 걸립니다(<code>@se/*</code>를 git 태그에서 받습니다). 브라우저에 <code>http://localhost:5170</code>이 뜨고, 사이드바·검색(⌘K)·테마 토글이 있는 앱 쉘과 첫 화면 <code>/items</code>가 보입니다.</> },
@@ -105,23 +107,7 @@ export function StartPage() {
             <h3 id="files">무엇이 생기나</h3>
             <p>생성된 폴더입니다. 앞으로 손대는 곳은 강조된 다섯 군데뿐입니다.</p>
             <Figure caption="src/pages 에 화면, src/api 에 데이터 훅, src/mocks 에 목 데이터, docs/spec.md 에 명세, se.identity.json 에 아이덴티티. 나머지는 템플릿이 관리합니다.">
-              <Tree
-                nodes={[
-                  { name: 'se.identity.json', note: '아이덴티티 한 장 — 색·마크·시그니처·쉘 배치·밀도·글꼴·말투', mark: true },
-                  { name: 'docs', children: [{ name: 'spec.md', note: '화면 명세. /se:spec 이 채운다', mark: true }] },
-                  { name: 'src', children: [
-                    { name: 'app', children: [{ name: 'App.tsx', note: '라우트' }, { name: 'Shell.tsx', note: '네비·검색 팔레트' }] },
-                    { name: 'api', note: '백엔드와의 유일한 접점', mark: true, children: [{ name: 'client.ts', note: 'VITE_API_BASE 또는 /api(목)' }, { name: 'types.ts' }, { name: 'items.ts', note: 'useQuery 훅' }] },
-                    { name: 'mocks', note: 'MSW 목 — 백엔드 없이 개발', mark: true, children: [{ name: 'handlers.ts', note: '?__state=empty|error|slow 지원' }] },
-                    { name: 'pages', note: '화면 하나 = 폴더 하나', mark: true, children: [{ name: 'items', children: [{ name: 'ItemsPage.tsx', note: '첫 화면(목록 골격)' }, { name: 'Signature.tsx' }] }, { name: 'identity', children: [{ name: 'IdentityPage.tsx', note: '/__identity (개발 전용)' }] }] },
-                    { name: 'main.tsx' }, { name: 'app.css', note: '네 줄. 건드릴 일 없음' },
-                  ] },
-                  { name: 'e2e', children: [{ name: 'screens.spec.ts', note: '스크린샷 찍을 화면 목록' }] },
-                  { name: 'CLAUDE.md', note: 'Claude가 이 앱에서 지킬 규칙' },
-                  { name: 'eslint.config.js', note: '@se/eslint-plugin 규칙' },
-                  { name: 'Dockerfile · nginx.conf · .github/workflows/ci.yml', note: '배포·CI. 5절' },
-                ]}
-              />
+              <Tree nodes={TEMPLATE_TREE} />
             </Figure>
           </section>
 
@@ -147,18 +133,7 @@ export function StartPage() {
             <h3 id="build">/se:page — 구현</h3>
             <pre><code>/se:page 인시던트 목록</code></pre>
             <p>이 명령은 순서가 고정되어 있습니다. 결과를 볼 때 이 순서대로 확인하면 됩니다.</p>
-            <Steps
-              items={[
-                { title: '디자인 플랜 10줄', body: <>화면 파일 맨 위 주석으로 남습니다 — 골격 · 목적 · 첫 시선 · 주 액션 · 정보 계층 · 밀도 · 액센트 · 3상태 · 말투. 플랜에서 답이 안 나오는 항목이 있으면 화면이 아직 정의되지 않은 것이라 코드로 넘어가지 않습니다.</> },
-                { title: '골격 고르고 원본 열기', body: <>목록·보드·문서·처리함 등 <Link to="/archetypes">골격 10가지</Link> 중 하나를 고르고, 그 골격의 원본 화면(플러그인에 동봉된 예제 앱 코드)을 읽습니다. 백지에서 그리지 않습니다.</> },
-                { title: '데이터 층', body: <><code>src/api/types.ts</code>에 타입, <code>src/api/incidents.ts</code>에 <code>useQuery</code> 훅, <code>src/mocks/handlers.ts</code>에 목 핸들러. 목은 <code>?__state=empty|error|slow</code>를 지원하고 목록은 <code>{'{ items, total, counts }'}</code> 형태입니다.</> },
-                { title: '화면', body: <><code>src/pages/incidents/IncidentsPage.tsx</code>. 원본을 복사해 컬럼·필터·액션만 바꿉니다. 원본의 구조(제목 → 시그니처 → 탭 → 필터 → 표 → 상세)는 그대로 둡니다.</> },
-                { title: '등록', body: <><code>App.tsx</code>의 Route, <code>Shell.tsx</code>의 네비와 검색 팔레트, <code>e2e/screens.spec.ts</code>의 화면 목록(기본·empty·error).</> },
-                { title: '검사', body: <><code>pnpm typecheck && pnpm lint</code>가 통과할 때까지. 저장 훅이 이미 대부분 잡았을 것입니다.</> },
-                { title: '스크린샷 1회', body: <>1440·1024 폭, 라이트·다크, 빈·오류 상태를 찍고 스스로 채점합니다. 7점 미만 항목은 고치고 다시 찍습니다.</> },
-                { title: '보고', body: <>라우트, 스크린샷 경로, 3상태 확인 URL(<code>/incidents?__state=empty</code> 등), 남은 TODO. 이 URL들을 직접 열어 보는 것이 신입의 첫 리뷰입니다.</> },
-              ]}
-            />
+            <Steps items={PAGE_STEP_TITLES.map((title, i) => ({ title, body: PAGE_STEP_BODIES[i] }))} />
 
             <h3 id="review">/se:review — 리뷰</h3>
             <pre><code>/se:review /incidents</code></pre>
@@ -206,12 +181,7 @@ export function StartPage() {
             <Table>
               <TableHeader><TableRow><TableHead>단계</TableHead><TableHead>하는 일</TableHead><TableHead>결과</TableHead></TableRow></TableHeader>
               <TableBody>
-                <TableRow><TableCell>0 감사</TableCell><TableCell>스택·Node·패키지 매니저·Tailwind 버전·옛 UI 라이브러리 파악</TableCell><TableCell>리포트</TableCell></TableRow>
-                <TableRow><TableCell>1 아이덴티티</TableCell><TableCell>현재 서비스의 색·말투를 보존하며 <code>se.identity.json</code> 작성</TableCell><TableCell>PR</TableCell></TableRow>
-                <TableRow><TableCell>2 기반</TableCell><TableCell><code>@se/*</code> 설치, Vite 플러그인, CSS 네 줄, 루트 프로바이더. <strong>화면 변화 0</strong>을 픽셀 비교로 증명</TableCell><TableCell>PR</TableCell></TableRow>
-                <TableRow><TableCell>3 쉘</TableCell><TableCell>기존 네비·헤더를 <code>AppShell</code>로</TableCell><TableCell>PR</TableCell></TableRow>
-                <TableRow><TableCell>4 페이지</TableCell><TableCell>codemod로 80% 자동 변환 → 트래픽 많은 페이지부터 한 장씩</TableCell><TableCell>페이지별 PR</TableCell></TableRow>
-                <TableRow><TableCell>5 강제</TableCell><TableCell>린트 규칙 켜기, CI에 lint 추가</TableCell><TableCell>PR</TableCell></TableRow>
+                {ADOPT_STAGES.map(([stage, what, result]) => <TableRow key={stage}><TableCell>{stage}</TableCell><TableCell>{what}</TableCell><TableCell>{result}</TableCell></TableRow>)}
               </TableBody>
             </Table>
             <p>직접 설치하려면:</p>

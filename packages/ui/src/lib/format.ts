@@ -48,3 +48,14 @@ export function formatBytes(b: number): string {
   }
   return `${v.toFixed(v >= 100 || i === 0 ? 0 : 1)} ${u[i]}`
 }
+
+/** 긴 기간을 사람 말로 — "41일 5시간" · "5시간 12분" · "48초". 가동 시간·리드타임처럼 시:분:초가 어색한 곳에 */
+export function formatDurationLong(sec: number | null | undefined): string {
+  if (sec == null) return '—'
+  const s = Math.max(0, Math.round(sec))
+  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60)
+  if (d > 0) return h ? `${d}일 ${h}시간` : `${d}일`
+  if (h > 0) return m ? `${h}시간 ${m}분` : `${h}시간`
+  if (m > 0) return `${m}분`
+  return `${s}초`
+}

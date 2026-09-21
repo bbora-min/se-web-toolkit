@@ -1,5 +1,5 @@
 import { delay, http, HttpResponse } from 'msw'
-import type { ClusterSummary, Job, JobState, Overview } from '../api/types'
+import type { ActivityEvent, ClusterNode, ClusterSummary, Job, JobState, Overview } from '../api/types'
 import { makeJobs, makeLogs } from './data'
 
 let jobs: Job[] = makeJobs()
@@ -52,6 +52,45 @@ function summary(): ClusterSummary {
   }
 }
 
+/** 노드 5대 — 개요의 노드 타일과 노드 화면이 같은 원본을 본다 */
+const NODES = [
+  { name: 'wk-01', status: 'online' as const, cpu: 62, mem: 71, running: 2, labels: ['pool=general'], uptimeSec: 41 * 86400 + 3600 * 5 },
+  { name: 'wk-02', status: 'online' as const, cpu: 48, mem: 55, running: 2, labels: ['pool=general'], uptimeSec: 41 * 86400 + 3600 * 5 },
+  { name: 'wk-03', status: 'degraded' as const, cpu: 93, mem: 88, running: 1, labels: ['pool=general', 'spot'], uptimeSec: 2 * 86400 + 3600 * 11 },
+  { name: 'wk-04', status: 'online' as const, cpu: 21, mem: 40, running: 1, labels: ['pool=general', 'spot'], uptimeSec: 6 * 86400 },
+  { name: 'gpu-01', status: 'online' as const, cpu: 77, mem: 83, running: 1, labels: ['pool=gpu', 'a100x4'], uptimeSec: 19 * 86400 + 3600 * 2 },
+]
+function clusterNodes(): ClusterNode[] {
+  const now = Date.now()
+  return NODES.map((n, i) => ({
+    ...n,
+    lastHeartbeat: new Date(now - (n.status === 'degraded' ? 48_000 : 4_000 + i * 900)).toISOString(),
+    cpuSeries: series(n.cpu, 18, 101 + i),
+    memSeries: series(n.mem, 9, 211 + i),
+    jobs: jobs.filter((j) => j.node === n.name && j.state === 'running').map((j) => ({ id: j.id, name: j.name, pipeline: j.pipeline, state: j.state, durationSec: j.durationSec })),
+  }))
+}
+
+/** 활동 — 잡 목록에서 일어난 일(실패·재시도·취소·성공)에 노드·스케줄 이벤트를 섞어 시간순으로 */
+function activity(): ActivityEvent[] {
+  const endOf = (j: Job) => new Date(Date.parse(j.startedAt) + (j.durationSec ?? 0) * 1000).toISOString()
+  const out: ActivityEvent[] = []
+  for (const j of jobs) {
+    if (j.state === 'failed') out.push({ id: `f-${j.id}`, at: endOf(j), kind: 'failed', title: `${j.name} 실패`, detail: j.error, jobId: j.id, node: j.node, pipeline: j.pipeline })
+    if (j.attempts > 1) out.push({ id: `r-${j.id}`, at: j.startedAt, kind: 'retried', title: `${j.name} 재시도 (${j.attempts}회째)`, detail: `스케줄러가 ${j.node} 에 다시 배치`, jobId: j.id, node: j.node, pipeline: j.pipeline })
+    if (j.state === 'cancelled') out.push({ id: `c-${j.id}`, at: endOf(j), kind: 'cancelled', title: `${j.name} 취소`, detail: '수동 취소', who: j.owner, jobId: j.id, pipeline: j.pipeline })
+    if (j.state === 'succeeded' && j.durationSec && j.durationSec > 5400) out.push({ id: `s-${j.id}`, at: endOf(j), kind: 'succeeded', title: `${j.name} 완료`, detail: `${Math.round(j.durationSec / 60)}분 걸림 — 평소보다 김`, jobId: j.id, pipeline: j.pipeline })
+  }
+  const now = Date.now()
+  out.push(
+    { id: 'n-wk03', at: new Date(now - 47 * 60_000).toISOString(), kind: 'node', title: 'wk-03 저하', detail: 'CPU 93% · 메모리 88% — 스팟 회수 예고', node: 'wk-03' },
+    { id: 'n-wk04', at: new Date(now - 6 * 3600_000).toISOString(), kind: 'node', title: 'wk-04 합류', detail: '스팟 노드 교체 완료', node: 'wk-04' },
+    { id: 'sch-1', at: new Date(now - 3 * 3600_000).toISOString(), kind: 'schedule', title: 'report-hourly 스케줄 변경', detail: '매시 05분 → 매시 15분', who: 'minseo', pipeline: 'report-hourly' },
+    { id: 'sch-2', at: new Date(now - 26 * 3600_000).toISOString(), kind: 'schedule', title: 'backfill 일시 중지 해제', detail: 'S3 쿼터 복구', who: 'jihoon', pipeline: 'backfill' },
+  )
+  return out.filter((e) => Date.parse(e.at) <= now).sort((a, b) => b.at.localeCompare(a.at))
+}
+
 /** ?__state=empty|error|slow 로 화면 상태를 강제한다 (개발·스크린샷 리뷰용) */
 async function devState(url: URL) {
   const s = url.searchParams.get('__state')
@@ -82,13 +121,7 @@ function overview(range: '24h' | '7d'): Overview {
     const rate = [99.2, 97.5, 91.4, 100, 88.9, 95.8][i % 6]!
     return { name, runs, successRate: rate, p50Sec: [420, 1300, 260, 3900, 2100, 720][i % 6]! }
   })
-  const nodes = [
-    { name: 'wk-01', status: 'online' as const, cpu: 62, mem: 71, running: 2 },
-    { name: 'wk-02', status: 'online' as const, cpu: 48, mem: 55, running: 2 },
-    { name: 'wk-03', status: 'degraded' as const, cpu: 93, mem: 88, running: 1 },
-    { name: 'wk-04', status: 'online' as const, cpu: 21, mem: 40, running: 1 },
-    { name: 'gpu-01', status: 'online' as const, cpu: 77, mem: 83, running: 1 },
-  ]
+  const nodes = NODES.map(({ name, status, cpu, mem, running }) => ({ name, status, cpu, mem, running }))
   // 실패 원인 — 에러 문자열의 첫 단어로 묶는다(OOMKilled · Timeout · S3 · Schema …)
   const since = now - n * 3600_000
   const failed = jobs.filter((j) => j.state === 'failed' && Date.parse(j.startedAt) >= since)
@@ -162,6 +195,21 @@ export const handlers = [
     const p = pipeline(String(params.name))
     return p ? HttpResponse.json(p) : HttpResponse.json({ message: '파이프라인을 찾을 수 없습니다' }, { status: 404 })
   }),
+  http.get('/api/nodes', async ({ request }) => {
+    const forced = await devState(new URL(request.url))
+    if (forced) return forced.status === 200 ? HttpResponse.json({ items: [] }) : forced
+    return HttpResponse.json({ items: clusterNodes() })
+  }),
+  http.get('/api/activity', async ({ request }) => {
+    const url = new URL(request.url)
+    const forced = await devState(url)
+    if (forced) return forced.status === 200 ? HttpResponse.json({ items: [], counts: { '': 0 } }) : forced
+    const kind = url.searchParams.get('kind')
+    const all = activity()
+    const counts: Record<string, number> = { '': all.length }
+    for (const e of all) counts[e.kind] = (counts[e.kind] ?? 0) + 1
+    return HttpResponse.json({ items: kind ? all.filter((e) => e.kind === kind) : all, counts })
+  }),
   http.get('/api/overview', async ({ request }) => {
     const url = new URL(request.url)
     const forced = await devState(url)
@@ -175,6 +223,7 @@ export const handlers = [
     const q = url.searchParams.get('q')?.toLowerCase()
     const state = url.searchParams.get('state')
     const pipeline = url.searchParams.get('pipeline')
+    const node = url.searchParams.get('node')
     const sort = url.searchParams.get('sort') ?? 'startedAt'
     const dir = url.searchParams.get('dir') === 'asc' ? 1 : -1
     const page = Number(url.searchParams.get('page') ?? 0)
@@ -182,7 +231,8 @@ export const handlers = [
     const base = jobs.filter(
       (j) =>
         (!q || j.name.toLowerCase().includes(q) || j.owner.includes(q) || j.id.includes(q) || (j.error?.toLowerCase().includes(q) ?? false)) &&
-        (!pipeline || j.pipeline === pipeline),
+        (!pipeline || j.pipeline === pipeline) &&
+        (!node || j.node === node),
     )
     // 탭 카운트는 상태 필터를 뺀 기준
     const counts: Record<string, number> = { '': base.length }

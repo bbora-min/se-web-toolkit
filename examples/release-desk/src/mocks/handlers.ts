@@ -1,6 +1,6 @@
 import { delay, http, HttpResponse } from 'msw'
 import { CHECKLIST_TEMPLATE, PEOPLE, STAGES, type Release, type ReleaseDraft, type StageId } from '../api/types'
-import { makeReleases } from './data'
+import { makeHistory, makeReleases } from './data'
 
 let releases = makeReleases()
 const me = 'bora'
@@ -56,6 +56,29 @@ export const handlers = [
     return HttpResponse.json({ items, stages: stageCounts(), freeze: freeze() })
   }),
   /** 캘린더 — 창은 릴리스에서, 프리즈는 매주 금 18:00 – 월 09:00 */
+  /** 이력 — 끝난 릴리스. 통계는 필터가 적용된 집합 기준 */
+  http.get('/api/history', async ({ request }) => {
+    const url = new URL(request.url)
+    const forced = await devState(url)
+    if (forced) return forced.status === 200 ? HttpResponse.json({ items: [], services: [], stats: { deployed: 0, hotfix: 0, rejected: 0, rolledBack: 0, medianLeadHours: 0 } }) : forced
+    const service = url.searchParams.get('service')
+    const result = url.searchParams.get('result')
+    const month = url.searchParams.get('month')
+    const all = makeHistory(releases)
+    const items = all.filter((h) => (!service || h.service === service) && (!result || h.result === result) && (!month || h.at.slice(0, 7) === month))
+    const leads = items.filter((h) => h.result === 'deployed').map((h) => h.leadHours).sort((a, b) => a - b)
+    return HttpResponse.json({
+      items,
+      services: [...new Set(all.map((h) => h.service))].sort(),
+      stats: {
+        deployed: items.filter((h) => h.result === 'deployed').length,
+        hotfix: items.filter((h) => h.type === 'hotfix' && h.result === 'deployed').length,
+        rejected: items.filter((h) => h.result === 'rejected').length,
+        rolledBack: items.filter((h) => h.result === 'rolled-back').length,
+        medianLeadHours: leads.length ? leads[Math.floor(leads.length / 2)]! : 0,
+      },
+    })
+  }),
   http.get('/api/calendar', async ({ request }) => {
     const url = new URL(request.url)
     const forced = await devState(url)

@@ -6,6 +6,8 @@ import { Shell } from './Shell'
 import { JobsPage } from '../pages/jobs/JobsPage'
 import { JobConsolePage } from '../pages/jobs/JobConsolePage'
 import { PipelinePage } from '../pages/pipelines/PipelinePage'
+import { NodesPage } from '../pages/nodes/NodesPage'
+import { ActivityPage } from '../pages/activity/ActivityPage'
 import { OverviewPage } from '../pages/overview/OverviewPage'
 import { SignaturesPage } from '../pages/signatures/SignaturesPage'
 import { IdentityPage } from '../pages/identity/IdentityPage'
@@ -27,6 +29,8 @@ export function App() {
                 <Route path="/jobs" element={<JobsPage />} />
                 <Route path="/jobs/:jobId/logs" element={<JobConsolePage />} />
                 <Route path="/pipelines/:name?" element={<PipelinePage />} />
+                <Route path="/nodes" element={<NodesPage />} />
+                <Route path="/activity" element={<ActivityPage />} />
                 <Route path="/jobs/:jobId" element={<JobsPage />} />
                 {import.meta.env.DEV ? <Route path="/__identity" element={<IdentityPage />} /> : null}
                 {import.meta.env.DEV ? <Route path="/__signatures" element={<SignaturesPage />} /> : null}

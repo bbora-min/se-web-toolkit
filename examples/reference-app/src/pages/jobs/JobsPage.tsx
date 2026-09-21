@@ -17,6 +17,7 @@ import {
   Avatar,
   Badge,
   Button,
+  Chip,
   DataTable,
   FilterBar,
   PageBody,
@@ -129,6 +130,7 @@ export function JobsPage() {
     q: params.get('q') ?? '',
     state: (params.get('state') as JobState | null) ?? '',
     pipeline: params.get('pipeline') ?? '',
+    node: params.get('node') ?? '',
     page,
     pageSize,
     sort,
@@ -141,7 +143,7 @@ export function JobsPage() {
   }
   // 필터가 바뀌면 1페이지로
   const setFilter = (key: keyof JobFilters, value: string) => setParam({ [key]: value, page: '' })
-  const hasFilter = Boolean(filters.q || filters.state || filters.pipeline)
+  const hasFilter = Boolean(filters.q || filters.state || filters.pipeline || filters.node)
 
   const summary = useClusterSummary()
   const retry = useRetryJob()
@@ -247,6 +249,7 @@ export function JobsPage() {
             onChange={(e) => setFilter('pipeline', e.target.value)}
             className="w-48"
           />
+          {filters.node ? <Chip active onClick={() => setFilter('node', '')} title="노드 필터 해제">노드 {filters.node} ×</Chip> : null}
         </FilterBar>
 
         <DataTable

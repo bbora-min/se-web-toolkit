@@ -1,6 +1,6 @@
 {
   "name": "@se/canvas",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "description": "SE 캔버스 — React Flow 래퍼. DAG 자동 배치, 상태색 태스크 노드, 토큰 크롬(컨트롤·미니맵)",
   "type": "module",
   "exports": {

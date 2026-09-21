@@ -2,7 +2,7 @@ import { delay, http, HttpResponse } from 'msw'
 import { makeDatasets } from './data'
 import { domainDoc, domainSummaries } from './domains'
 import { answer, seedThreads, summary } from './ask'
-import type { AskThread } from '../api/types'
+import type { AskThread, OwnerSummary, TagSummary } from '../api/types'
 
 const datasets = makeDatasets()
 let threads: AskThread[] = seedThreads(datasets)
@@ -16,6 +16,43 @@ async function devState(url: URL) {
   return null
 }
 
+/** 태그의 뜻 — 카탈로그 규약. 화면은 이 문장을 그대로 보여 준다 */
+const TAG_DESC: Record<string, string> = {
+  core: '조직의 핵심 지표가 이 테이블에서 나온다. 스키마 변경은 공지 필수',
+  pii: '개인정보 컬럼 포함. 외부 리포트엔 해시 값만, 조인 키로만 쓴다',
+  'tier-1': 'SLA 위반 시 온콜 호출. 갱신 지연이 곧 장애',
+  deprecated: '대체 테이블이 있다. 새 쿼리에서 쓰지 않는다',
+  experimental: '스키마가 예고 없이 바뀔 수 있다. 대시보드에 붙이지 않는다',
+  certified: '데이터 거버넌스 검토를 통과했다. 리포트의 기준 소스',
+  gdpr: 'GDPR 삭제 요청 대상. 보존 기간 규칙을 따른다',
+}
+function owners(): OwnerSummary[] {
+  const by = new Map<string, OwnerSummary>()
+  for (const d of datasets) {
+    const o = by.get(d.owner) ?? { name: d.owner, team: d.team, datasets: 0, stale: 0, pii: 0, certified: 0, queries30d: Array.from({ length: 30 }, () => 0), domains: [] }
+    o.datasets++
+    if (d.freshness !== 'fresh') o.stale++
+    if (d.tags.includes('pii')) o.pii++
+    if (d.tags.includes('certified')) o.certified++
+    d.queries30d.forEach((q, i) => (o.queries30d[i] = (o.queries30d[i] ?? 0) + q))
+    if (!o.domains.includes(d.domain)) o.domains.push(d.domain)
+    by.set(d.owner, o)
+  }
+  return [...by.values()].sort((a, b) => a.team.localeCompare(b.team) || b.datasets - a.datasets)
+}
+function tags(): TagSummary[] {
+  const by = new Map<string, TagSummary>()
+  for (const d of datasets)
+    for (const t of d.tags) {
+      const s = by.get(t) ?? { name: t, description: TAG_DESC[t] ?? '', count: 0, stale: 0, domains: [] }
+      s.count++
+      if (d.freshness !== 'fresh') s.stale++
+      if (!s.domains.includes(d.domain)) s.domains.push(d.domain)
+      by.set(t, s)
+    }
+  return [...by.values()].sort((a, b) => b.count - a.count)
+}
+
 export const handlers = [
   http.get('/api/datasets', async ({ request }) => {
     const url = new URL(request.url)
@@ -24,10 +61,14 @@ export const handlers = [
     const q = url.searchParams.get('q')?.toLowerCase()
     const domain = url.searchParams.get('domain')
     const quick = url.searchParams.get('quick')
+    const owner = url.searchParams.get('owner')
+    const tag = url.searchParams.get('tag')
     const items = datasets.filter(
       (d) =>
         (!q || d.name.includes(q) || d.owner.includes(q) || d.columns.some((c) => c.name.includes(q)) || d.tags.some((t) => t.includes(q))) &&
         (!domain || d.domain === domain) &&
+        (!owner || d.owner === owner) &&
+        (!tag || d.tags.includes(tag)) &&
         (!quick ||
           (quick === 'mine' && d.owner === 'bora') ||
           (quick === 'stale' && d.freshness !== 'fresh') ||
@@ -45,6 +86,16 @@ export const handlers = [
         certified: datasets.filter((d) => d.tags.includes('certified')).length,
       },
     })
+  }),
+  http.get('/api/owners', async ({ request }) => {
+    const forced = await devState(new URL(request.url))
+    if (forced) return forced.status === 200 ? HttpResponse.json({ items: [] }) : forced
+    return HttpResponse.json({ items: owners() })
+  }),
+  http.get('/api/tags', async ({ request }) => {
+    const forced = await devState(new URL(request.url))
+    if (forced) return forced.status === 200 ? HttpResponse.json({ items: [] }) : forced
+    return HttpResponse.json({ items: tags() })
   }),
   http.get('/api/ask/threads', async ({ request }) => {
     const forced = await devState(new URL(request.url))

@@ -1,11 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
-import type { ClusterSummary, Job, JobState, Overview, Pipeline } from './types'
+import type { ActivityKind, ActivityList, ClusterNode, ClusterSummary, Job, JobState, Overview, Pipeline } from './types'
 
 export interface JobFilters {
   q?: string
   state?: JobState | ''
   pipeline?: string
+  /** 노드 이름 — 노드 화면에서 넘어올 때 */
+  node?: string
   page?: number
   pageSize?: number
   sort?: string
@@ -34,6 +36,7 @@ export function useJobs(filters: JobFilters, opts: { enabled?: boolean; refetchI
       if (filters.q) p.set('q', filters.q)
       if (filters.state) p.set('state', filters.state)
       if (filters.pipeline) p.set('pipeline', filters.pipeline)
+      if (filters.node) p.set('node', filters.node)
       if (filters.page) p.set('page', String(filters.page))
       if (filters.pageSize) p.set('pageSize', String(filters.pageSize))
       if (filters.sort) p.set('sort', filters.sort)
@@ -118,4 +121,14 @@ export function useOverview(range: '24h' | '7d') {
     refetchInterval: 30_000,
     placeholderData: (prev) => prev,
   })
+}
+
+/** 노드 목록 — 15초마다 갱신 */
+export function useNodes() {
+  return useQuery({ queryKey: ['nodes'], queryFn: () => api<{ items: ClusterNode[] }>('/nodes'), refetchInterval: 15_000 })
+}
+
+/** 활동 — 잡·노드·스케줄에서 일어난 일. `kind` 로 종류 필터 */
+export function useActivity(kind: ActivityKind | '') {
+  return useQuery({ queryKey: ['activity', kind], queryFn: () => api<ActivityList>(`/activity${kind ? `?kind=${kind}` : ''}`), placeholderData: (prev) => prev, refetchInterval: 30_000 })
 }

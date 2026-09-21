@@ -91,3 +91,24 @@ export interface Dataset {
   /** 같은 도메인·같은 업스트림을 쓰는 이웃 */
   related: string[]
 }
+
+/** 소유자 한 사람 — 맡은 데이터셋의 건강 요약 */
+export interface OwnerSummary {
+  name: string
+  team: string
+  datasets: number
+  stale: number
+  pii: number
+  certified: number
+  /** 맡은 데이터셋의 최근 30일 일별 조회 합 */
+  queries30d: number[]
+  domains: string[]
+}
+/** 태그 하나 — 무엇을 뜻하고 몇 개에 붙어 있나 */
+export interface TagSummary {
+  name: string
+  description: string
+  count: number
+  stale: number
+  domains: string[]
+}

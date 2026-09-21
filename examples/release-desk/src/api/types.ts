@@ -107,3 +107,30 @@ export const CHECKLIST_TEMPLATE = [
   { id: 'rollback', label: '롤백 절차 확인', required: true },
   { id: 'notice', label: '이해관계자 공지', required: true },
 ]
+
+export type HistoryResult = 'deployed' | 'rejected' | 'rolled-back'
+/** 이력 한 줄 — 끝난 릴리스. 배포됐거나, 반려됐거나, 되돌렸거나 */
+export interface HistoryItem {
+  id: string
+  /** 상세가 남아 있는 릴리스면 그 id — 오래된 것은 없다 */
+  releaseId?: string
+  version: string
+  service: string
+  title: string
+  type: ReleaseType
+  risk: Risk
+  owner: string
+  team: string
+  result: HistoryResult
+  /** ISO — 배포·반려·롤백 시각 */
+  at: string
+  /** 초안 → 결과까지(시간) */
+  leadHours: number
+  approvers: string[]
+  note?: string
+}
+export interface HistoryList {
+  items: HistoryItem[]
+  services: string[]
+  stats: { deployed: number; hotfix: number; rejected: number; rolledBack: number; medianLeadHours: number }
+}

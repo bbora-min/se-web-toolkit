@@ -6,6 +6,7 @@ import { Link } from 'react-router'
 import { Callout, DocHeader, DocLayout, PageBody, Prose, Table, TableBody, TableCell, TableHead, TableHeader, TableOfContents, TableRow, type TocItem } from '@se/ui'
 import { Compare, Figure, Flow, Stack, Tree } from '../components/diagrams'
 import { ARCHETYPES } from '../lib/archetypes'
+import { RULES, SLOTS } from '../lib/onboarding'
 import idJm from '../../../../examples/reference-app/e2e/__snapshots__/identity-light-1280.png'
 import idDe from '../../../../examples/dataset-explorer/e2e/__snapshots__/identity-light-1280.png'
 import idRd from '../../../../examples/release-desk/e2e/__snapshots__/identity-light-1280.png'
@@ -27,24 +28,7 @@ const TOC: TocItem[] = [
   { id: 'glossary', label: '용어', level: 2 },
 ]
 
-const SLOTS = [
-  ['mark', '모노그램 2–3글자', '앱 쉘 로고, 파비콘, 형제 목록의 마크'],
-  ['accent.hue', '0–360°', '액센트 색. 버튼·활성 탭·선택 행·시그니처 블록'],
-  ['neutralBias', 'cool · warm · neutral · accent', '회색의 기울기 — 바탕·표면·선의 온도'],
-  ['signature', 'status-strip · search-hero · stage-rail · timeline-ribbon · metric-marquee', '첫 화면 상단의 "이 서비스다운" 한 조각'],
-  ['shell', 'sidebar · topnav · panes', '앱 쉘 배치. 같은 배치는 두 서비스까지'],
-  ['density', 'compact · comfortable', '표 행 높이·간격'],
-  ['displayFont', 'pretendard · ibm-plex-sans · noto-sans-kr · ibm-plex-mono', '제목 글꼴'],
-  ['tone', 'terse · friendly · procedural', '빈 화면·오류·알림의 말투. 어미까지'],
-]
 
-const RULES = [
-  ['no-raw-color', '색은 토큰 클래스만', 'className="bg-[#1e293b]"', 'className="bg-surface-2"'],
-  ['no-raw-control', '컨트롤·표는 @se/ui', '<button onClick={…}>저장</button>', '<Button onClick={…}>저장</Button>'],
-  ['import-from-ui', '기반 라이브러리 직접 import 금지', "import * as Dialog from '@radix-ui/react-dialog'", "import { Dialog } from '@se/ui'"],
-  ['page-states', '원격 표는 loading · empty · error', '<DataTable columns data />', '<DataTable columns data loading empty error />'],
-  ['single-accent', '한 화면에 primary 버튼 하나', '<Button variant="primary">저장</Button> <Button variant="primary">삭제</Button>', '<Button variant="primary">저장</Button> <Button variant="ghost">삭제</Button>'],
-]
 
 export function HowPage() {
   return (

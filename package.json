@@ -18,6 +18,7 @@
     "gen:skill-docs": "tsx scripts/gen-skill-docs.ts",
     "check:skill-docs": "tsx scripts/gen-skill-docs.ts --check",
     "check:release": "node scripts/check-release.mjs",
+    "check:site-docs": "tsx scripts/check-site-docs.ts",
     "release:bump": "node scripts/release-bump.mjs",
     "gen:design-pdf": "node scripts/gen-design-pdf.mjs",
     "storybook": "pnpm --filter se-storybook dev",

@@ -33,7 +33,7 @@ export function DecisionDialog({ release, onClose, onDecided, defaultDecision = 
 
   const submit = form.handleSubmit(async (v) => {
     if (!release) return
-    // 승인 가능 여부는 트리아지·상세와 같은 규칙(lib/workflow)
+    // 승인 가능 여부는 처리함·상세와 같은 규칙(lib/workflow)
     if (v.decision === 'approved') {
       const why = decisionBlocker(release)
       if (why) return void toast.error(why)

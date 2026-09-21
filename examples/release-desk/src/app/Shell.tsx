@@ -34,7 +34,7 @@ export function Shell() {
         heading: '액션',
         items: [
           { id: 'new', label: '새 릴리스 등록', icon: <Plus />, hint: 'N', onSelect: () => navigate('/releases/new') },
-          { id: 'mine', label: '내 승인 대기 보기', icon: <ClipboardCheck />, hint: '트리아지', onSelect: () => navigate('/approvals') },
+          { id: 'mine', label: '내 승인 대기 보기', icon: <ClipboardCheck />, hint: '처리함', onSelect: () => navigate('/approvals') },
           { id: 'settings', label: '설정', icon: <Settings />, onSelect: () => navigate('/settings') },
           { id: 'density', label: `밀도: ${density === 'compact' ? 'comfortable' : 'compact'}로`, onSelect: () => setDensity(density === 'compact' ? 'comfortable' : 'compact') },
           { id: 'dark', label: '테마: 다크', onSelect: () => setMode('dark') },

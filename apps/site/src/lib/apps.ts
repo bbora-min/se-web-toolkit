@@ -21,8 +21,8 @@ export interface ExampleApp {
 
 /** 예제 앱 4개 — 가상의 사내 도구. 각자 화면 골격 몇 가지의 원본을 맡는다. 그림은 e2e 기준 스크린샷 */
 export const APPS: ExampleApp[] = [
-  { id: 'job-monitor', name: 'Job Monitor', monogram: 'JM', hue: 195, tagline: '배치 잡과 파이프라인을 지켜보는 운영 콘솔', identity: 'hue 195 · cool · status-strip · sidebar · compact · terse', archetypes: ['관측 벽', '원장', '콘솔', '캔버스'], shot: shotJobs, dir: 'examples/reference-app' },
-  { id: 'dataset-explorer', name: 'Dataset Explorer', monogram: 'DE', hue: 310, tagline: '데이터셋을 찾고, 읽고, 질문하는 데이터 카탈로그', identity: 'hue 310 · warm · search-hero · sidebar · comfortable · friendly', archetypes: ['원장', '문서', '대화'], shot: shotDatasets, dir: 'examples/dataset-explorer' },
-  { id: 'release-desk', name: 'Release Desk', monogram: 'RD', hue: 235, tagline: '릴리스를 승인하고 배포 일정을 관리하는 데스크', identity: 'hue 235 · neutral · stage-rail · sidebar · compact · procedural', archetypes: ['원장', '보드', '트리아지', '일정'], shot: shotReleases, dir: 'examples/release-desk' },
+  { id: 'job-monitor', name: 'Job Monitor', monogram: 'JM', hue: 195, tagline: '배치 잡과 파이프라인을 지켜보는 운영 콘솔', identity: 'hue 195 · cool · status-strip · sidebar · compact · terse', archetypes: ['대시보드', '목록', '콘솔', '캔버스'], shot: shotJobs, dir: 'examples/reference-app' },
+  { id: 'dataset-explorer', name: 'Dataset Explorer', monogram: 'DE', hue: 310, tagline: '데이터셋을 찾고, 읽고, 질문하는 데이터 카탈로그', identity: 'hue 310 · warm · search-hero · sidebar · comfortable · friendly', archetypes: ['목록', '문서', '대화'], shot: shotDatasets, dir: 'examples/dataset-explorer' },
+  { id: 'release-desk', name: 'Release Desk', monogram: 'RD', hue: 235, tagline: '릴리스를 승인하고 배포 일정을 관리하는 데스크', identity: 'hue 235 · neutral · stage-rail · sidebar · compact · procedural', archetypes: ['목록', '보드', '처리함', '일정'], shot: shotReleases, dir: 'examples/release-desk' },
   { id: 'se-home', name: 'SE Home', monogram: 'SE', hue: 350, tagline: '사내 서비스로 들어가는 입구', identity: 'hue 350 · warm · timeline-ribbon · topnav · comfortable · friendly', archetypes: ['허브'], shot: shotHome, dir: 'examples/se-home' },
 ]

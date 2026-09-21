@@ -15,8 +15,8 @@ import { CommandPalette, useCommandPalette, type CommandGroup } from '../compone
  * 배치(layout)는 서비스가 se.identity.json 의 shell 로 고른다:
  *   sidebar — 좌측 네비 + 상단 검색, 콘텐츠 1120px. 목록·대시보드 도구 (기본)
  *   topnav  — 상단 한 줄 네비, 사이드바 없음. 허브·콘솔처럼 폭이 필요한 도구
- *   panes   — 좌측 아이콘 레일 + 전폭 콘텐츠(패딩 없음). 화면 높이에 고정되어 패널이 각자 스크롤한다 — 트리아지·로그
- * 골격(원장·보드·관측 벽·문서 …)은 화면마다 고른다 — 쉘은 서비스에 하나.
+ *   panes   — 좌측 아이콘 레일 + 전폭 콘텐츠(패딩 없음). 화면 높이에 고정되어 패널이 각자 스크롤한다 — 처리함·로그
+ * 골격(목록·보드·대시보드·문서 …)은 화면마다 고른다 — 쉘은 서비스에 하나.
  * ────────────────────────────────────────────────────────────── */
 
 /** 쉘 배치 — @se/tokens 의 `Shell`(se.identity.json 의 shell) 그대로 */
@@ -26,7 +26,7 @@ interface ShellCtx {
   layout: ShellLayout
   /** 커맨드 팔레트(⌘K)를 연다. 쉘에 `command` 가 없으면 undefined — 페이지는 그때 검색 UI 를 그리지 않는다 */
   openSearch?: () => void
-  /** 페이지가 콘텐츠 최대 폭을 잠시 바꾼다(관측 벽·보드). null 이면 쉘 기본값 */
+  /** 페이지가 콘텐츠 최대 폭을 잠시 바꾼다(대시보드·보드). null 이면 쉘 기본값 */
   setContentWidth: (px: number | null) => void
 }
 const Ctx = React.createContext<ShellCtx>({ layout: DEFAULT_SHELL, setContentWidth: () => {} })
@@ -34,7 +34,7 @@ const Ctx = React.createContext<ShellCtx>({ layout: DEFAULT_SHELL, setContentWid
 export function useShellLayout(): ShellLayout {
   return React.useContext(Ctx).layout
 }
-/** 이 페이지가 떠 있는 동안 쉘의 콘텐츠 최대 폭을 바꾼다 — 관측 벽(1440)·보드처럼 넓어야 하는 골격용. 벗어나면 원래대로 */
+/** 이 페이지가 떠 있는 동안 쉘의 콘텐츠 최대 폭을 바꾼다 — 대시보드(1440)·보드처럼 넓어야 하는 골격용. 벗어나면 원래대로 */
 export function useContentWidth(px: number | null) {
   const { setContentWidth } = React.useContext(Ctx)
   React.useLayoutEffect(() => {
@@ -334,7 +334,7 @@ export function NavSection({ title, children }: { title?: string; children: Reac
 }
 
 export interface ShellFillProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** true 면 남은 화면 높이에 고정(트리아지·콘솔 — 칸마다 스크롤). false 면 폭만 전폭(관측 벽) */
+  /** true 면 남은 화면 높이에 고정(처리함·콘솔 — 칸마다 스크롤). false 면 폭만 전폭(대시보드) */
   fixed?: boolean
 }
 
@@ -345,7 +345,7 @@ const FILL: Record<ShellLayout, { bleed: string; fixed: string }> = {
 }
 
 /**
- * 쉘 콘텐츠 영역의 패딩·최대 폭을 무르고 전폭으로 — 관측 벽·트리아지·콘솔처럼 "페이지"가 아닌 골격.
+ * 쉘 콘텐츠 영역의 패딩·최대 폭을 무르고 전폭으로 — 대시보드·처리함·콘솔처럼 "페이지"가 아닌 골격.
  * 배치별 패딩 값은 여기 한 곳에만 있다. 페이지가 `-mx-6` 같은 쉘 내부 값을 적지 않는다.
  */
 export function ShellFill({ fixed, className, ...props }: ShellFillProps) {

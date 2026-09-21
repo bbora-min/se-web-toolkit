@@ -1,9 +1,9 @@
 /**
- * 개요 — 관측 벽(observability wall) 골격의 원본.
+ * 개요 — 대시보드(observability wall) 골격의 원본.
  *
  * 디자인 플랜
- *  골격       : 관측 벽. 페이지 제목 없이 12칸 격자를 타일이 채운다(Grafana·Datadog). 형제들의 원장(제목 → 띠 → 표)과 첫 시선부터 다르다.
- *               같은 앱의 잡 목록은 원장 — "고를 땐 표, 볼 땐 벽".
+ *  골격       : 대시보드. 페이지 제목 없이 12칸 격자를 타일이 채운다(Grafana·Datadog). 형제들의 목록(제목 → 띠 → 표)과 첫 시선부터 다르다.
+ *               같은 앱의 잡 목록은 목록 골격 — "고를 땐 표, 볼 땐 대시보드".
  *  목적       : "지난 24시간 운영이 괜찮았나"를 한 화면에서 답한다. 이상이 있으면 어디인지 가리킨다.
  *  첫 시선    : 상태 스트립(시그니처)의 상태 블록 → 시간별 완료의 빨간 조각 → 임계를 넘은 타일의 점.
  *  주 액션    : 없음(읽는 화면). 툴바의 기간 하나가 모든 타일을 바꾼다. 타일마다 목록으로 가는 링크.
@@ -54,7 +54,7 @@ export function OverviewPage() {
   const rangeLabel = range === '24h' ? '24시간' : '7일'
 
   return (
-    // 벽은 canvas 위에 — 원장 페이지(surface)와 바탕부터 다르다. ShellFill 이 쉘 패딩을 무른다
+    // 대시보드는 canvas 위에 — 목록 페이지(surface)와 바탕부터 다르다. ShellFill 이 쉘 패딩을 무른다
     <ShellFill className="gap-3 border-t border-line bg-canvas px-6 pb-8 pt-3 xl:px-8">
       <h1 className="sr-only">개요</h1>
 

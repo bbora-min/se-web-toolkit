@@ -7,7 +7,7 @@ import { Alert, type AlertProps } from '../components/alert'
 /* ──────────────────────────────────────────────────────────────
  * DocLayout · DocHeader · TreeNav · TableOfContents · Prose — 문서(document) 골격의 재료.
  * 읽는 화면이다: 좌측 트리(어디에 있나) · 중앙 65자 컬럼(본문) · 우측 목차(어디쯤인가). 크롬은 최소, 여백은 최대(Notion·GitBook).
- * 원장(스캔되는 화면)과 반대로 타이포가 전부다 — 본문은 `Prose` 안에 넣고 클래스로 꾸미지 않는다.
+ * 목록(스캔되는 화면)과 반대로 타이포가 전부다 — 본문은 `Prose` 안에 넣고 클래스로 꾸미지 않는다.
  * ────────────────────────────────────────────────────────────── */
 
 export interface DocLayoutProps extends React.HTMLAttributes<HTMLDivElement> {

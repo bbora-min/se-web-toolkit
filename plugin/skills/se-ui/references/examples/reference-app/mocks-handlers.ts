@@ -59,7 +59,7 @@ async function devState(url: URL) {
   if (s === 'slow') await delay(60_000)
   else await delay(250)
   if (s === 'error') return HttpResponse.json({ message: '스케줄러 API(scheduler-01)에 연결할 수 없습니다' }, { status: 502 })
-  if (s === 'empty') return HttpResponse.json({ items: [], pipelines: [] })
+  if (s === 'empty') return HttpResponse.json({ items: [], pipelines: [], counts: {} })
   return null
 }
 

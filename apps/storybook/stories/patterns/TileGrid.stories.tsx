@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Skeleton, Tile, TileGrid } from '@se/ui'
 
 /**
- * 관측 벽 골격의 재료 — 12칸 격자와 타일. 페이지 제목 없이 타일이 화면을 채운다.
+ * 대시보드 골격의 재료 — 12칸 격자와 타일. 페이지 제목 없이 타일이 화면을 채운다.
  * 바탕은 canvas, 타일은 surface. 1024 이하에서 `spanNarrow` 로 접힌다. 원본 화면은 Job Monitor 개요(`examples/reference-app/OverviewPage.tsx`).
  */
 const meta = { title: '패턴/TileGrid', component: TileGrid, parameters: { layout: 'fullscreen' } } satisfies Meta<typeof TileGrid>

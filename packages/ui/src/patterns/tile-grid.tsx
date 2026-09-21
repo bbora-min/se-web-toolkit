@@ -2,9 +2,9 @@ import * as React from 'react'
 import { cn } from '../lib/cn'
 
 /* ──────────────────────────────────────────────────────────────
- * TileGrid · Tile — 관측 벽(observability wall) 골격의 재료.
+ * TileGrid · Tile — 대시보드(observability wall) 골격의 재료.
  * 페이지 제목 없이 12칸 격자를 타일이 채운다(Grafana·Datadog). 타일 헤더는 한 줄(제목 · 설명 · 범례 · 액션), 본문은 차트·표.
- * 바탕은 canvas, 타일은 surface — 원장 페이지(surface 위 카드)와 질감이 반대라 "다른 골격"으로 읽힌다.
+ * 바탕은 canvas, 타일은 surface — 목록 페이지(surface 위 카드)와 질감이 반대라 "다른 골격"으로 읽힌다.
  * 폭 1024 이하에서는 `spanNarrow`(기본: 6 이상이면 12, 그 미만이면 6)로 접힌다.
  * ────────────────────────────────────────────────────────────── */
 

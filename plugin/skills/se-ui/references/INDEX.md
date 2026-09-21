@@ -52,7 +52,7 @@
 - [StatusStrip](components/status-strip.md) — 시그니처 · 시그니처 · 상태 스트립 — 모니터링 서비스의 얼굴.
 - [TimelineRibbon](components/timeline-ribbon.md) — 시그니처 · 시그니처 · 타임라인 리본 — 활동·이력 서비스의 얼굴.
 - [BarChart](components/charts-bar-chart.md) — 차트 · 막대. 얇게, 위쪽 모서리만 둥글게, 막대 사이 표면 간격.
-- [ChartLegend · ChartCard](components/charts-chart-card.md) — 차트 · 범례 — 시리즈 색 점 + 라벨. ChartCard 가 쓰고, 관측 벽의 `Tile legend=` 에도 그대로 넘긴다
+- [ChartLegend · ChartCard](components/charts-chart-card.md) — 차트 · 범례 — 시리즈 색 점 + 라벨. ChartCard 가 쓰고, 대시보드의 `Tile legend=` 에도 그대로 넘긴다
 - [ChartCard · ChartLegend · BarChart · LineChart · MeterList](components/charts-index.md) — 차트
 - [LineChart](components/charts-line-chart.md) — 차트 · 선 2px, 점 없음(호버 시만), 크로스헤어 툴팁
 - [MeterList](components/charts-meter-list.md) — 차트 · 미터 목록 — 순위·비율 비교. 막대 차트보다 라벨을 읽기 쉽다.

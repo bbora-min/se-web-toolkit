@@ -2,7 +2,7 @@ import * as React from 'react'
 import { cn } from '@se/ui'
 import { cssColor, type Series } from './theme'
 
-/** 범례 — 시리즈 색 점 + 라벨. ChartCard 가 쓰고, 관측 벽의 `Tile legend=` 에도 그대로 넘긴다 */
+/** 범례 — 시리즈 색 점 + 라벨. ChartCard 가 쓰고, 대시보드의 `Tile legend=` 에도 그대로 넘긴다 */
 export function ChartLegend({ series, className }: { series: Series[]; className?: string }) {
   if (series.length < 2) return null
   return (

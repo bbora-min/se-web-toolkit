@@ -13,10 +13,10 @@ export const SIGNATURES = [
 ] as const
 
 /**
- * 쉘 배치 — 서비스가 고르는 골격의 첫 결정. 화면 골격(원장·보드·관측 벽·문서 …)은 화면마다 고르지만 쉘은 서비스에 하나.
+ * 쉘 배치 — 서비스가 고르는 골격의 첫 결정. 화면 골격(목록·보드·대시보드·문서 …)은 화면마다 고르지만 쉘은 서비스에 하나.
  *  sidebar : 좌측 네비 + 상단 검색. 목록·대시보드 중심 도구 (기본)
  *  topnav  : 상단 한 줄 네비, 사이드바 없음. 허브·콘솔처럼 화면이 넓어야 하는 도구
- *  panes   : 좌측 아이콘 레일 + 전폭 콘텐츠. 트리아지·로그처럼 화면 안에서 패널을 나누는 도구
+ *  panes   : 좌측 아이콘 레일 + 전폭 콘텐츠. 처리함·로그처럼 화면 안에서 패널을 나누는 도구
  */
 export const SHELLS = ['sidebar', 'topnav', 'panes'] as const
 export type Shell = (typeof SHELLS)[number]

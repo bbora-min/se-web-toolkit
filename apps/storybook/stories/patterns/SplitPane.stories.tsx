@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Badge, Button, SplitPane } from '@se/ui'
 
 /**
- * 트리아지·콘솔 골격의 재료 — 화면 높이에 고정된 가로 분할. 손잡이를 끌거나(포커스 후 ←→) 폭을 바꾸고, 칸마다 스크롤한다.
+ * 처리함·콘솔 골격의 재료 — 화면 높이에 고정된 가로 분할. 손잡이를 끌거나(포커스 후 ←→) 폭을 바꾸고, 칸마다 스크롤한다.
  * 원본 화면은 Release Desk 내 승인 대기(`examples/release-desk/ApprovalsPage.tsx`).
  */
 const meta = { title: '패턴/SplitPane', component: SplitPane, parameters: { layout: 'fullscreen' } } satisfies Meta<typeof SplitPane>

@@ -56,7 +56,7 @@
 | 액센트 hue | 브랜드 호환 밴드(채도·명도 고정, hue 자유). **레지스트리에서 기존 서비스와 30° 이상**, **의미 색(danger≈30°·warning≈70°·success≈155°·info≈260°)과 18° 이상** 떨어져야 함 — 가까우면 액센트 칩이 경고/오류처럼 읽힌다(Dataset Explorer에 호박 45°를 줬다가 실제로 겪음) | 청록 195° | 자두 310° | 인디고 235° (초록 150°는 success와 5°라 규칙에 걸림) |
 | 뉴트럴 편향 | 액센트 방향으로 2–3% 기울인 회색 | 차가운 회색 | 따뜻한 회색 | 중성 회색 |
 | 마크 | 모노그램 or 아이콘 + 이름 로크업 | `JM` 모노그램 | 격자 아이콘 | 태그 아이콘 |
-| **쉘 배치** (0.10.0) | `sidebar`(좌측 네비 + 상단 검색, 1120px) / `topnav`(상단 한 줄 네비, 사이드바 없음) / `panes`(아이콘 레일 + 전폭 콘텐츠). **레지스트리에서 같은 배치는 둘까지** — 셋째부터 경고. 페이지 골격(원장·보드·관측 벽·문서·허브·트리아지·콘솔·일정)은 화면마다 고른다 | sidebar | sidebar | sidebar |
+| **쉘 배치** (0.10.0) | `sidebar`(좌측 네비 + 상단 검색, 1120px) / `topnav`(상단 한 줄 네비, 사이드바 없음) / `panes`(아이콘 레일 + 전폭 콘텐츠). **레지스트리에서 같은 배치는 둘까지** — 셋째부터 경고. 페이지 골격(목록·보드·대시보드·문서·허브·처리함·콘솔·일정)은 화면마다 고른다 | sidebar | sidebar | sidebar |
 | 시그니처 요소 1개 | 헤더 하단 상태 스트립 / 검색 중심 히어로 / 진행 단계 레일 / 타임라인 리본 등 | 시스템 상태 스트립 | 커맨드 팔레트형 검색 히어로 | 릴리스 단계 레일 |
 | 기본 밀도 | compact / comfortable | compact | compact | comfortable |
 | 헤딩 폰트 | 승인 목록 3–4종(한글 호환) 중 택1 | IBM Plex Sans | Space Grotesk 계열 제외, 승인 목록 내 | Pretendard 그대로 |
@@ -175,7 +175,7 @@ API는 shadcn/Radix 관례를 그대로 따른다(Claude가 아는 이름 → �
 |---|---|
 | T0 프리미티브 | Button, Input, Textarea, Select, Combobox, Checkbox, Switch, RadioGroup, Badge, Tooltip, Popover, Dialog, Sheet, Tabs, Table, Card, Toast, DropdownMenu, Command, Skeleton, Alert, Separator |
 | T1 내부도구 복합 | **DataTable**(TanStack: 서버 페이지네이션·정렬·컬럼 토글·행 선택·CSV), FilterBar, StatusBadge, DescriptionList, JsonViewer, LogViewer(가상 스크롤·ANSI), StatCard, TimeRangePicker, CodeBlock, EmptyState, ErrorState, ConfirmDialog, Form(react-hook-form + zod) |
-| T2 레이아웃/패턴 | AppShell(`layout` = sidebar · topnav · panes), ListDetailPage, DashboardPage, DetailPage, FormWizardPage, SettingsPage, **HubPage**(0.11.0, `examples/se-home` — 패턴은 컴포넌트가 아니라 복사할 원본), **관측 벽**(0.12.0, `TileGrid`·`Tile` + Job Monitor 개요), **보드**(0.13.0, `Board`·`BoardColumn`·`BoardCard` + Release Desk `?view=board`), **문서**(0.14.0, `DocLayout`·`DocHeader`·`Prose`·`Callout`·`TreeNav`·`TableOfContents` + Dataset Explorer 도메인 가이드), **트리아지**(0.15.0, `SplitPane` + Release Desk 내 승인 대기), **콘솔**(0.16.0, `FacetGroup` + Job Monitor 잡 콘솔), **일정**(0.17.0, `CalendarGrid` + Release Desk 배포 캘린더), **캔버스**(0.18.0, `@se/canvas` + Job Monitor 파이프라인), **대화**(0.19.0, `Thread`·`Message`·`Composer`·`Citation` + Dataset Explorer 질문). 카탈로그의 골격 열 개 전부에 원본이 있다 |
+| T2 레이아웃/패턴 | AppShell(`layout` = sidebar · topnav · panes), ListDetailPage, DashboardPage, DetailPage, FormWizardPage, SettingsPage, **HubPage**(0.11.0, `examples/se-home` — 패턴은 컴포넌트가 아니라 복사할 원본), **대시보드**(0.12.0, `TileGrid`·`Tile` + Job Monitor 개요), **보드**(0.13.0, `Board`·`BoardColumn`·`BoardCard` + Release Desk `?view=board`), **문서**(0.14.0, `DocLayout`·`DocHeader`·`Prose`·`Callout`·`TreeNav`·`TableOfContents` + Dataset Explorer 도메인 가이드), **처리함**(0.15.0, `SplitPane` + Release Desk 내 승인 대기), **콘솔**(0.16.0, `FacetGroup` + Job Monitor 잡 콘솔), **일정**(0.17.0, `CalendarGrid` + Release Desk 배포 캘린더), **캔버스**(0.18.0, `@se/canvas` + Job Monitor 파이프라인), **대화**(0.19.0, `Thread`·`Message`·`Composer`·`Citation` + Dataset Explorer 질문). 카탈로그의 골격 열 개 전부에 원본이 있다 |
 | signatures/ | StatusStrip, SearchHero, StageRail, TimelineRibbon, MetricMarquee (아이덴티티 시그니처 후보) |
 
 각 패턴은 `examples/`에 로딩·빈·에러 상태를 포함한 완전 예제를 갖는다.

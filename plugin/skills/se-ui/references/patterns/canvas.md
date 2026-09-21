@@ -2,7 +2,7 @@
 
 원본: `references/examples/reference-app/PipelinePage.tsx`(파이프라인 DAG — 자동 배치 캔버스 · 상태색 노드 · 인스펙터)
 
-"무엇이 무엇에 달려 있나"가 질문인 화면이다. 파이프라인 DAG·서비스 의존 맵·노드 토폴로지(Airflow·n8n·Datadog Service Map). 목록(원장)은 개별을, 벽은 지표를, 캔버스는 **관계**를 보여 준다. `@se/canvas`(React Flow 래퍼)를 쓴다 — `@xyflow/react` 를 직접 import 하지 않는다(린트가 막는다).
+"무엇이 무엇에 달려 있나"가 질문인 화면이다. 파이프라인 DAG·서비스 의존 맵·노드 토폴로지(Airflow·n8n·Datadog Service Map). 목록(목록)은 개별을, 벽은 지표를, 캔버스는 **관계**를 보여 준다. `@se/canvas`(React Flow 래퍼)를 쓴다 — `@xyflow/react` 를 직접 import 하지 않는다(린트가 막는다).
 
 ## 골격
 ```

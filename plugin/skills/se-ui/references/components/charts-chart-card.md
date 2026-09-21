@@ -4,7 +4,7 @@
 
 ## ChartLegend
 
-범례 — 시리즈 색 점 + 라벨. ChartCard 가 쓰고, 관측 벽의 `Tile legend=` 에도 그대로 넘긴다
+범례 — 시리즈 색 점 + 라벨. ChartCard 가 쓰고, 대시보드의 `Tile legend=` 에도 그대로 넘긴다
 
 | prop | 타입 | 기본 | 설명 |
 |---|---|---|---|

@@ -101,11 +101,11 @@ export function Steps({ items }: { items: Array<{ title: string; body: React.Rea
   return (
     <ol className="not-prose my-4 flex flex-col gap-4">
       {items.map((s, i) => (
-        <li key={s.title} className="grid grid-cols-[2rem_1fr] gap-3">
+        <li key={s.title} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3">
           <span className="grid size-7 place-items-center rounded-full bg-accent font-mono text-[12px] font-semibold text-on-accent">{i + 1}</span>
-          <div className="flex flex-col gap-1.5 pt-0.5">
+          <div className="flex min-w-0 flex-col gap-1.5 pt-0.5">
             <span className="font-medium text-ink">{s.title}</span>
-            <div className="text-sm leading-relaxed text-ink/80 [&_code]:rounded [&_code]:bg-surface-2 [&_code]:px-1 [&_code]:font-mono [&_code]:text-[12px] [&_pre]:my-2 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:border [&_pre]:border-line [&_pre]:bg-canvas [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-[12px] [&_pre_code]:bg-transparent [&_pre_code]:p-0">{s.body}</div>
+            <div className="text-sm leading-relaxed text-ink/80 [&_code]:rounded [&_code]:bg-surface-2 [&_code]:px-1 [&_code]:font-mono [&_code]:text-[12px] [&_pre]:my-2 [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:border [&_pre]:border-line [&_pre]:bg-canvas [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-[12px] [&_pre_code]:bg-transparent [&_pre_code]:p-0">{s.body}</div>
           </div>
         </li>
       ))}

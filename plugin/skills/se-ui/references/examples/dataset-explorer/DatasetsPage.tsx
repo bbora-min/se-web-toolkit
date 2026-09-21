@@ -17,6 +17,7 @@ import {
   Avatar,
   Badge,
   Button,
+  Chip,
   DataTable,
   FilterBar,
   PageBody,
@@ -132,6 +133,8 @@ export function DatasetsPage() {
     q: params.get('q') ?? '',
     domain: params.get('domain') ?? '',
     quick: (params.get('quick') as Quick | null) ?? '',
+    owner: params.get('owner') ?? '',
+    tag: params.get('tag') ?? '',
   }
   const set = (k: keyof typeof f, v: string) => {
     const next = new URLSearchParams(params)
@@ -139,7 +142,7 @@ export function DatasetsPage() {
     else next.delete(k)
     setParams(next, { replace: true })
   }
-  const hasFilter = Boolean(f.q || f.domain || f.quick)
+  const hasFilter = Boolean(f.q || f.domain || f.quick || f.owner || f.tag)
   const list = useDatasets(f)
   const items = list.data?.items ?? []
 
@@ -185,6 +188,8 @@ export function DatasetsPage() {
             onChange={(e) => set('domain', e.target.value)}
             className="w-44"
           />
+          {f.owner ? <Chip active onClick={() => set('owner', '')} title="소유자 필터 해제">소유자 {f.owner} ×</Chip> : null}
+          {f.tag ? <Chip active onClick={() => set('tag', '')} title="태그 필터 해제">태그 {f.tag} ×</Chip> : null}
         </FilterBar>
         <DataTable
           columns={columns}

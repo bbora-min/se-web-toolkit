@@ -1,4 +1,4 @@
-import { CHECKLIST_TEMPLATE, PEOPLE, SERVICES, type Release, type StageId } from '../api/types'
+import { CHECKLIST_TEMPLATE, PEOPLE, SERVICES, type HistoryItem, type Release, type StageId } from '../api/types'
 
 let seed = 20260911
 function rnd() {
@@ -78,4 +78,44 @@ export function makeReleases(count = 28): Release[] {
     })
   }
   return out.sort((a, b) => a.windowFrom.localeCompare(b.windowFrom))
+}
+
+const ROLLBACK_NOTES = ['배포 후 p95 지연 2배 — 30분 만에 롤백', '마이그레이션 락으로 주문 API 타임아웃', '알림 중복 발송 — 피처 플래그로 끔']
+const REJECT_NOTES = ['롤백 절차가 구체적이지 않습니다', '스테이징 E2E 실패 건이 남아 있습니다', '프리즈 구간과 겹칩니다']
+
+/** 지금 done 인 릴리스 → 이력(상세 있음). 배포 시각은 배포 창 끝 — 결정적이라 요청마다 같다 */
+export function historyOfReleases(releases: Release[]): HistoryItem[] {
+  return releases
+    .filter((r) => r.stage === 'done')
+    .map((r) => {
+      const at = Date.parse(r.windowTo)
+      return {
+        id: `h-${r.id}`, releaseId: r.id, version: r.version, service: r.service, title: r.title, type: r.type, risk: r.risk, owner: r.owner, team: r.team,
+        result: 'deployed' as const, at: new Date(at).toISOString(), leadHours: Math.max(1, Math.round((at - Date.parse(r.createdAt)) / 3600_000)), approvers: r.approvers.map((a) => a.name),
+      }
+    })
+}
+
+/** 지난 90일의 옛 릴리스(상세 없음) — 난수를 쓰므로 모듈에서 한 번만 만든다 */
+export function makeOldHistory(count = 26): HistoryItem[] {
+  const now = Date.now()
+  const out: HistoryItem[] = []
+  for (let i = 0; i < count; i++) {
+    const service = pick(SERVICES)
+    const type = rnd() < 0.2 ? 'hotfix' : rnd() < 0.25 ? 'maintenance' : 'feature'
+    const risk = type === 'hotfix' ? 'high' : rnd() < 0.55 ? 'low' : rnd() < 0.7 ? 'medium' : 'high'
+    const owner = pick(PEOPLE)
+    const roll = rnd()
+    const result = roll < 0.08 ? 'rolled-back' : roll < 0.2 ? 'rejected' : 'deployed'
+    const at = new Date(now - (8 + Math.floor(rnd() * 82)) * 86400_000 - rnd() * 3600_000 * 10)
+    at.setMinutes(Math.floor(rnd() * 4) * 15, 0, 0)
+    const minor = 8 + Math.floor(rnd() * 8), patch = Math.floor(rnd() * 5)
+    out.push({
+      id: `h-old-${i}`, version: type === 'hotfix' ? `v4.${minor}.${patch + 1}` : `v4.${minor}.0`, service, title: TITLES[(i * 7) % TITLES.length]!, type, risk, owner: owner.name, team: owner.team,
+      result, at: at.toISOString(), leadHours: type === 'hotfix' ? 2 + Math.floor(rnd() * 10) : 24 + Math.floor(rnd() * 120),
+      approvers: [...PEOPLE].filter((p) => p.name !== owner.name).sort(() => rnd() - 0.5).slice(0, risk === 'high' ? 3 : 2).map((p) => p.name),
+      note: result === 'rolled-back' ? pick(ROLLBACK_NOTES) : result === 'rejected' ? pick(REJECT_NOTES) : undefined,
+    })
+  }
+  return out.sort((a, b) => b.at.localeCompare(a.at))
 }

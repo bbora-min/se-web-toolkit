@@ -12,6 +12,8 @@ const SCREENS = [
   { name: 'domain-error', path: '/domains/fct?__state=error' },
   { name: 'ask', path: '/ask' },
   { name: 'ask-thread', path: '/ask/t1' },
+  { name: 'owners', path: '/owners' },
+  { name: 'tags', path: '/tags' },
   { name: 'identity', path: '/__identity' },
 ]
 const FIXED_NOW = new Date('2026-09-14T09:00:00+09:00')

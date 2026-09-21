@@ -11,6 +11,7 @@ const SCREENS = [
   { name: 'releases-error', path: '/releases?__state=error' },
   { name: 'approvals', path: '/approvals' },
   { name: 'calendar', path: '/calendar' },
+  { name: 'history', path: '/history' },
   { name: 'approvals-empty', path: '/approvals?__state=empty' },
   { name: 'new-release', path: '/releases/new' },
   { name: 'settings', path: '/settings' },

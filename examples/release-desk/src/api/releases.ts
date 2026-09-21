@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
-import type { CalendarMonth, Release, ReleaseDraft, StageId } from './types'
+import type { CalendarMonth, HistoryList, HistoryResult, Release, ReleaseDraft, StageId } from './types'
 
 export interface ReleaseFilters {
   q?: string
@@ -68,4 +68,26 @@ export function useAdvanceRelease() {
 export function useChecklist(id: string) {
   const inv = useInvalidate()
   return useMutation({ mutationFn: (d: { itemId: string; done: boolean }) => api<Release>(`/releases/${id}/checklist`, { method: 'POST', body: JSON.stringify(d) }), onSuccess: inv })
+}
+
+export interface HistoryFilters {
+  service?: string
+  result?: HistoryResult | ''
+  /** "YYYY-MM" — 비면 최근 90일 */
+  month?: string
+}
+/** 이력 — 끝난 릴리스. 통계는 필터 기준 */
+export function useHistory(f: HistoryFilters) {
+  return useQuery({
+    queryKey: ['releases', 'history', f],
+    queryFn: () => {
+      const p = new URLSearchParams()
+      if (f.service) p.set('service', f.service)
+      if (f.result) p.set('result', f.result)
+      if (f.month) p.set('month', f.month)
+      const qs = p.toString()
+      return api<HistoryList>(`/history${qs ? `?${qs}` : ''}`)
+    },
+    placeholderData: (prev) => prev,
+  })
 }

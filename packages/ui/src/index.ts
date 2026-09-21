@@ -67,6 +67,6 @@ export { TimelineRibbon, type TimelineRibbonProps, type RibbonEvent, type Ribbon
 export { MetricMarquee, type MetricMarqueeProps } from './signatures/metric-marquee'
 export { LogViewer, LOG_LEVEL_RE, type LogViewerProps } from './components/log-viewer'
 export { parseAnsi, stripAnsi, type AnsiSpan } from './lib/ansi'
-export { formatRelative, formatAbsolute, formatDuration, formatCompact, formatBytes } from './lib/format'
+export { formatRelative, formatAbsolute, formatDuration, formatDurationLong, formatCompact, formatBytes } from './lib/format'
 export { createApiClient, hasForcedState, ApiError, type ApiClientOptions } from './lib/api'
 export { restoreDeepLink, routerBasename, DEEP_LINK_KEY } from './lib/spa'

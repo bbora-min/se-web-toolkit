@@ -99,3 +99,35 @@ export interface Overview {
   queueWait: QueuePoint[]
   failureCauses: FailureCause[]
 }
+
+/** 노드 하나 — 개요의 NodeStat 에 상세(라벨·하트비트·24h 추이·올라가 있는 잡)를 더한 것 */
+export interface ClusterNode extends NodeStat {
+  /** 풀·GPU 같은 스케줄링 라벨 */
+  labels: string[]
+  uptimeSec: number
+  /** ISO — 마지막 하트비트 */
+  lastHeartbeat: string
+  /** 최근 24시간 CPU · MEM(%) */
+  cpuSeries: number[]
+  memSeries: number[]
+}
+
+export type ActivityKind = 'failed' | 'retried' | 'cancelled' | 'succeeded' | 'node' | 'schedule'
+/** 활동 한 줄 — 잡·노드·스케줄에서 일어난 일을 시간순으로 */
+export interface ActivityEvent {
+  id: string
+  at: string
+  kind: ActivityKind
+  title: string
+  detail?: string
+  /** 사람이 한 일이면 누가 */
+  who?: string
+  jobId?: string
+  node?: string
+  pipeline?: string
+}
+export interface ActivityList {
+  items: ActivityEvent[]
+  /** 종류별 건수(종류 필터 제외 기준). '' 키는 전체 */
+  counts: Record<string, number>
+}

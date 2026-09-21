@@ -1,6 +1,6 @@
 import { delay, http, HttpResponse } from 'msw'
 import { CHECKLIST_TEMPLATE, PEOPLE, STAGES, type Release, type ReleaseDraft, type StageId } from '../api/types'
-import { makeReleases } from './data'
+import { historyOfReleases, makeOldHistory, makeReleases } from './data'
 
 let releases = makeReleases()
 const me = 'bora'
@@ -32,6 +32,10 @@ function freeze() {
   return { from: fri.toISOString(), to: mon.toISOString(), reason: '주말 온콜 최소화' }
 }
 const find = (id: string | readonly string[]) => releases.find((r) => r.id === id)
+/** 옛 이력은 난수라 한 번만 — 요청마다 다시 뽑으면 필터를 바꿀 때 표가 뒤바뀐다 */
+const OLD_HISTORY = makeOldHistory()
+/** 화면의 달 필터는 로컬 시간 기준 — ISO(UTC)의 앞 7자로 비교하면 월초 새벽이 지난달로 간다 */
+const localMonth = (iso: string) => { const d = new Date(iso); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` }
 
 export const handlers = [
   http.get('/api/releases', async ({ request }) => {
@@ -54,6 +58,29 @@ export const handlers = [
         (!mine || r.approvers.some((a) => a.name === me && a.decision === 'pending')),
     )
     return HttpResponse.json({ items, stages: stageCounts(), freeze: freeze() })
+  }),
+  /** 이력 — 끝난 릴리스. 통계는 필터가 적용된 집합 기준 */
+  http.get('/api/history', async ({ request }) => {
+    const url = new URL(request.url)
+    const forced = await devState(url)
+    if (forced) return forced.status === 200 ? HttpResponse.json({ items: [], services: [], stats: { deployed: 0, hotfix: 0, rejected: 0, rolledBack: 0, medianLeadHours: 0 } }) : forced
+    const service = url.searchParams.get('service')
+    const result = url.searchParams.get('result')
+    const month = url.searchParams.get('month')
+    const all = [...historyOfReleases(releases), ...OLD_HISTORY].sort((a, b) => b.at.localeCompare(a.at))
+    const items = all.filter((h) => (!service || h.service === service) && (!result || h.result === result) && (!month || localMonth(h.at) === month))
+    const leads = items.filter((h) => h.result === 'deployed').map((h) => h.leadHours).sort((a, b) => a - b)
+    return HttpResponse.json({
+      items,
+      services: [...new Set(all.map((h) => h.service))].sort(),
+      stats: {
+        deployed: items.filter((h) => h.result === 'deployed').length,
+        hotfix: items.filter((h) => h.type === 'hotfix' && h.result === 'deployed').length,
+        rejected: items.filter((h) => h.result === 'rejected').length,
+        rolledBack: items.filter((h) => h.result === 'rolled-back').length,
+        medianLeadHours: leads.length ? leads[Math.floor(leads.length / 2)]! : 0,
+      },
+    })
   }),
   /** 캘린더 — 창은 릴리스에서, 프리즈는 매주 금 18:00 – 월 09:00 */
   http.get('/api/calendar', async ({ request }) => {

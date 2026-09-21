@@ -17,7 +17,8 @@ const TREE = [
 ]
 const TOC = [{ id: 'overview', label: '개요' }, { id: 'rules', label: '적재 규약과 사용 규칙' }, { id: 'queries', label: '자주 쓰는 쿼리' }]
 
-export const 문서: Story = {
+export const 도메인_가이드: Story = {
+  name: '도메인 가이드',
   render: () => (
     <div className="mx-auto max-w-[1120px] px-8">
       <DocLayout aside={<TreeNav items={TREE} activeId="fct" onSelect={() => {}} />} toc={<TableOfContents items={TOC} />}>

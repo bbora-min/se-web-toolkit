@@ -11,9 +11,9 @@ import { CHANGELOG, GITHUB, appUrl } from '../lib/links'
 import { Shot } from '../components/Shot'
 
 const ROLES = [
-  { icon: <Blocks />, title: '짓는 재료', lead: '토큰과 컴포넌트', body: '색·간격·글꼴은 토큰으로만, 표·폼·다이얼로그·차트·캔버스는 @se/ui 컴포넌트로. 라이트·다크·밀도가 한 번에 따라온다.', items: ['@se/tokens', '@se/ui', '@se/charts', '@se/canvas'], mono: true },
-  { icon: <Bot />, title: '규칙을 아는 조수', lead: 'Claude Code 플러그인', body: '스킬이 컴포넌트와 디자인 규칙을 알고, 명령이 화면을 원본에서 베껴 만들고, 훅이 저장할 때마다 린트로 막는다.', items: ['/se:new', '/se:page', '/se:review', '/se:upgrade'], mono: true },
-  { icon: <Layers />, title: '베끼는 원본', lead: '예제 앱 넷 · 골격 열 개', body: '화면은 백지에서 시작하지 않는다. 원장·보드·문서·대화… 골격마다 실제로 돌아가는 원본 화면이 있고, 플러그인은 그걸 복사해 변형한다.', items: ARCHETYPES.map((a) => a.name), mono: false },
+  { icon: <Blocks />, title: '화면을 만드는 부품', lead: '토큰과 컴포넌트', body: '색·간격·글꼴은 토큰으로만 쓰고, 표·폼·다이얼로그·차트·캔버스는 @se/ui 컴포넌트로 조립합니다. 라이트·다크 테마와 밀도가 함께 따라옵니다.', items: ['@se/tokens', '@se/ui', '@se/charts', '@se/canvas'], mono: true },
+  { icon: <Bot />, title: '규칙을 아는 도우미', lead: 'Claude Code 플러그인', body: '스킬은 컴포넌트와 디자인 규칙을 알고 있고, 명령은 원본 화면을 바탕으로 새 화면을 만들며, 훅은 파일을 저장할 때마다 린트로 규칙 위반을 막습니다.', items: ['/se:new', '/se:page', '/se:review', '/se:upgrade'], mono: true },
+  { icon: <Layers />, title: '참고할 원본 화면', lead: '예제 앱 4개 · 화면 골격 10가지', body: '화면을 백지에서 시작하지 않습니다. 목록·보드·문서·대화 등 골격마다 실제로 동작하는 원본 화면이 있고, 플러그인은 그 원본을 복사해 새 화면으로 바꿔 씁니다.', items: ARCHETYPES.map((a) => a.name), mono: false },
 ]
 
 export function HomePage() {
@@ -25,14 +25,14 @@ export function HomePage() {
           {__RELEASE__.date ? <span className="text-muted"> · {__RELEASE__.date}</span> : null}
         </Chip>
         <h1 className="max-w-3xl break-keep font-display text-[2.75rem] font-semibold leading-[1.1] tracking-[-0.03em] text-ink">
-          사내 엔지니어링 도구를 위한 디자인 시스템, <span className="text-accent-fg">그리고 그걸 아는 Claude.</span>
+          사내 엔지니어링 도구를 위한 디자인 시스템, <span className="text-accent-fg">그리고 이를 이해하는 Claude.</span>
         </h1>
         <p className="max-w-2xl break-keep text-lg leading-relaxed text-muted">
-          잡 모니터, 데이터 카탈로그, 배포 데스크 같은 내부 도구를 같은 재료로 짓되 서로 다른 얼굴로. 아이덴티티 한 장이 색과 톤을, 골격 하나가 화면의 구조를 정하고, Claude Code 플러그인이 그 규칙대로 대신 그린다.
+          잡 모니터, 데이터 카탈로그, 배포 데스크 같은 내부 도구를 같은 부품으로 만들되 서비스마다 다른 모습으로. 아이덴티티 설정 한 장이 색과 말투를, 화면 골격이 구조를 정하고, Claude Code 플러그인이 그 규칙대로 화면을 대신 만듭니다.
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <Button size="lg" asChild><Link to="/start">시작하기 <ArrowRight /></Link></Button>
-          <Button size="lg" variant="secondary" asChild><Link to="/archetypes">골격 열 개 보기</Link></Button>
+          <Button size="lg" variant="secondary" asChild><Link to="/archetypes">화면 골격 10가지 보기</Link></Button>
         </div>
       </section>
 
@@ -52,8 +52,8 @@ export function HomePage() {
 
       <section className="flex flex-col gap-6">
         <div className="flex flex-col gap-1.5">
-          <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-ink">예제 앱 넷</h2>
-          <p className="text-md text-muted">같은 툴킷, 아이덴티티 한 장으로 다른 얼굴. 전부 브라우저 안의 목(MSW)으로 돌아가니 그냥 열어 보면 된다.</p>
+          <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-ink">예제 앱 4개</h2>
+          <p className="text-md text-muted">같은 툴킷으로 만들었지만 아이덴티티 설정에 따라 모습이 다릅니다. 모두 브라우저 안의 목 데이터(MSW)로 동작하니 바로 열어 볼 수 있습니다.</p>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
           {APPS.map((a) => (

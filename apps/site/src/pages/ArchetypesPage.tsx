@@ -12,8 +12,8 @@ export function ArchetypesPage() {
   return (
     <PageBody className="gap-12 pb-24">
       <PageHeader
-        title="골격 열 개"
-        description="골격은 서비스가 아니라 화면마다 고른다. 같은 서비스 안에 원장도, 문서도, 대화도 있다. 열 개 전부 실제로 돌아가는 원본 화면이 있고 /se:page 는 그걸 복사해 변형한다."
+        title="화면 골격 10가지"
+        description="골격은 화면의 뼈대입니다. 서비스 단위가 아니라 화면마다 고르므로 같은 서비스 안에 목록 화면도, 문서 화면도, 대화 화면도 있습니다. 10가지 모두 실제로 동작하는 원본 화면이 있고, /se:page 명령은 그 원본을 복사해 새 화면을 만듭니다."
         actions={<Button variant="secondary" size="sm" asChild><a href={`${DESIGN_DOC}#62-seui--컴포넌트-3티어--시그니처`} target="_blank" rel="noreferrer">설계 문서 <ArrowUpRight /></a></Button>}
       />
       <nav aria-label="골격" className="flex flex-wrap gap-1.5">
@@ -30,18 +30,18 @@ export function ArchetypesPage() {
               </div>
               <p className="break-keep text-md leading-relaxed text-ink">{a.when}</p>
               <dl className="grid grid-cols-[5rem_1fr] gap-x-3 gap-y-2 text-sm">
-                <dt className="text-muted">생김새</dt><dd className="text-ink/85">{a.shape}</dd>
-                <dt className="text-muted">재료</dt><dd className="font-mono text-[12px] leading-relaxed text-ink/85">{a.parts.join(' · ')}</dd>
-                <dt className="text-muted">세상의 대표</dt><dd className="text-ink/85">{a.refs.join(' · ')}</dd>
-                <dt className="text-muted">원본</dt>
+                <dt className="text-muted">구성</dt><dd className="text-ink/85">{a.shape}</dd>
+                <dt className="text-muted">구성 요소</dt><dd className="font-mono text-[12px] leading-relaxed text-ink/85">{a.parts.join(' · ')}</dd>
+                <dt className="text-muted">대표 사례</dt><dd className="text-ink/85">{a.refs.join(' · ')}</dd>
+                <dt className="text-muted">원본 화면</dt>
                 <dd className="flex flex-wrap items-center gap-2 text-ink/85">
                   {a.appName} <span className="font-mono text-[12px] text-muted">{a.path}</span>
                   <Button variant="link" size="sm" className="h-auto p-0" asChild><a href={appUrl(a.app, a.path)} target="_blank" rel="noreferrer">열기 <ArrowUpRight /></a></Button>
                 </dd>
-                <dt className="text-muted">부터</dt><dd className="font-mono text-[12px] text-muted">{a.since}</dd>
+                <dt className="text-muted">도입 버전</dt><dd className="font-mono text-[12px] text-muted">v{a.since}</dd>
               </dl>
             </div>
-            <a href={appUrl(a.app, a.path)} target="_blank" rel="noreferrer" aria-label={`${a.name} 원본 열기`}>
+            <a href={appUrl(a.app, a.path)} target="_blank" rel="noreferrer" aria-label={`${a.name} 원본 화면 열기`}>
               <Shot src={a.shot} alt={`${a.appName} ${a.path}`} />
             </a>
           </li>

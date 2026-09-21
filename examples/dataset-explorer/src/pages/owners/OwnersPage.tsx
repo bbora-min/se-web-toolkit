@@ -49,7 +49,7 @@ export function OwnersPage() {
             <SectionHeader title={team} note={`${people.length}명 · 데이터셋 ${people.reduce((a, p) => a + p.datasets, 0)}개`} />
             <div className="grid gap-3 md:grid-cols-3">
               {people.map((o) => (
-                <Link key={o.name} to={`/datasets?owner=${o.name}`} className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-4 transition-colors hover:border-line-strong">
+                <Link key={o.name} to={`/datasets?owner=${encodeURIComponent(o.name)}`} className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-4 transition-colors hover:border-line-strong">
                   <span className="flex items-center gap-3">
                     <Avatar name={o.name} size="md" />
                     <span className="flex min-w-0 flex-col">

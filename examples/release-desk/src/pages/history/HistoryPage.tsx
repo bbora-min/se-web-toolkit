@@ -12,12 +12,12 @@
  *  톤         : procedural — 문장은 짧고 단정.
  */
 import { useNavigate, useSearchParams } from 'react-router'
-import { Avatar, Badge, Button, Chip, DataTable, FilterBar, PageBody, PageHeader, Select, StatCard, formatAbsolute, formatDurationLong, toast, useContentWidth, type ColumnDef } from '@se/ui'
+import { Avatar, Badge, Button, Chip, DataTable, FilterBar, PageBody, PageHeader, Select, StatCard, formatAbsolute, formatDurationLong, toast, useContentWidth, type BadgeProps, type ColumnDef } from '@se/ui'
 import { useHistory } from '../../api/releases'
 import type { HistoryItem, HistoryResult } from '../../api/types'
 import { RiskLabel, TypeBadge } from '../releases/bits'
 
-const RESULT: Record<HistoryResult, { label: string; tone: 'success' | 'danger' | 'warning' }> = {
+const RESULT: Record<HistoryResult, { label: string; tone: NonNullable<BadgeProps['tone']> }> = {
   deployed: { label: '배포됨', tone: 'success' },
   rejected: { label: '반려', tone: 'warning' },
   'rolled-back': { label: '롤백', tone: 'danger' },

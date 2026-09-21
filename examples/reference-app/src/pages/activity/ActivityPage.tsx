@@ -39,7 +39,7 @@ function dayLabel(iso: string) {
 function href(e: ActivityEvent) {
   if (e.jobId) return `/jobs/${e.jobId}/logs`
   if (e.node) return '/nodes'
-  if (e.pipeline) return `/jobs?pipeline=${e.pipeline}`
+  if (e.pipeline) return `/jobs?pipeline=${encodeURIComponent(e.pipeline)}`
   return null
 }
 

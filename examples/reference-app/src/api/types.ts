@@ -110,8 +110,6 @@ export interface ClusterNode extends NodeStat {
   /** 최근 24시간 CPU · MEM(%) */
   cpuSeries: number[]
   memSeries: number[]
-  /** 지금 이 노드에서 도는 잡 */
-  jobs: Array<{ id: string; name: string; pipeline: string; state: JobState; durationSec: number | null }>
 }
 
 export type ActivityKind = 'failed' | 'retried' | 'cancelled' | 'succeeded' | 'node' | 'schedule'

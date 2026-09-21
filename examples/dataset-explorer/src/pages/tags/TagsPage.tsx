@@ -12,11 +12,11 @@
  *  톤         : friendly.
  */
 import { useNavigate } from 'react-router'
-import { Badge, DataTable, PageBody, PageHeader, type ColumnDef } from '@se/ui'
+import { Badge, DataTable, PageBody, PageHeader, type BadgeProps, type ColumnDef } from '@se/ui'
 import { useTags } from '../../api/datasets'
 import type { TagSummary } from '../../api/types'
 
-const TONE: Record<string, 'neutral' | 'info' | 'accent' | 'warning' | 'danger' | 'success'> = { pii: 'warning', deprecated: 'danger', experimental: 'info', certified: 'success', 'tier-1': 'accent', gdpr: 'warning', core: 'accent' }
+const TONE: Record<string, NonNullable<BadgeProps['tone']>> = { pii: 'warning', deprecated: 'danger', experimental: 'info', certified: 'success', 'tier-1': 'accent', gdpr: 'warning', core: 'accent' }
 
 const columns: ColumnDef<TagSummary, unknown>[] = [
   { accessorKey: 'name', header: '태그', cell: ({ row }) => <Badge tone={TONE[row.original.name] ?? 'neutral'}>{row.original.name}</Badge> },
@@ -40,7 +40,7 @@ export function TagsPage() {
         error={tags.isError ? { title: '태그를 불러오지 못했어요', description: tags.error.message, onRetry: () => tags.refetch() } : null}
         empty={{ title: '아직 태그가 없어요', description: '데이터셋에 태그를 달면 여기에 모여요.' }}
         initialSorting={[{ id: 'count', desc: true }]}
-        onRowClick={(t) => navigate(`/datasets?tag=${t.name}`)}
+        onRowClick={(t) => navigate(`/datasets?tag=${encodeURIComponent(t.name)}`)}
       />
     </PageBody>
   )

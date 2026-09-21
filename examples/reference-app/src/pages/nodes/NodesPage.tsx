@@ -12,11 +12,11 @@
  *  톤         : terse.
  */
 import { useNavigate } from 'react-router'
-import { Badge, DataTable, PageBody, PageHeader, Sparkline, StatCard, cn, formatDurationLong, formatRelative, type ColumnDef } from '@se/ui'
+import { Badge, DataTable, PageBody, PageHeader, Sparkline, StatCard, cn, formatDurationLong, formatRelative, type BadgeProps, type ColumnDef } from '@se/ui'
 import { useNodes } from '../../api/jobs'
 import type { ClusterNode } from '../../api/types'
 
-const STATUS: Record<ClusterNode['status'], { label: string; tone: 'success' | 'warning' | 'danger' }> = {
+const STATUS: Record<ClusterNode['status'], { label: string; tone: NonNullable<BadgeProps['tone']> }> = {
   online: { label: '온라인', tone: 'success' },
   degraded: { label: '저하', tone: 'warning' },
   offline: { label: '오프라인', tone: 'danger' },
@@ -82,7 +82,7 @@ export function NodesPage() {
         error={nodes.isError ? { title: '노드 목록을 가져올 수 없음', description: nodes.error.message, onRetry: () => nodes.refetch() } : null}
         empty={{ title: '등록된 노드가 없음', description: '스케줄러에 워커가 합류하면 여기에 나타납니다.' }}
         initialSorting={[{ id: 'cpu', desc: true }]}
-        onRowClick={(n) => navigate(`/jobs?node=${n.name}`)}
+        onRowClick={(n) => navigate(`/jobs?node=${encodeURIComponent(n.name)}`)}
       />
     </PageBody>
   )

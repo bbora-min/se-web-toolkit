@@ -83,21 +83,24 @@ export function makeReleases(count = 28): Release[] {
 const ROLLBACK_NOTES = ['배포 후 p95 지연 2배 — 30분 만에 롤백', '마이그레이션 락으로 주문 API 타임아웃', '알림 중복 발송 — 피처 플래그로 끔']
 const REJECT_NOTES = ['롤백 절차가 구체적이지 않습니다', '스테이징 E2E 실패 건이 남아 있습니다', '프리즈 구간과 겹칩니다']
 
-/** 이력 — 지금 done 인 릴리스(상세 있음) + 지난 90일의 옛 릴리스(상세 없음) */
-export function makeHistory(releases: Release[], extra = 26): HistoryItem[] {
-  const now = Date.now()
-  const out: HistoryItem[] = releases
+/** 지금 done 인 릴리스 → 이력(상세 있음). 배포 시각은 배포 창 끝 — 결정적이라 요청마다 같다 */
+export function historyOfReleases(releases: Release[]): HistoryItem[] {
+  return releases
     .filter((r) => r.stage === 'done')
     .map((r) => {
-      const deployed = r.timeline.find((t) => t.kind === 'deploy') ?? r.timeline[r.timeline.length - 1]!
-      // 타임라인은 초안 기준 등간격이라 지금보다 뒤일 수 있다 — 끝난 릴리스는 늘 과거
-      const at = Math.min(Date.parse(deployed.at), Date.parse(r.windowTo))
+      const at = Date.parse(r.windowTo)
       return {
         id: `h-${r.id}`, releaseId: r.id, version: r.version, service: r.service, title: r.title, type: r.type, risk: r.risk, owner: r.owner, team: r.team,
         result: 'deployed' as const, at: new Date(at).toISOString(), leadHours: Math.max(1, Math.round((at - Date.parse(r.createdAt)) / 3600_000)), approvers: r.approvers.map((a) => a.name),
       }
     })
-  for (let i = 0; i < extra; i++) {
+}
+
+/** 지난 90일의 옛 릴리스(상세 없음) — 난수를 쓰므로 모듈에서 한 번만 만든다 */
+export function makeOldHistory(count = 26): HistoryItem[] {
+  const now = Date.now()
+  const out: HistoryItem[] = []
+  for (let i = 0; i < count; i++) {
     const service = pick(SERVICES)
     const type = rnd() < 0.2 ? 'hotfix' : rnd() < 0.25 ? 'maintenance' : 'feature'
     const risk = type === 'hotfix' ? 'high' : rnd() < 0.55 ? 'low' : rnd() < 0.7 ? 'medium' : 'high'

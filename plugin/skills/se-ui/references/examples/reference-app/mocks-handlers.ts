@@ -53,22 +53,23 @@ function summary(): ClusterSummary {
   }
 }
 
-/** 노드 5대 — 개요의 노드 타일과 노드 화면이 같은 원본을 본다 */
+/** 노드 5대 — 개요의 노드 타일과 노드 화면이 같은 원본을 본다. 실행 중 수는 잡 목록에서 센다(노드 행 → 잡 목록 필터와 같은 숫자) */
 const NODES = [
-  { name: 'wk-01', status: 'online' as const, cpu: 62, mem: 71, running: 2, labels: ['pool=general'], uptimeSec: 41 * 86400 + 3600 * 5 },
-  { name: 'wk-02', status: 'online' as const, cpu: 48, mem: 55, running: 2, labels: ['pool=general'], uptimeSec: 41 * 86400 + 3600 * 5 },
-  { name: 'wk-03', status: 'degraded' as const, cpu: 93, mem: 88, running: 1, labels: ['pool=general', 'spot'], uptimeSec: 2 * 86400 + 3600 * 11 },
-  { name: 'wk-04', status: 'online' as const, cpu: 21, mem: 40, running: 1, labels: ['pool=general', 'spot'], uptimeSec: 6 * 86400 },
-  { name: 'gpu-01', status: 'online' as const, cpu: 77, mem: 83, running: 1, labels: ['pool=gpu', 'a100x4'], uptimeSec: 19 * 86400 + 3600 * 2 },
+  { name: 'wk-01', status: 'online' as const, cpu: 62, mem: 71, labels: ['pool=general'], uptimeSec: 41 * 86400 + 3600 * 5 },
+  { name: 'wk-02', status: 'online' as const, cpu: 48, mem: 55, labels: ['pool=general'], uptimeSec: 41 * 86400 + 3600 * 5 },
+  { name: 'wk-03', status: 'degraded' as const, cpu: 93, mem: 88, labels: ['pool=general', 'spot'], uptimeSec: 2 * 86400 + 3600 * 11 },
+  { name: 'wk-04', status: 'online' as const, cpu: 21, mem: 40, labels: ['pool=general', 'spot'], uptimeSec: 6 * 86400 },
+  { name: 'gpu-01', status: 'online' as const, cpu: 77, mem: 83, labels: ['pool=gpu', 'a100x4'], uptimeSec: 19 * 86400 + 3600 * 2 },
 ]
+const runningOn = (node: string) => jobs.filter((j) => j.node === node && j.state === 'running').length
 function clusterNodes(): ClusterNode[] {
   const now = Date.now()
   return NODES.map((n, i) => ({
     ...n,
     lastHeartbeat: new Date(now - (n.status === 'degraded' ? 48_000 : 4_000 + i * 900)).toISOString(),
+    running: runningOn(n.name),
     cpuSeries: series(n.cpu, 18, 101 + i),
     memSeries: series(n.mem, 9, 211 + i),
-    jobs: jobs.filter((j) => j.node === n.name && j.state === 'running').map((j) => ({ id: j.id, name: j.name, pipeline: j.pipeline, state: j.state, durationSec: j.durationSec })),
   }))
 }
 
@@ -122,7 +123,7 @@ function overview(range: '24h' | '7d'): Overview {
     const rate = [99.2, 97.5, 91.4, 100, 88.9, 95.8][i % 6]!
     return { name, runs, successRate: rate, p50Sec: [420, 1300, 260, 3900, 2100, 720][i % 6]! }
   })
-  const nodes = NODES.map(({ name, status, cpu, mem, running }) => ({ name, status, cpu, mem, running }))
+  const nodes = NODES.map(({ name, status, cpu, mem }) => ({ name, status, cpu, mem, running: runningOn(name) }))
   // 실패 원인 — 에러 문자열의 첫 단어로 묶는다(OOMKilled · Timeout · S3 · Schema …)
   const since = now - n * 3600_000
   const failed = jobs.filter((j) => j.state === 'failed' && Date.parse(j.startedAt) >= since)
